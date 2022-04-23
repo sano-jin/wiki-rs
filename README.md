@@ -34,4 +34,17 @@
         rename the `127.0.0.1-key.pem` file with `key.pem` and
         the `127.0.0.1.pem` file with `cert.pem`.
 
-hoge
+4.  run the backend and access
+
+    ```sh
+    cargo run
+    ```
+
+    and
+
+    ```sh
+    curl https://127.0.0.1:8443/index.html
+    ```
+
+    with the other terminal.
+    You will get `Welcome!` if it runs fine.
