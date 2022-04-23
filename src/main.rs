@@ -1,5 +1,6 @@
 use std::io;
 
+use actix_files as fs;
 use actix_web::{middleware, web, App, Error, HttpRequest, HttpResponse, HttpServer};
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 
@@ -29,6 +30,8 @@ async fn main() -> io::Result<()> {
         App::new()
             // enable logger
             .wrap(middleware::Logger::default())
+            // with path parameters
+            .service(fs::Files::new("/pages", "public").show_files_listing())
             // register simple handler, handle all methods
             .service(web::resource("/index.html").to(index))
             // with path parameters
