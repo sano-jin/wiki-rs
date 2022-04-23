@@ -2,7 +2,9 @@ use std::io;
 
 use actix_files as fs;
 use actix_web::{middleware, web, App, Error, HttpRequest, HttpResponse, HttpServer};
+use json::JsonValue;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+use serde::{Deserialize, Serialize};
 
 /// simple handle
 async fn index(req: HttpRequest) -> Result<HttpResponse, Error> {
@@ -10,6 +12,26 @@ async fn index(req: HttpRequest) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok()
         .content_type("text/plain")
         .body("Welcome!"))
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct MyObj {
+    name: String,
+    number: i32,
+}
+
+// /// This handler uses json extractor
+// async fn index(item: web::Json<MyObj>) -> HttpResponse {
+//     println!("model: {:?}", &item);
+//     HttpResponse::Ok().json(item.0) // <- send response
+// }
+
+/// This handler uses json extractor with limit
+async fn extract_item(item: web::Json<MyObj>, req: HttpRequest) -> HttpResponse {
+    println!("request: {:?}", req);
+    println!("model: {:?}", item);
+
+    HttpResponse::Ok().json(item.0) // <- send json response
 }
 
 #[actix_web::main]
