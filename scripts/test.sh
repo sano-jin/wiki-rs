@@ -11,6 +11,7 @@ EOM
 }
 
 case "$1" in
+"get_pages") curl -kX GET https://127.0.0.1:8443/"$2" ;;
 "get") curl -kX GET https://127.0.0.1:8443/"$2" ;;
 "get_edit") curl -H "content-type: application/json" -kX GET -d \
     "{\"path\": \"$2\"}" \

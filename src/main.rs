@@ -113,7 +113,7 @@ fn remove_dir(path: &Path) {
 
     match std::fs::remove_dir(&path) {
         Ok(()) => remove_dir(path.parent().unwrap()),
-        Err(_) => return,
+        Err(_) => return, // cannot remove any more
     }
 }
 
