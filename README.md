@@ -229,3 +229,111 @@ cd public
 echo "This is a test" > index.html
 echo "This is a test" > test.html
 ```
+
+## Contents server
+
+add post, delete method to make it CRUD.
+
+### Add dependencies
+
+Add some dependencies to handle json.
+
+```toml
+json = "0.12"
+serde = { version = "1.0", features = ["derive"]  }
+serde_json = "1.0"
+```
+
+### Handle POST and DELETE methods
+
+```rust
+use std::fs::File;
+use std::io;
+use std::io::prelude::*;
+
+use actix_files;
+use actix_web::{middleware, web, App, Error, HttpRequest, HttpResponse, HttpServer};
+// use json::JsonValue;
+use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+use serde::{Deserialize, Serialize};
+
+use std::path::{Path, PathBuf};
+
+
+#[derive(Debug, Serialize, Deserialize)]
+struct ReqObj {
+    path: String,
+}
+
+/// This handler uses json extractor with limit
+/// GET the page for editing the page
+async fn get_edit_page(item: web::Json<ReqObj>, req: HttpRequest) -> Result<HttpResponse, Error> {
+    println!("get_edit_page");
+    println!("request: {:?}", req);
+    println!("model: {:?}", item);
+
+    // TODO: check the path is valid
+    let path: PathBuf = Path::new("public").join(Path::new(&item.path));
+    println!("path: {:?}", path);
+
+    // TODO: use BufReader (low priority)
+    let contents = std::fs::read_to_string(&path);
+
+    let contents = match contents {
+        Ok(contents) => contents,
+        Err(error) => match error.kind() {
+            io::ErrorKind::NotFound => String::from(""),
+            // if the file does not exists (that is, user is trying to create a new page),
+            // return default string (currently empty string)
+            other_error => {
+                panic!("Problem opening the file: {:?}", other_error)
+            }
+        },
+    };
+
+    println!("contents: {}", contents);
+
+    Ok(HttpResponse::Ok().json(contents)) // <- send json response
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct NewPageObj {
+    path: String,
+    body: String,
+}
+
+/// This handler uses json extractor with limit
+async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<HttpResponse, Error> {
+    println!("post_edited");
+    println!("request: {:?}", req);
+    println!("model: {:?}", item);
+
+    // TODO: check the path is valid
+    let path: PathBuf = Path::new("public").join(Path::new(&item.path));
+    println!("path: {:?}", path);
+
+    // TODO: use BufReader
+    let mut file = File::create(&path)?;
+    file.write_all(item.body.as_bytes())
+        .expect("cannot write to a file");
+
+    // TODO: navigate to the new page created
+    Ok(HttpResponse::Ok().json("created")) // <- send json response
+}
+
+/// This handler uses json extractor with limit
+async fn delete_page(item: web::Json<ReqObj>, req: HttpRequest) -> Result<HttpResponse, Error> {
+    println!("delete_page");
+    println!("request: {:?}", req);
+    println!("model: {:?}", item);
+
+    // TODO: check the path is valid
+    let path: PathBuf = Path::new("public").join(Path::new(&item.path));
+    println!("path: {:?}", path);
+
+    std::fs::remove_file(&path)?;
+
+    // TODO: navigate to the root page
+    Ok(HttpResponse::Ok().json("deleted")) // <- send json response
+}
+```
