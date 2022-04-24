@@ -250,6 +250,37 @@ serde = { version = "1.0", features = ["derive"]  }
 serde_json = "1.0"
 ```
 
+### Creating a file and a directory
+
+We need to create a file.
+However, creating a file in a non-existing directory will cause `no such file or directory` error.
+Thus, we need to firstly create a directory and create the file.
+
+```rust
+/// Create a directory and a file `root_dir/path` and write with `contents`
+fn create_dir_and_write(root_dir: &str, path: &str, contents: &str) -> Result<(), Error> {
+    // TODO: check the path is valid
+    let path: PathBuf = Path::new(&root_dir).join(Path::new(&path));
+    println!("path: {:?}", path);
+
+    // TODO: use BufReader
+    println!("updating the markdown file");
+
+    // Writing to a file
+
+    // If the parent directory does not exists, then we should create it first
+    let prefix = path.parent().unwrap();
+    std::fs::create_dir_all(prefix).unwrap();
+
+    // Write to a file
+    let mut file = File::create(&path)?;
+    file.write_all(&contents.as_bytes())
+        .expect("cannot write to a file");
+
+    return Ok(());
+}
+```
+
 ### Handle POST and DELETE methods
 
 ```rust
@@ -347,3 +378,27 @@ async fn delete_page(item: web::Json<ReqObj>, req: HttpRequest) -> Result<HttpRe
 ## Markdown parsing and generating html
 
 In this section, we parse the posted markdown and convert it to a html file.
+
+### Add dependencies
+
+Add dependency to `Cargo.toml`.
+We will be using `pulldown_cmark` to convert markdown to html.
+
+```toml
+pulldown-cmark = { version = "0.9.1", default-features = false }
+```
+
+### Convert markdown to html
+
+add the converter form markdown to html to the `post_edited` function.
+
+```rust
+
+    // Parse the given markdown with the pulldown_cmark parser
+    println!("parsing the given markdown with the pulldown_cmark parser");
+    let parser = Parser::new(&item.body);
+    let mut html_buf = String::new();
+    html::push_html(&mut html_buf, parser);
+    println!("parsed: {}", html_buf);
+
+```

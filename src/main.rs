@@ -17,6 +17,8 @@ async fn index(req: HttpRequest) -> Result<HttpResponse, Error> {
         .content_type("text/plain")
         .body("Welcome!"))
 }
+extern crate pulldown_cmark;
+use pulldown_cmark::{html, Parser};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct ReqObj {
@@ -54,6 +56,29 @@ async fn get_edit_page(item: web::Json<ReqObj>, req: HttpRequest) -> Result<Http
     Ok(HttpResponse::Ok().json(contents)) // <- send json response
 }
 
+/// Create a directory and a file `root_dir/path` and write with `contents`
+fn create_dir_and_write(root_dir: &str, path: &str, contents: &str) -> Result<(), Error> {
+    // TODO: check the path is valid
+    let path: PathBuf = Path::new(&root_dir).join(Path::new(&path));
+    println!("path: {:?}", path);
+
+    // TODO: use BufReader
+    println!("updating the markdown file");
+
+    // Writing to a file
+
+    // If the parent directory does not exists, then we should create it first
+    let prefix = path.parent().unwrap();
+    std::fs::create_dir_all(prefix).unwrap();
+
+    // Write to a file
+    let mut file = File::create(&path)?;
+    file.write_all(&contents.as_bytes())
+        .expect("cannot write to a file");
+
+    return Ok(());
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 struct NewPageObj {
     path: String,
@@ -66,14 +91,16 @@ async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<Ht
     println!("request: {:?}", req);
     println!("model: {:?}", item);
 
-    // TODO: check the path is valid
-    let path: PathBuf = Path::new("public").join(Path::new(&item.path));
-    println!("path: {:?}", path);
+    create_dir_and_write("public", &item.path, &item.body)?;
 
-    // TODO: use BufReader
-    let mut file = File::create(&path)?;
-    file.write_all(item.body.as_bytes())
-        .expect("cannot write to a file");
+    // Parse the given markdown with the pulldown_cmark parser
+    println!("parsing the given markdown with the pulldown_cmark parser");
+    let parser = Parser::new(&item.body);
+    let mut html_buf = String::new();
+    html::push_html(&mut html_buf, parser);
+    println!("parsed: {}", html_buf);
+
+    create_dir_and_write("public/page", &item.path, &html_buf)?;
 
     // TODO: navigate to the new page created
     Ok(HttpResponse::Ok().json("created")) // <- send json response
