@@ -41,6 +41,8 @@ Install Cargo
 
 ## Implement Https server
 
+In this section, we implement a simple https server that returns a constant string message.
+
 TODO: Modify this to firstly implement a http server
 (not implementing https from the start)
 
@@ -172,6 +174,9 @@ You will get `Welcome!` if it runs fine.
 
 ## Add static files
 
+In this section, we let the server to desplay the files in `/public` directory.
+i.e. static server.
+
 See <https://actix.rs/docs/static-files/>
 
 ### Add dependencies
@@ -232,7 +237,8 @@ echo "This is a test" > test.html
 
 ## Contents server
 
-add post, delete method to make it CRUD.
+In this section, we will extend the static server to contents management server.
+We will add post, delete method to make it CRUD.
 
 ### Add dependencies
 
@@ -337,3 +343,7 @@ async fn delete_page(item: web::Json<ReqObj>, req: HttpRequest) -> Result<HttpRe
     Ok(HttpResponse::Ok().json("deleted")) // <- send json response
 }
 ```
+
+## Markdown parsing and generating html
+
+In this section, we parse the posted markdown and convert it to a html file.
