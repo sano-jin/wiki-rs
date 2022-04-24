@@ -33,7 +33,7 @@ async fn get_edit_page(item: web::Json<ReqObj>, req: HttpRequest) -> Result<Http
     println!("model: {:?}", item);
 
     // TODO: check the path is valid
-    let path: PathBuf = Path::new("public").join(Path::new(&item.path));
+    let path: PathBuf = Path::new("public/edit").join(Path::new(&item.path));
     println!("path: {:?}", path);
 
     // TODO: use BufReader (low priority)
@@ -91,7 +91,7 @@ async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<Ht
     println!("request: {:?}", req);
     println!("model: {:?}", item);
 
-    create_dir_and_write("public", &item.path, &item.body)?;
+    create_dir_and_write("public/edit", &item.path, &item.body)?;
 
     // Parse the given markdown with the pulldown_cmark parser
     println!("parsing the given markdown with the pulldown_cmark parser");
@@ -100,10 +100,37 @@ async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<Ht
     html::push_html(&mut html_buf, parser);
     println!("parsed: {}", html_buf);
 
-    create_dir_and_write("public/page", &item.path, &html_buf)?;
+    create_dir_and_write("public/pages", &item.path, &html_buf)?;
 
     // TODO: navigate to the new page created
     Ok(HttpResponse::Ok().json("created")) // <- send json response
+}
+
+/// Remove directory recursively if it is empty
+/// TODO: Succeeding with error may not the smartest solution
+fn remove_dir(path: &Path) {
+    println!("removing dir: {:?}", path);
+
+    match std::fs::remove_dir(&path) {
+        Ok(()) => remove_dir(path.parent().unwrap()),
+        Err(_) => return,
+    }
+}
+
+/// Remove a file and the parent directories
+fn remove_page(path: &PathBuf) -> Result<(), Error> {
+    // TODO: check the path is valid
+    println!("path: {:?}", path);
+
+    // Remove the file
+    println!("remove the file");
+    std::fs::remove_file(&path)?;
+
+    // Remove the parent directories
+    println!("remove the parent directories");
+    remove_dir(&path.parent().unwrap());
+
+    Ok(())
 }
 
 /// This handler uses json extractor with limit
@@ -112,11 +139,11 @@ async fn delete_page(item: web::Json<ReqObj>, req: HttpRequest) -> Result<HttpRe
     println!("request: {:?}", req);
     println!("model: {:?}", item);
 
-    // TODO: check the path is valid
-    let path: PathBuf = Path::new("public").join(Path::new(&item.path));
-    println!("path: {:?}", path);
+    // Remove the markdown file
+    remove_page(&Path::new("public/edit").join(Path::new(&item.path)))?;
 
-    std::fs::remove_file(&path)?;
+    // Remove the html file
+    remove_page(&Path::new("public/pages").join(Path::new(&item.path)))?;
 
     // TODO: navigate to the root page
     Ok(HttpResponse::Ok().json("deleted")) // <- send json response
@@ -142,7 +169,7 @@ async fn main() -> io::Result<()> {
             .wrap(middleware::Logger::default())
             // with path parameters
             // Viewing the pages
-            .service(actix_files::Files::new("/pages", "public").show_files_listing())
+            .service(actix_files::Files::new("/pages", "public/pages").show_files_listing())
             // Editing
             .service(
                 web::resource("/edit")

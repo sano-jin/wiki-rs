@@ -281,6 +281,21 @@ fn create_dir_and_write(root_dir: &str, path: &str, contents: &str) -> Result<()
 }
 ```
 
+### Deleting a directory
+
+```rust
+/// Remove directory recursively if it is empty
+/// TODO: Succeeding with error may not the smartest solution
+fn remove_dir(path: &Path) {
+    println!("removing dir: {:?}", path);
+
+    match std::fs::remove_dir(&path) {
+        Ok(()) => remove_dir(path.parent().unwrap()),
+        Err(_) => return,
+    }
+}
+```
+
 ### Handle POST and DELETE methods
 
 ```rust
@@ -378,6 +393,9 @@ async fn delete_page(item: web::Json<ReqObj>, req: HttpRequest) -> Result<HttpRe
 ## Markdown parsing and generating html
 
 In this section, we parse the posted markdown and convert it to a html file.
+
+We will be saving the markdown file in `/public/edit` directory
+and html file in `/public/pages` directory.
 
 ### Add dependencies
 
