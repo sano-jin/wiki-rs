@@ -12,7 +12,7 @@ use std::path::{Path, PathBuf};
 extern crate pulldown_cmark;
 use pulldown_cmark::{html, Parser};
 
-use urlencoding::encode;
+use urlencoding;
 
 /// simple handle
 async fn index(req: HttpRequest) -> Result<HttpResponse, Error> {
@@ -34,8 +34,8 @@ struct QueryPath {
 
 /// Get the new path <root>/<encoded path>
 fn get_path(root: &str, path: &str) -> PathBuf {
-    let encoded = encode(&path);
-    println!("encoded : {}", encoded);
+    // TODO: check the path is valid
+    let encoded = urlencoding::encode(&path);
 
     Path::new(&root).join(Path::new(&encoded.into_owned()))
 }
@@ -89,11 +89,15 @@ async fn get_edit_page(
 
     println!("contents: {}", contents);
 
+    // decode the path to obtain the title
+    let title = urlencoding::decode(&item.path).expect("cannot decode");
+
     // Open the file for editing
 
     let edit_page = std::fs::read_to_string("static/edit.html").expect("cannot open edit file");
     let edit_page = edit_page
-        .replace("TITLE", &item.path)
+        .replace("TITLE", &title.into_owned())
+        .replace("PATH", &item.path)
         .replace("MARKDOWN", &contents);
 
     Ok(HttpResponse::Ok().content_type("text/html").body(edit_page))
@@ -102,7 +106,11 @@ async fn get_edit_page(
 /// write `contents` to the file `root_dir/path`
 fn update_file(root_dir: &str, path: &str, contents: &str) -> Result<(), Error> {
     // TODO: check the path is valid
-    let path: PathBuf = get_path(&root_dir, &path);
+    // この時点で既に encode されているはず．
+    // let path: PathBuf = get_path(&root_dir, &path);
+
+    let path: PathBuf = Path::new(&root_dir).join(Path::new(&path));
+
     println!("path: {:?}", path);
 
     // TODO: use BufReader
@@ -137,11 +145,15 @@ async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<Ht
     html::push_html(&mut html_buf, parser);
     println!("parsed: {}", html_buf);
 
+    // decode the path to obtain the title
+    let title = urlencoding::decode(&item.path).expect("cannot decode");
+
     // Open the default file
     let default_page =
         std::fs::read_to_string("static/page.html").expect("cannot open the default file");
     let default_page = default_page
-        .replace("TITLE", &item.path)
+        .replace("TITLE", &title.into_owned())
+        .replace("PATH", &item.path)
         .replace("BODY", &html_buf);
 
     update_file("public/pages", &item.path, &default_page)?;
