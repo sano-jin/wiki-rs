@@ -25,6 +25,24 @@ struct QueryPath {
     path: String,
 }
 
+/// GET the page
+async fn get_page(item: web::Query<QueryPath>, req: HttpRequest) -> Result<HttpResponse, Error> {
+    println!("get_page");
+    println!("request: {:?}", req);
+    println!("model: {:?}", item);
+
+    // TODO: check the path is valid
+    let path: PathBuf = Path::new("public/pages").join(Path::new(&item.path));
+    println!("path: {:?}", path);
+
+    // TODO: use BufReader (low priority)
+    let contents = std::fs::read_to_string(&path)?;
+
+    println!("contents: {}", contents);
+
+    Ok(HttpResponse::Ok().content_type("text/html").body(contents))
+}
+
 /// This handler uses json extractor with limit
 /// GET the page for editing the page
 async fn get_edit_page(
@@ -66,25 +84,14 @@ async fn get_edit_page(
     Ok(HttpResponse::Ok().content_type("text/html").body(edit_page))
 }
 
-/// Create a directory and a file `root_dir/path` and write with `contents`
-fn create_dir_and_write(
-    root_dir: &str,
-    path: &str,
-    contents: &str,
-    extension: &str,
-) -> Result<(), Error> {
+/// write `contents` to the file `root_dir/path`
+fn update_file(root_dir: &str, path: &str, contents: &str) -> Result<(), Error> {
     // TODO: check the path is valid
-    let path: PathBuf = Path::new(&root_dir).join(Path::new(&(path.to_string() + "." + extension)));
+    let path: PathBuf = Path::new(&root_dir).join(Path::new(&path));
     println!("path: {:?}", path);
 
     // TODO: use BufReader
-    println!("updating the markdown file");
-
-    // Writing to a file
-
-    // If the parent directory does not exists, then we should create it first
-    let prefix = path.parent().unwrap();
-    std::fs::create_dir_all(prefix).unwrap();
+    println!("updating the file");
 
     // Write to a file
     let mut file = File::create(&path)?;
@@ -106,7 +113,7 @@ async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<Ht
     println!("request: {:?}", req);
     println!("model: {:?}", item);
 
-    create_dir_and_write("public/edit", &item.path, &item.body, "md")?;
+    update_file("public/edit", &item.path, &item.body)?;
 
     // Parse the given markdown with the pulldown_cmark parser
     println!("parsing the given markdown with the pulldown_cmark parser");
@@ -122,40 +129,20 @@ async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<Ht
         .replace("TITLE", &item.path)
         .replace("BODY", &html_buf);
 
-    create_dir_and_write("public/pages", &item.path, &default_page, "html")?;
+    update_file("public/pages", &item.path, &default_page)?;
+
+    println!("updated the page");
 
     // TODO: navigate to the new page created
-    // Ok(HttpResponse::Ok().json("created")) // <- send json response
-    Ok(HttpResponse::Ok()
-        .content_type("text/html")
-        .body(default_page))
-}
+    let request_uri = format!("https://127.0.0.1:8443/pages?path={}", &item.path);
+    println!("Redirecting to {}", request_uri);
 
-/// Remove directory recursively if it is empty
-/// TODO: Succeeding with error may not the smartest solution
-fn remove_dir(path: &Path) {
-    println!("removing dir: {:?}", path);
+    // let redirecting_html = format!(
+    //     "<head><meta http-equiv=\"Refresh\" content=\"0; {}\"></head>",
+    //     request_uri
+    // );
 
-    match std::fs::remove_dir(&path) {
-        Ok(()) => remove_dir(path.parent().unwrap()),
-        Err(_) => return, // cannot remove any more
-    }
-}
-
-/// Remove a file and the parent directories
-fn remove_page(path: &PathBuf) -> Result<(), Error> {
-    // TODO: check the path is valid
-    println!("path: {:?}", path);
-
-    // Remove the file
-    println!("remove the file");
-    std::fs::remove_file(&path)?;
-
-    // Remove the parent directories
-    println!("remove the parent directories");
-    remove_dir(&path.parent().unwrap());
-
-    Ok(())
+    Ok(HttpResponse::Ok().json(request_uri))
 }
 
 /// This handler uses json extractor with limit
@@ -164,11 +151,13 @@ async fn delete_page(item: web::Query<QueryPath>, req: HttpRequest) -> Result<Ht
     println!("request: {:?}", req);
     println!("model: {:?}", item);
 
+    // TODO: check the validity of the path
+
     // Remove the markdown file
-    remove_page(&Path::new("public/edit").join(Path::new(&(item.path.to_string() + ".md"))))?;
+    std::fs::remove_file(&Path::new("public/edit").join(Path::new(&(item.path))))?;
 
     // Remove the html file
-    remove_page(&Path::new("public/pages").join(Path::new(&(item.path.to_string() + ".html"))))?;
+    std::fs::remove_file(&Path::new("public/pages").join(Path::new(&(item.path))))?;
 
     // TODO: navigate to the root page
     Ok(HttpResponse::Ok().json("deleted")) // <- send json response
@@ -194,8 +183,9 @@ async fn main() -> io::Result<()> {
             .wrap(middleware::Logger::default())
             // with path parameters
             // Viewing the pages
-            .service(actix_files::Files::new("/pages", "public/pages").show_files_listing())
+            .service(actix_files::Files::new("/assets", "public/assets").show_files_listing())
             // Editing
+            .service(web::resource("/pages").route(web::get().to(get_page)))
             .service(
                 web::resource("/edit")
                     // GET the page for editing

@@ -14,49 +14,12 @@
     />
 
     <title>TITLE</title>
-    <link rel="stylesheet" href="/pages/main.css" />
+    <link rel="stylesheet" href="/assets/main.css" />
   </head>
   <body>
-    <div></div>
-    <form action="/edit" method="GET">
-      <text name="input_content" id="input_content">MARKDOWN</text>
-      <input type="submit" id="btn_submit" name="btn_submit" value="Update" />
-    </form>
+    <div>hoge</div>
+    <a href="/edit?path=TITLE">Update</a>
 
     BODY
   </body>
-
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      // (1) 送信ボタンのHTMLを取得
-      const btn_submit = document.getElementById("btn_submit"); // (2) FormDataオブジェクトの初期化
-
-      const fd = new FormData();
-
-      btn_submit.addEventListener("click", (e) => {
-        e.preventDefault();
-
-        // (3) フォーム入力欄のHTMLを取得
-        const input_content = document.querySelector(
-          "text[name=input_content]"
-        );
-
-        // (4) FormDataオブジェクトにデータをセット
-        fd.append("path", input_content.value);
-
-        // (5) フォームの入力値を送信
-        fetch("/edit", {
-          method: "GET",
-          body: fd,
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      });
-    });
-  </script>
 </html>
