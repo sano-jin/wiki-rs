@@ -159,13 +159,8 @@ async fn post_edited(item: web::Json<NewPageObj>) -> Result<HttpResponse, Error>
 
     update_file("public/pages", &item.path, &default_page)?;
 
-    println!("updated the page");
-
     // TODO: navigate to the new page created
-    let request_uri = format!("https://127.0.0.1:8443/pages?path={}", &item.path);
-    println!("Redirecting to {}", request_uri);
-
-    Ok(HttpResponse::Ok().json(request_uri))
+    Ok(HttpResponse::Ok().json(format!("/pages?path={}", &item.path)))
 }
 
 /// This handler uses json extractor with limit
