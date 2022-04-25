@@ -12,6 +12,8 @@ use std::path::{Path, PathBuf};
 extern crate pulldown_cmark;
 use pulldown_cmark::{html, Parser};
 
+use urlencoding::encode;
+
 /// simple handle
 async fn index(req: HttpRequest) -> Result<HttpResponse, Error> {
     println!("request: {:?}", req);
@@ -30,14 +32,22 @@ struct QueryPath {
     path: String,
 }
 
+/// Get the new path <root>/<encoded path>
+fn get_path(root: &str, path: &str) -> PathBuf {
+    let encoded = encode(&path);
+    println!("encoded : {}", encoded);
+
+    Path::new(&root).join(Path::new(&encoded.into_owned()))
+}
+
 /// GET the page
 async fn get_page(item: web::Query<QueryPath>, req: HttpRequest) -> Result<HttpResponse, Error> {
     println!("get_page");
     println!("request: {:?}", req);
-    println!("model: {:?}", item);
+    println!("item: {:?}", item);
 
     // TODO: check the path is valid
-    let path: PathBuf = Path::new("public/pages").join(Path::new(&item.path));
+    let path: PathBuf = get_path("public/pages", &item.path);
     println!("path: {:?}", path);
 
     // TODO: use BufReader (low priority)
@@ -56,10 +66,10 @@ async fn get_edit_page(
 ) -> Result<HttpResponse, Error> {
     println!("get_edit_page");
     println!("request: {:?}", req);
-    println!("model: {:?}", item);
+    println!("item: {:?}", item);
 
     // TODO: check the path is valid
-    let path: PathBuf = Path::new("public/edit").join(Path::new(&item.path));
+    let path: PathBuf = get_path("public/edit", &item.path);
     println!("path: {:?}", path);
 
     // TODO: use BufReader (low priority)
@@ -92,7 +102,7 @@ async fn get_edit_page(
 /// write `contents` to the file `root_dir/path`
 fn update_file(root_dir: &str, path: &str, contents: &str) -> Result<(), Error> {
     // TODO: check the path is valid
-    let path: PathBuf = Path::new(&root_dir).join(Path::new(&path));
+    let path: PathBuf = get_path(&root_dir, &path);
     println!("path: {:?}", path);
 
     // TODO: use BufReader
@@ -116,7 +126,7 @@ struct NewPageObj {
 async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<HttpResponse, Error> {
     println!("post_edited");
     println!("request: {:?}", req);
-    println!("model: {:?}", item);
+    println!("item: {:?}", item);
 
     update_file("public/edit", &item.path, &item.body)?;
 
@@ -154,15 +164,15 @@ async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<Ht
 async fn delete_page(item: web::Query<QueryPath>, req: HttpRequest) -> Result<HttpResponse, Error> {
     println!("delete_page");
     println!("request: {:?}", req);
-    println!("model: {:?}", item);
+    println!("item: {:?}", item);
 
     // TODO: check the validity of the path
 
     // Remove the markdown file
-    std::fs::remove_file(&Path::new("public/edit").join(Path::new(&(item.path))))?;
+    std::fs::remove_file(get_path("public/edit", &item.path))?;
 
     // Remove the html file
-    std::fs::remove_file(&Path::new("public/pages").join(Path::new(&(item.path))))?;
+    std::fs::remove_file(get_path("public/pages", &item.path))?;
 
     // TODO: navigate to the root page
     Ok(HttpResponse::Ok().json("deleted")) // <- send json response

@@ -424,3 +424,13 @@ add the converter form markdown to html to the `post_edited` function.
 test with curl
 
 ## Client
+
+Add JavaScript to jump to the editor and to update the edited page.
+
+Using fetch API.
+
+## Some improvements
+
+Add a list of recent updated pages.
+
+Store `recent_updates` the list of the title of the recent updated files.

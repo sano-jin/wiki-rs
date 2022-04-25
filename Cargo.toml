@@ -21,4 +21,5 @@ serde_json = "1.0"
 
 pulldown-cmark = { version = "0.9.1", default-features = false }
 
+urlencoding = "2.1.0"
 
