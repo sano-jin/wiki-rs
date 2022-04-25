@@ -9,16 +9,21 @@ use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use serde::{Deserialize, Serialize};
 
 use std::path::{Path, PathBuf};
+extern crate pulldown_cmark;
+use pulldown_cmark::{html, Parser};
 
 /// simple handle
 async fn index(req: HttpRequest) -> Result<HttpResponse, Error> {
     println!("request: {:?}", req);
+
+    // Open the default file
+    let default_page =
+        std::fs::read_to_string("public/index.html").expect("cannot open the index.html file");
+
     Ok(HttpResponse::Ok()
-        .content_type("text/plain")
-        .body("Welcome!"))
+        .content_type("text/html")
+        .body(default_page))
 }
-extern crate pulldown_cmark;
-use pulldown_cmark::{html, Parser};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct QueryPath {
