@@ -14,17 +14,24 @@ use pulldown_cmark::{html, Parser};
 
 use urlencoding;
 
-/// simple handle
-async fn index(req: HttpRequest) -> Result<HttpResponse, Error> {
-    println!("request: {:?}", req);
+/// Get the page at the fiven path
+/// Add recent updated file names list
+fn get_at(path: PathBuf) -> Result<HttpResponse, Error> {
+    println!("path: {:?}", path);
 
-    // Open the default file
-    let default_page =
-        std::fs::read_to_string("public/index.html").expect("cannot open the index.html file");
+    // Load the file
+    let contents = std::fs::read_to_string(&path)?;
 
-    Ok(HttpResponse::Ok()
-        .content_type("text/html")
-        .body(default_page))
+    // Add recent updated file names list
+    let recent_updated_str = std::fs::read_to_string("public/recent_updated")?;
+    let contents = contents.replace("RECENT_UPDATED", &recent_updated_str);
+
+    Ok(HttpResponse::Ok().content_type("text/html").body(contents))
+}
+
+/// The top page
+async fn index() -> Result<HttpResponse, Error> {
+    get_at(PathBuf::from("public/index.html"))
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -34,30 +41,14 @@ struct QueryPath {
 
 /// Get the new path <root>/<encoded path>
 fn get_path(root: &str, path: &str) -> PathBuf {
-    // TODO: check the path is valid
     let encoded = urlencoding::encode(&path);
-
     Path::new(&root).join(Path::new(&encoded.into_owned()))
 }
 
 /// GET the page
-async fn get_page(item: web::Query<QueryPath>, req: HttpRequest) -> Result<HttpResponse, Error> {
-    println!("get_page");
-    println!("request: {:?}", req);
-    println!("item: {:?}", item);
-
-    // TODO: check the path is valid
-    let path: PathBuf = get_path("public/pages", &item.path);
-    println!("path: {:?}", path);
-
-    // TODO: use BufReader (low priority)
-    let contents = std::fs::read_to_string(&path)?;
-    let recent_updated_str = std::fs::read_to_string("public/recent_updated")?;
-    let contents = contents.replace("RECENT_UPDATED", &recent_updated_str);
-
-    println!("contents: {}", contents);
-
-    Ok(HttpResponse::Ok().content_type("text/html").body(contents))
+async fn get_page(item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
+    println!("get_page ? {:?}", item);
+    get_at(get_path("public/pages", &item.path))
 }
 
 /// This handler uses json extractor with limit
@@ -76,27 +67,21 @@ async fn get_edit_page(
 
     // TODO: use BufReader (low priority)
     let contents = std::fs::read_to_string(&path);
-
     let contents = match contents {
         Ok(contents) => contents,
         Err(error) => match error.kind() {
             io::ErrorKind::NotFound => String::from(""),
             // if the file does not exists (that is, user is trying to create a new page),
-            // return default string (currently empty string)
-            other_error => {
-                panic!("Problem opening the file: {:?}", other_error)
-            }
+            // return the default string (currently empty string)
+            other_error => panic!("Problem opening the file: {:?}", other_error),
         },
     };
-
-    println!("contents: {}", contents);
 
     // decode the path to obtain the title
     let title = urlencoding::decode(&item.path).expect("cannot decode");
 
     // Open the file for editing
-
-    let edit_page = std::fs::read_to_string("static/edit.html").expect("cannot open edit file");
+    let edit_page = std::fs::read_to_string("static/edit.html")?;
     let edit_page = edit_page
         .replace("TITLE", &title.into_owned())
         .replace("PATH", &item.path)
@@ -110,28 +95,22 @@ fn replace_file(filepath: PathBuf, placeholder: &str, value: &str) -> Result<(),
     // Open the file
     let contents = std::fs::read_to_string(&filepath)?;
     let contents = contents.replace(placeholder, &value);
+
     // Write to a file
     let mut file = File::create(&filepath)?;
     file.write_all(&contents.as_bytes())?;
+
     Ok(())
 }
 
 /// write `contents` to the file `root_dir/path`
 fn update_file(root_dir: &str, filename: &str, contents: &str) -> Result<(), Error> {
-    // TODO: check the path is valid
-    // この時点で既に encode されているはず．
-    // let path: PathBuf = Path::new(&root_dir).join(Path::new(&path));
-    // そんなことはない
     let path: PathBuf = get_path(&root_dir, &filename);
-    println!("path: {:?}", path);
+    println!("updating the file at {:?}", path);
 
-    // TODO: use BufReader
-    println!("updating the file");
-
-    // Write to a file
+    // Write to a file with the given contents
     let mut file = File::create(&path)?;
-    file.write_all(&contents.as_bytes())
-        .expect("cannot write to a file");
+    file.write_all(&contents.as_bytes())?;
 
     // Update index
     let index: io::Result<Vec<String>> = std::io::BufReader::new(File::open("public/index")?)
@@ -145,7 +124,6 @@ fn update_file(root_dir: &str, filename: &str, contents: &str) -> Result<(), Err
     let index_str = index.join("\n");
 
     // update the index file
-
     let mut file = File::create("public/index")?;
     file.write_all(&index_str.as_bytes())?;
 
@@ -183,26 +161,25 @@ struct NewPageObj {
 }
 
 /// This handler uses json extractor with limit
+/// Post the edited file to update the page
 async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<HttpResponse, Error> {
     println!("post_edited");
     println!("request: {:?}", req);
     println!("item: {:?}", item);
 
+    // Update the markdown file with the given contents
     update_file("public/edit", &item.path, &item.body)?;
 
     // Parse the given markdown with the pulldown_cmark parser
-    println!("parsing the given markdown with the pulldown_cmark parser");
     let parser = Parser::new(&item.body);
     let mut html_buf = String::new();
     html::push_html(&mut html_buf, parser);
-    println!("parsed: {}", html_buf);
 
     // decode the path to obtain the title
     let title = urlencoding::decode(&item.path).expect("cannot decode");
 
     // Open the default file
-    let default_page =
-        std::fs::read_to_string("static/page.html").expect("cannot open the default file");
+    let default_page = std::fs::read_to_string("static/page.html")?;
     let default_page = default_page
         .replace("TITLE", &title.into_owned())
         .replace("PATH", &item.path)
@@ -216,11 +193,6 @@ async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<Ht
     let request_uri = format!("https://127.0.0.1:8443/pages?path={}", &item.path);
     println!("Redirecting to {}", request_uri);
 
-    // let redirecting_html = format!(
-    //     "<head><meta http-equiv=\"Refresh\" content=\"0; {}\"></head>",
-    //     request_uri
-    // );
-
     Ok(HttpResponse::Ok().json(request_uri))
 }
 
@@ -229,8 +201,6 @@ async fn delete_page(item: web::Query<QueryPath>, req: HttpRequest) -> Result<Ht
     println!("delete_page");
     println!("request: {:?}", req);
     println!("item: {:?}", item);
-
-    // TODO: check the validity of the path
 
     // Remove the markdown file
     std::fs::remove_file(get_path("public/edit", &item.path))?;
