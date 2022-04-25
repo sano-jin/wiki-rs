@@ -17,24 +17,32 @@
     <link rel="stylesheet" href="/assets/main.css" />
   </head>
   <body>
-    <h1>Editing "TITLE"</h1>
+    <div class="wrapper">
+      <div class="wrapper">
+        <div class="site-header">
+          <h1>Editing "TITLE"</h1>
+        </div>
+      </div>
 
-    <form action="/edit" method="GET">
-      <input
-        type="text"
-        id="input_path"
-        name="input_path"
-        required
-        minlength="4"
-        maxlength="100"
-        size="100"
-        value="TITLE"
-      />
-      <br />
-      <textarea name="input_content" id="input_content">MARKDOWN</textarea>
-      <br />
-      <input type="submit" id="btn_submit" name="btn_submit" value="Send" />
-    </form>
+      <div class="wrapper">
+        <form action="/edit" method="GET">
+          <input
+            type="text"
+            id="input_path"
+            name="input_path"
+            required
+            minlength="4"
+            maxlength="100"
+            size="100"
+            value="TITLE"
+          />
+          <br />
+          <textarea name="input_content" id="input_content">MARKDOWN</textarea>
+          <br />
+          <input type="submit" id="btn_submit" name="btn_submit" value="Send" />
+        </form>
+      </div>
+    </div>
   </body>
 
   <script>
