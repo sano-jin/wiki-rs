@@ -14,11 +14,10 @@ A simple wiki created with Rust from scratch.
 
 ## Backend API
 
-- GET /page/xxxxxx
+- GET `/page/xxxxxx`
   - html ページのレスポンスを返す
   - サーバ上のファイルから読み込む
-- GET /edit
-  - body: `{path:"Path to the page"}`
+- GET `/edit?path=<Path to the page">`
   - 編集用の markdown を返す
   - サーバ上のファイルから読み込む
 - POST /edit
@@ -26,8 +25,7 @@ A simple wiki created with Rust from scratch.
   - markdown を投げ，それで /xxxxxx.html を更新する
   - そのページがもともと存在しない場合は新しく作る．
   - サーバ上のファイルに書き出しておく
-- DELETE /edit
-  - body: `{path:"Path to the page"}`
+- DELETE `/edit?path=<Path to the page>`
   - /xxxxxx.html を消去する
   - サーバ上のファイルは消去する
 
@@ -420,3 +418,9 @@ add the converter form markdown to html to the `post_edited` function.
     println!("parsed: {}", html_buf);
 
 ```
+
+### Test
+
+test with curl
+
+## Client

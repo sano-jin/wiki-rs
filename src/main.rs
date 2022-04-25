@@ -21,13 +21,16 @@ extern crate pulldown_cmark;
 use pulldown_cmark::{html, Parser};
 
 #[derive(Debug, Serialize, Deserialize)]
-struct ReqObj {
+struct QueryPath {
     path: String,
 }
 
 /// This handler uses json extractor with limit
 /// GET the page for editing the page
-async fn get_edit_page(item: web::Json<ReqObj>, req: HttpRequest) -> Result<HttpResponse, Error> {
+async fn get_edit_page(
+    item: web::Query<QueryPath>,
+    req: HttpRequest,
+) -> Result<HttpResponse, Error> {
     println!("get_edit_page");
     println!("request: {:?}", req);
     println!("model: {:?}", item);
@@ -53,7 +56,14 @@ async fn get_edit_page(item: web::Json<ReqObj>, req: HttpRequest) -> Result<Http
 
     println!("contents: {}", contents);
 
-    Ok(HttpResponse::Ok().json(contents)) // <- send json response
+    // Open the file for editing
+
+    let edit_page = std::fs::read_to_string("static/edit.html").expect("cannot open edit file");
+    let edit_page = edit_page
+        .replace("TITLE", &item.path)
+        .replace("MARKDOWN", &contents);
+
+    Ok(HttpResponse::Ok().content_type("text/html").body(edit_page))
 }
 
 /// Create a directory and a file `root_dir/path` and write with `contents`
@@ -100,10 +110,20 @@ async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<Ht
     html::push_html(&mut html_buf, parser);
     println!("parsed: {}", html_buf);
 
-    create_dir_and_write("public/pages", &item.path, &html_buf)?;
+    // Open the default file
+    let default_page =
+        std::fs::read_to_string("static/page.html").expect("cannot open the default file");
+    let default_page = default_page
+        .replace("TITLE", &item.path)
+        .replace("BODY", &html_buf);
+
+    create_dir_and_write("public/pages", &item.path, &default_page)?;
 
     // TODO: navigate to the new page created
-    Ok(HttpResponse::Ok().json("created")) // <- send json response
+    // Ok(HttpResponse::Ok().json("created")) // <- send json response
+    Ok(HttpResponse::Ok()
+        .content_type("text/html")
+        .body(default_page))
 }
 
 /// Remove directory recursively if it is empty
@@ -134,7 +154,7 @@ fn remove_page(path: &PathBuf) -> Result<(), Error> {
 }
 
 /// This handler uses json extractor with limit
-async fn delete_page(item: web::Json<ReqObj>, req: HttpRequest) -> Result<HttpResponse, Error> {
+async fn delete_page(item: web::Query<QueryPath>, req: HttpRequest) -> Result<HttpResponse, Error> {
     println!("delete_page");
     println!("request: {:?}", req);
     println!("model: {:?}", item);

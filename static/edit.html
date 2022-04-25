@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300&family=JetBrains+Mono:wght@300&family=Noto+Sans+JP:wght@300&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Editing TITLE</title>
+    <link rel="stylesheet" href="/main.css" />
+  </head>
+  <body>
+    <h1>Editing TITLE</h1>
+    <form action="/edit" method="POST">
+      <textarea name="input_content" id="input_content">MARKDOWN</textarea>
+      <input type="submit" id="btn_submit" name="btn_submit" value="Send" />
+    </form>
+  </body>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      // (1) 送信ボタンのHTMLを取得
+      const btn_submit = document.getElementById("btn_submit"); // (2) FormDataオブジェクトの初期化
+
+      const fd = new FormData();
+
+      btn_submit.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        // (3) フォーム入力欄のHTMLを取得
+        const input_content = document.querySelector(
+          "textarea[name=input_content]"
+        );
+
+        // (4) FormDataオブジェクトにデータをセット
+        fd.append("body", input_content.value);
+
+        // (5) フォームの入力値を送信
+        fetch("/edit", {
+          method: "POST",
+          body: fd,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      });
+    });
+  </script>
+</html>
