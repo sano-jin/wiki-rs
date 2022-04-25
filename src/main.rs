@@ -52,6 +52,8 @@ async fn get_page(item: web::Query<QueryPath>, req: HttpRequest) -> Result<HttpR
 
     // TODO: use BufReader (low priority)
     let contents = std::fs::read_to_string(&path)?;
+    let recent_updated_str = std::fs::read_to_string("public/recent_updated")?;
+    let contents = contents.replace("RECENT_UPDATED", &recent_updated_str);
 
     println!("contents: {}", contents);
 
@@ -103,14 +105,24 @@ async fn get_edit_page(
     Ok(HttpResponse::Ok().content_type("text/html").body(edit_page))
 }
 
+/// Update the parameter in the file with given string
+fn replace_file(filepath: PathBuf, placeholder: &str, value: &str) -> Result<(), Error> {
+    // Open the file
+    let contents = std::fs::read_to_string(&filepath)?;
+    let contents = contents.replace(placeholder, &value);
+    // Write to a file
+    let mut file = File::create(&filepath)?;
+    file.write_all(&contents.as_bytes())?;
+    Ok(())
+}
+
 /// write `contents` to the file `root_dir/path`
-fn update_file(root_dir: &str, path: &str, contents: &str) -> Result<(), Error> {
+fn update_file(root_dir: &str, filename: &str, contents: &str) -> Result<(), Error> {
     // TODO: check the path is valid
     // この時点で既に encode されているはず．
-    // let path: PathBuf = get_path(&root_dir, &path);
-
-    let path: PathBuf = Path::new(&root_dir).join(Path::new(&path));
-
+    // let path: PathBuf = Path::new(&root_dir).join(Path::new(&path));
+    // そんなことはない
+    let path: PathBuf = get_path(&root_dir, &filename);
     println!("path: {:?}", path);
 
     // TODO: use BufReader
@@ -119,6 +131,46 @@ fn update_file(root_dir: &str, path: &str, contents: &str) -> Result<(), Error> 
     // Write to a file
     let mut file = File::create(&path)?;
     file.write_all(&contents.as_bytes())
+        .expect("cannot write to a file");
+
+    // Update index
+    let index: io::Result<Vec<String>> = std::io::BufReader::new(File::open("public/index")?)
+        .lines()
+        .collect();
+    let mut index = index?;
+
+    println!("index: {:?}", index);
+    index.retain(|value| *value != filename); // remove if the filename already exists on the index
+    index.insert(0, filename.to_string()); // push back the filename as the name of the most recent updated file
+    let index_str = index.join("\n");
+
+    // update the index file
+
+    let mut file = File::create("public/index")?;
+    file.write_all(&index_str.as_bytes())?;
+
+    // update the index.html
+    replace_file(PathBuf::from("public/index.html"), "INDEX", &index_str)?;
+
+    let mut recent_files = index.clone();
+    if recent_files.len() > 20 {
+        recent_files.resize(20, String::from(""));
+    }
+
+    let recent_files_links: Vec<String> = recent_files
+        .into_iter()
+        .map(|filename| {
+            format!(
+                "<li><a href=\"/pages?path={}\">{}</a></li>",
+                urlencoding::encode(&filename),
+                filename
+            )
+        })
+        .collect();
+    let recent_files_str = recent_files_links.join("\n");
+
+    let mut file = File::create("public/recent_updated")?;
+    file.write_all(&recent_files_str.as_bytes())
         .expect("cannot write to a file");
 
     return Ok(());
