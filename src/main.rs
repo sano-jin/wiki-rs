@@ -67,9 +67,14 @@ async fn get_edit_page(
 }
 
 /// Create a directory and a file `root_dir/path` and write with `contents`
-fn create_dir_and_write(root_dir: &str, path: &str, contents: &str) -> Result<(), Error> {
+fn create_dir_and_write(
+    root_dir: &str,
+    path: &str,
+    contents: &str,
+    extension: &str,
+) -> Result<(), Error> {
     // TODO: check the path is valid
-    let path: PathBuf = Path::new(&root_dir).join(Path::new(&path));
+    let path: PathBuf = Path::new(&root_dir).join(Path::new(&(path.to_string() + "." + extension)));
     println!("path: {:?}", path);
 
     // TODO: use BufReader
@@ -101,7 +106,7 @@ async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<Ht
     println!("request: {:?}", req);
     println!("model: {:?}", item);
 
-    create_dir_and_write("public/edit", &item.path, &item.body)?;
+    create_dir_and_write("public/edit", &item.path, &item.body, "md")?;
 
     // Parse the given markdown with the pulldown_cmark parser
     println!("parsing the given markdown with the pulldown_cmark parser");
@@ -117,7 +122,7 @@ async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<Ht
         .replace("TITLE", &item.path)
         .replace("BODY", &html_buf);
 
-    create_dir_and_write("public/pages", &item.path, &default_page)?;
+    create_dir_and_write("public/pages", &item.path, &default_page, "html")?;
 
     // TODO: navigate to the new page created
     // Ok(HttpResponse::Ok().json("created")) // <- send json response
@@ -160,10 +165,10 @@ async fn delete_page(item: web::Query<QueryPath>, req: HttpRequest) -> Result<Ht
     println!("model: {:?}", item);
 
     // Remove the markdown file
-    remove_page(&Path::new("public/edit").join(Path::new(&item.path)))?;
+    remove_page(&Path::new("public/edit").join(Path::new(&(item.path.to_string() + ".md"))))?;
 
     // Remove the html file
-    remove_page(&Path::new("public/pages").join(Path::new(&item.path)))?;
+    remove_page(&Path::new("public/pages").join(Path::new(&(item.path.to_string() + ".html"))))?;
 
     // TODO: navigate to the root page
     Ok(HttpResponse::Ok().json("deleted")) // <- send json response
