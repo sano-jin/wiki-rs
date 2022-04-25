@@ -233,22 +233,22 @@ table {
   text-align: left;
   color: white;
   border-collapse: collapse;
-  border: 1px solid white;
+  border: 1px solid black;
 }
 table tr:nth-child(even) {
-  background-color: white;
+  background-color: #151515;
 }
 table th,
 table td {
   padding: 10px 15px;
 }
 table th {
-  background-color: white;
-  border: 1px solid whitesmoke;
-  border-bottom-color: #e0e0e0;
+  background-color: black;
+  border: 1px solid #445;
+  border-bottom-color: #556;
 }
 table td {
-  border: 1px solid white;
+  border: 1px solid black;
 }
 
 /**

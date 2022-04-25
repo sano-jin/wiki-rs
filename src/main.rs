@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 use std::path::{Path, PathBuf};
 extern crate pulldown_cmark;
-use pulldown_cmark::{html, Parser};
+use pulldown_cmark::{html, Options, Parser};
 
 use urlencoding;
 
@@ -143,9 +143,19 @@ async fn post_edited(item: web::Json<NewPageObj>) -> Result<HttpResponse, Error>
     update_file("public/edit", &item.path, &item.body)?;
 
     // Parse the given markdown with the pulldown_cmark parser
-    let parser = Parser::new(&item.body);
+
+    let mut options = Options::empty();
+    options.insert(Options::ENABLE_STRIKETHROUGH);
+    options.insert(Options::ENABLE_TABLES);
+    options.insert(Options::ENABLE_FOOTNOTES);
+    options.insert(Options::ENABLE_TASKLISTS);
+    options.insert(Options::ENABLE_SMART_PUNCTUATION);
+    options.insert(Options::ENABLE_HEADING_ATTRIBUTES);
+
+    let parser = Parser::new_ext(&item.body, options);
     let mut html_buf = String::new();
     html::push_html(&mut html_buf, parser);
+    println!("parsed html: {:?}", html_buf);
 
     // decode the path to obtain the title
     let title = urlencoding::decode(&item.path).expect("cannot decode");
