@@ -3,7 +3,8 @@ use std::io;
 use std::io::prelude::*;
 
 use actix_files;
-use actix_web::{middleware, web, App, Error, HttpResponse, HttpServer};
+use actix_web::{middleware, web, App, Error, HttpRequest, HttpResponse, HttpServer};
+// use json::JsonValue;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use serde::{Deserialize, Serialize};
 
@@ -22,10 +23,8 @@ fn get_at(path: PathBuf) -> Result<HttpResponse, Error> {
     let contents = std::fs::read_to_string(&path)?;
 
     // Add recent updated file names list
-    let index_ul = std::fs::read_to_string("public/index_ul")?;
-
-    println!("index_ul: {}", index_ul);
-    let contents = contents.replace("INDEX_UL", &index_ul);
+    let recent_updated_str = std::fs::read_to_string("public/recent_updated")?;
+    let contents = contents.replace("RECENT_UPDATED", &recent_updated_str);
 
     Ok(HttpResponse::Ok().content_type("text/html").body(contents))
 }
@@ -54,8 +53,13 @@ async fn get_page(item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
 
 /// This handler uses json extractor with limit
 /// GET the page for editing the page
-async fn get_edit_page(item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
-    println!("get_edit_page ? {:?}", item);
+async fn get_edit_page(
+    item: web::Query<QueryPath>,
+    req: HttpRequest,
+) -> Result<HttpResponse, Error> {
+    println!("get_edit_page");
+    println!("request: {:?}", req);
+    println!("item: {:?}", item);
 
     // TODO: check the path is valid
     let path: PathBuf = get_path("public/edit", &item.path);
@@ -86,6 +90,19 @@ async fn get_edit_page(item: web::Query<QueryPath>) -> Result<HttpResponse, Erro
     Ok(HttpResponse::Ok().content_type("text/html").body(edit_page))
 }
 
+/// Update the parameter in the file with given string
+fn replace_file(filepath: PathBuf, placeholder: &str, value: &str) -> Result<(), Error> {
+    // Open the file
+    let contents = std::fs::read_to_string(&filepath)?;
+    let contents = contents.replace(placeholder, &value);
+
+    // Write to a file
+    let mut file = File::create(&filepath)?;
+    file.write_all(&contents.as_bytes())?;
+
+    Ok(())
+}
+
 /// write `contents` to the file `root_dir/path`
 fn update_file(root_dir: &str, filename: &str, contents: &str) -> Result<(), Error> {
     let path: PathBuf = get_path(&root_dir, &filename);
@@ -96,20 +113,20 @@ fn update_file(root_dir: &str, filename: &str, contents: &str) -> Result<(), Err
     file.write_all(&contents.as_bytes())?;
 
     // Update index
-    let index_file = File::open("public/index")?;
-    let index: io::Result<Vec<String>> = std::io::BufReader::new(index_file).lines().collect();
+    let index: io::Result<Vec<String>> = std::io::BufReader::new(File::open("public/index")?)
+        .lines()
+        .collect();
     let mut index = index?;
 
+    println!("index: {:?}", index);
     index.retain(|value| *value != filename); // remove if the filename already exists on the index
-    index.insert(0, filename.to_string()); // push front the filename as the name of the most recent updated file
+    index.insert(0, filename.to_string()); // push back the filename as the name of the most recent updated file
     let index_str = index.join("\n");
-    println!("new index: {:?}", index);
 
     // update the index file
     let mut file = File::create("public/index")?;
     file.write_all(&index_str.as_bytes())?;
 
-    // Generate the html list of the files
     let index_ul: Vec<String> = index
         .into_iter()
         .map(|filename| {
@@ -120,10 +137,10 @@ fn update_file(root_dir: &str, filename: &str, contents: &str) -> Result<(), Err
             )
         })
         .collect();
-    let index_ul_str = index_ul.join("\n");
 
-    let mut file = File::create("public/index_ul")?;
-    file.write_all(&index_ul_str.as_bytes())?;
+    let mut file = File::create("public/recent_updated")?;
+    file.write_all(&index_ul.join("\n").as_bytes())
+        .expect("cannot write to a file");
 
     return Ok(());
 }
@@ -136,8 +153,10 @@ struct NewPageObj {
 
 /// This handler uses json extractor with limit
 /// Post the edited file to update the page
-async fn post_edited(item: web::Json<NewPageObj>) -> Result<HttpResponse, Error> {
-    println!("post_edited ? {:?}", item);
+async fn post_edited(item: web::Json<NewPageObj>, req: HttpRequest) -> Result<HttpResponse, Error> {
+    println!("post_edited");
+    println!("request: {:?}", req);
+    println!("item: {:?}", item);
 
     // Update the markdown file with the given contents
     update_file("public/edit", &item.path, &item.body)?;
