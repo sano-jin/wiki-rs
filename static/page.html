@@ -53,27 +53,21 @@
 
   <script>
     window.addEventListener("DOMContentLoaded", () => {
-      // (1) 送信ボタンのHTMLを取得
-      const btn_submit = document.getElementById("btn_submit"); // (2) FormDataオブジェクトの初期化
+      // 送信ボタンのHTMLを取得
+      const btn_submit = document.getElementById("btn_submit");
 
       btn_submit.addEventListener("click", async (e) => {
         e.preventDefault();
 
-        // (5) フォームの入力値を送信
+        // フォームの入力値を送信
         const response = await fetch(
-          "/edit?" +
-            new URLSearchParams({
-              path: "TITLE",
-            }),
+          "/edit?" + new URLSearchParams({ path: "TITLE" }),
           {
             method: "DELETE", // *GET, POST, PUT, DELETE, etc.
           }
         );
 
-        // const location = await response.json();
-        // console.log("location: ", location);
-
-        // redirect to the returned location
+        // redirect to the home page
         window.location = "/";
       });
     });
