@@ -21,8 +21,6 @@ fn read_with_default(path: &str, default: &str) -> String {
         Ok(contents) => contents,
         Err(error) => match error.kind() {
             io::ErrorKind::NotFound => String::from(default),
-            // if the file does not exists (that is, user is trying to create a new page),
-            // return the default string (currently empty string)
             other_error => panic!("Problem opening the file: {:?}", other_error),
         },
     }
@@ -77,16 +75,9 @@ async fn get_edit_page(item: web::Query<QueryPath>) -> Result<HttpResponse, Erro
     println!("path: {:?}", path);
 
     // TODO: use BufReader (low priority)
-    let contents = std::fs::read_to_string(&path);
-    let contents = match contents {
-        Ok(contents) => contents,
-        Err(error) => match error.kind() {
-            io::ErrorKind::NotFound => String::from(""),
-            // if the file does not exists (that is, user is trying to create a new page),
-            // return the default string (currently empty string)
-            other_error => panic!("Problem opening the file: {:?}", other_error),
-        },
-    };
+    // if the file does not exists (that is, user is trying to create a new page),
+    // return the default string (currently empty string)
+    let contents = read_with_default(&path.to_string_lossy(), "");
 
     // decode the path to obtain the title
     let title = urlencoding::decode(&item.path).expect("cannot decode");
