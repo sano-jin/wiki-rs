@@ -13,6 +13,21 @@ use pulldown_cmark::{html, Options, Parser};
 
 use urlencoding;
 
+/// Read a file
+/// If the file doesn not exists, then return the default string
+fn read_with_default(path: &str, default: &str) -> String {
+    let contents = std::fs::read_to_string(&path);
+    match contents {
+        Ok(contents) => contents,
+        Err(error) => match error.kind() {
+            io::ErrorKind::NotFound => String::from(default),
+            // if the file does not exists (that is, user is trying to create a new page),
+            // return the default string (currently empty string)
+            other_error => panic!("Problem opening the file: {:?}", other_error),
+        },
+    }
+}
+
 /// Get the page at the fiven path
 /// Add recent updated file names list
 fn get_at(path: PathBuf) -> Result<HttpResponse, Error> {
@@ -22,7 +37,7 @@ fn get_at(path: PathBuf) -> Result<HttpResponse, Error> {
     let contents = std::fs::read_to_string(&path)?;
 
     // Add recent updated file names list
-    let index_ul = std::fs::read_to_string("public/index_ul")?;
+    let index_ul = read_with_default("public/index_ul", "");
 
     println!("index_ul: {}", index_ul);
     let contents = contents.replace("INDEX_UL", &index_ul);
@@ -96,12 +111,11 @@ fn update_file(root_dir: &str, filename: &str, contents: &str) -> Result<(), Err
     file.write_all(&contents.as_bytes())?;
 
     // Update index
-    let index_file = File::open("public/index")?;
-    let index: io::Result<Vec<String>> = std::io::BufReader::new(index_file).lines().collect();
-    let mut index = index?;
+    let index_file = read_with_default("public/index", "");
+    let mut index: Vec<&str> = index_file.lines().collect();
 
     index.retain(|value| *value != filename); // remove if the filename already exists on the index
-    index.insert(0, filename.to_string()); // push front the filename as the name of the most recent updated file
+    index.insert(0, &filename); // push front the filename as the name of the most recent updated file
     let index_str = index.join("\n");
     println!("new index: {:?}", index);
 
@@ -142,8 +156,7 @@ async fn post_edited(item: web::Json<NewPageObj>) -> Result<HttpResponse, Error>
     // Update the markdown file with the given contents
     update_file("public/edit", &item.path, &item.body)?;
 
-    // Parse the given markdown with the pulldown_cmark parser
-
+    // Set parser options
     let mut options = Options::empty();
     options.insert(Options::ENABLE_STRIKETHROUGH);
     options.insert(Options::ENABLE_TABLES);
@@ -152,6 +165,7 @@ async fn post_edited(item: web::Json<NewPageObj>) -> Result<HttpResponse, Error>
     options.insert(Options::ENABLE_SMART_PUNCTUATION);
     options.insert(Options::ENABLE_HEADING_ATTRIBUTES);
 
+    // Parse the given markdown with the pulldown_cmark parser
     let parser = Parser::new_ext(&item.body, options);
     let mut html_buf = String::new();
     html::push_html(&mut html_buf, parser);
@@ -170,7 +184,8 @@ async fn post_edited(item: web::Json<NewPageObj>) -> Result<HttpResponse, Error>
     update_file("public/pages", &item.path, &default_page)?;
 
     // TODO: navigate to the new page created
-    Ok(HttpResponse::Ok().json(format!("/pages?path={}", &item.path)))
+    let url = format!("/pages?path={}", &item.path);
+    Ok(HttpResponse::Ok().json(url))
 }
 
 /// This handler uses json extractor with limit
