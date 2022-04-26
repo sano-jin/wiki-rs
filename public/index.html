@@ -51,14 +51,35 @@
           />
         </form>
       </div>
+
+      <div class="wrapper">
+        <form action="/edit" method="DELETE">
+          <input
+            type="text"
+            id="input_delete_path"
+            name="input_delete_path"
+            required
+            minlength="4"
+            maxlength="100"
+            size="100"
+            value=""
+          />
+          <br />
+          <input
+            type="submit"
+            id="btn_delete"
+            name="btn_delete"
+            value="Delete"
+          />
+        </form>
+      </div>
     </div>
   </body>
 
   <script>
     window.addEventListener("DOMContentLoaded", () => {
       // (1) 送信ボタンのHTMLを取得
-      const btn_submit = document.getElementById("btn_submit"); // (2) FormDataオブジェクトの初期化
-
+      const btn_submit = document.getElementById("btn_submit");
       btn_submit.addEventListener("click", async (e) => {
         e.preventDefault();
 
@@ -69,6 +90,30 @@
 
         const location = "/edit?path=" + encodeURIComponent(path);
         window.location = location;
+      });
+
+      // (1) 送信ボタンのHTMLを取得
+      const btn_delete = document.getElementById("btn_delete");
+      btn_delete.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        // (3) フォーム入力欄のHTMLを取得
+        const input_path = document.querySelector(
+          "input[name=input_delete_path]"
+        );
+        const path = input_path.value;
+        if (path.length === 0) return;
+
+        // (5) フォームの入力値を送信
+        const response = await fetch(
+          "/edit?" +
+            new URLSearchParams({
+              path: encodeURIComponent(path),
+            }),
+          {
+            method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+          }
+        );
       });
     });
   </script>

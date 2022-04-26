@@ -92,6 +92,26 @@ async fn get_edit_page(item: web::Query<QueryPath>) -> Result<HttpResponse, Erro
     Ok(HttpResponse::Ok().content_type("text/html").body(edit_page))
 }
 
+/// Update the file for the html list of the file names
+fn update_index_ul(index: Vec<&str>) -> Result<(), Error> {
+    // generate the html list of the files
+    let index_ul: Vec<String> = index
+        .into_iter()
+        .map(|filename| {
+            format!(
+                "<li><a href=\"/pages?path={}\">{}</a></li>",
+                urlencoding::encode(&filename),
+                filename
+            )
+        })
+        .collect();
+    let index_ul_str = index_ul.join("\n");
+
+    let mut file = File::create("public/index_ul")?;
+    file.write_all(&index_ul_str.as_bytes())?;
+    Ok(())
+}
+
 /// write `contents` to the file `root_dir/path`
 fn update_file(root_dir: &str, filename: &str, contents: &str) -> Result<(), Error> {
     let path: PathBuf = get_path(&root_dir, &filename);
@@ -114,21 +134,8 @@ fn update_file(root_dir: &str, filename: &str, contents: &str) -> Result<(), Err
     let mut file = File::create("public/index")?;
     file.write_all(&index_str.as_bytes())?;
 
-    // Generate the html list of the files
-    let index_ul: Vec<String> = index
-        .into_iter()
-        .map(|filename| {
-            format!(
-                "<li><a href=\"/pages?path={}\">{}</a></li>",
-                urlencoding::encode(&filename),
-                filename
-            )
-        })
-        .collect();
-    let index_ul_str = index_ul.join("\n");
-
-    let mut file = File::create("public/index_ul")?;
-    file.write_all(&index_ul_str.as_bytes())?;
+    // generate the html list of the files
+    update_index_ul(index)?;
 
     return Ok(());
 }
@@ -188,6 +195,21 @@ async fn delete_page(item: web::Query<QueryPath>) -> Result<HttpResponse, Error>
 
     // Remove the html file
     std::fs::remove_file(get_path("public/pages", &item.path))?;
+
+    // Update index
+    let index_file = read_with_default("public/index", "");
+    let mut index: Vec<&str> = index_file.lines().collect();
+
+    index.retain(|value| *value != &item.path); // remove if the filename already exists on the index
+    let index_str = index.join("\n");
+    println!("new index: {:?}", index);
+
+    // update the index file
+    let mut file = File::create("public/index")?;
+    file.write_all(&index_str.as_bytes())?;
+
+    // generate the html list of the files
+    update_index_ul(index)?;
 
     // TODO: navigate to the root page
     Ok(HttpResponse::Ok().json("deleted")) // <- send json response

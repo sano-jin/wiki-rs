@@ -13,6 +13,13 @@
       rel="stylesheet"
     />
 
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="/assets/dracula.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+
     <title>TITLE</title>
     <link rel="stylesheet" href="/assets/main.css" />
   </head>
@@ -26,6 +33,14 @@
       <div class="wrapper">
         <a href="/">HOME</a>
         <a href="/edit?path=PATH">Update</a>
+        <form action="/edit" method="DELETE">
+          <input
+            type="submit"
+            id="btn_submit"
+            name="btn_submit"
+            value="Delete"
+          />
+        </form>
       </div>
       <div class="wrapper">
         <ul>
@@ -35,4 +50,32 @@
       <div class="wrapper">BODY</div>
     </div>
   </body>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      // (1) 送信ボタンのHTMLを取得
+      const btn_submit = document.getElementById("btn_submit"); // (2) FormDataオブジェクトの初期化
+
+      btn_submit.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        // (5) フォームの入力値を送信
+        const response = await fetch(
+          "/edit?" +
+            new URLSearchParams({
+              path: "TITLE",
+            }),
+          {
+            method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+          }
+        );
+
+        // const location = await response.json();
+        // console.log("location: ", location);
+
+        // redirect to the returned location
+        window.location = "/";
+      });
+    });
+  </script>
 </html>
