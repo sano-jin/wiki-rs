@@ -40,13 +40,8 @@ pub struct QueryPath {
 pub async fn delete(item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
     println!("delete ? {:?}", item);
 
-    // delete the markdown file
-    let path = util::get_path("public/edit", &item.path);
-    std::fs::remove_file(&path)?;
-
-    // delete the html file
-    let path = util::get_path("public/pages", &item.path);
-    std::fs::remove_file(&path)?;
+    // delete the page
+    Page::delete(&item.path)?;
 
     // TODO: navigate to the root page
     Ok(HttpResponse::Ok().json("deleted"))
@@ -56,9 +51,8 @@ pub async fn delete(item: web::Query<QueryPath>) -> Result<HttpResponse, Error> 
 pub async fn get_page(item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
     println!("get_page ? {:?}", item);
 
-    // Load the file
-    let path = util::get_path("public/pages", &item.path);
-    let contents = std::fs::read_to_string(&path)?;
+    // Load the page
+    let contents = Page::get_html(&item.path)?;
 
     // Return the response and display the html file on the browser
     Ok(HttpResponse::Ok().content_type("text/html").body(contents))

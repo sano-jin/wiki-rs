@@ -74,4 +74,23 @@ impl Page {
 
         Ok(())
     }
+
+    pub fn delete(filepath: &str) -> Result<(), Error> {
+        // delete the markdown file
+        let path = util::get_path("public/edit", &filepath);
+        std::fs::remove_file(&path)?;
+
+        // delete the html file
+        let path = util::get_path("public/pages", &filepath);
+        std::fs::remove_file(&path)?;
+
+        Ok(())
+    }
+
+    pub fn get_html(filepath: &str) -> Result<String, Error> {
+        // Load the file
+        let path = util::get_path("public/pages", &filepath);
+        let contents = std::fs::read_to_string(&path)?;
+        Ok(contents)
+    }
 }
