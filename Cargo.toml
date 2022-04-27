@@ -3,23 +3,14 @@ name = "wiki-rs"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix-web = { version = "4", features = ["openssl"] }
-env_logger = "0.9"
-openssl = "0.10"
-
-# actix-web-static-files = "4.0"
-# static-files = "0.2.1"
-actix-files = "0.6.0"
-
+actix-web = { version = "4", features = ["openssl"]   } # Use actix-web to implement a backend server
+env_logger = "0.9" # for logging
+openssl = "0.10" # for TLS
+actix-files = "0.6.0" # For file serving
 json = "0.12"
-
-serde = { version = "1.0", features = ["derive"]  }
+serde = { version = "1.0", features = ["derive"] } # to serialize/deserialize
 serde_json = "1.0"
-
-pulldown-cmark = { version = "0.9.1", default-features = false }
-
-urlencoding = "2.1.0"
-
+urlencoding = "2.1.0" # For encoding the filename
+pulldown-cmark = { version = "0.9.1", default-features = false } # to parse markdown

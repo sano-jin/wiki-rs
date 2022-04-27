@@ -140,9 +140,8 @@ async fn get_editor(item: web::Query<QueryPath>) -> Result<HttpResponse, Error> 
 /// simple handle
 async fn index(req: HttpRequest) -> Result<HttpResponse, Error> {
     println!("{:?}", req);
-    Ok(HttpResponse::Ok()
-        .content_type("text/plain")
-        .body("Welcome!"))
+    let contents = std::fs::read_to_string("public/index.html")?;
+    Ok(HttpResponse::Ok().content_type("text/html").body(contents))
 }
 
 #[actix_web::main]
