@@ -14,3 +14,9 @@ serde = { version = "1.0", features = ["derive"] } # to serialize/deserialize
 serde_json = "1.0"
 urlencoding = "2.1.0" # For encoding the filename
 pulldown-cmark = { version = "0.9.1", default-features = false } # to parse markdown
+
+
+
+dotenv = "0.15.0"
+actix-cors = "0.6.0"
+uuid = { version = "0.8", features = [ "serde", "v4" ] }
