@@ -10,8 +10,10 @@ A simple wiki created with Rust from scratch.
 - ダークモード対応
 - 数式対応
 - ソースコードのシンタックスハイライトが可能
+- ソースコードのコピーができるボタンあり
 - データベース不要で，rust 環境さえあればすぐに導入可能
   （DB は後から導入するかも知れない．要検討）
+- コメントアウト対応
 
 これから対応予定のもの
 
@@ -100,4 +102,5 @@ and access <https://127.0.0.1:8443/> on your browser.
 
 # Demo
 
+![Demo](./docs/code-copy-button-demo.png)
 ![Demo](./docs/wiki-rs-demo.png)

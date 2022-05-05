@@ -40,7 +40,11 @@ impl Page {
         let markdown_escaped = re.replace_all(&markdown_escaped, "[$1]($2)");
         // ここまでリンクの処理
 
-        println!("markdown escaped {}", markdown_escaped); // => "MZ-[8][0]K[2]E" が表示される
+        // コメントアウトを削除
+        let re = Regex::new(r"(?m)^//.*$\n?").unwrap();
+        let markdown_escaped = re.replace_all(&markdown_escaped, "");
+
+        println!("markdown escaped {}", markdown_escaped);
 
         // Set parser options
         let mut options = Options::empty();
