@@ -12,6 +12,8 @@ use std::io::prelude::*;
 // use std::path::{Path, PathBuf};
 use urlencoding;
 
+use regex::Regex;
+
 #[derive(Debug)]
 pub struct Page {
     pub path: String, // id
@@ -21,9 +23,25 @@ pub struct Page {
 }
 
 impl Page {
-    /// Create or update the page
-    /// handles the POST request
-    pub fn create(path: &str, markdown: &str) -> Result<Page, Error> {
+    /// convert markdown to html
+    pub fn html_of_markdown(markdown: &str) -> Result<String, Error> {
+        // backslash をエスケープする．
+        // pulldown-cmark は backslash を無視してしまうっぽい．
+        // TODO: markdown の仕様を確認して backslash をどう扱うべきか再考する．
+        let markdown_escaped = markdown.replace("\\", "\\\\");
+
+        // リンクの処理
+        // リンクを <> でかこむ
+        let re = Regex::new(r"([^<])(https?://[^\s\)]*)([^>])").unwrap();
+        let markdown_escaped = re.replace_all(&markdown_escaped, "$1<$2>$3");
+
+        // 括弧で囲まれていた場合（ユーザがちゃんとリンクとして書いていた場合）は取り除く
+        let re = Regex::new(r"\[([^\]]*)\]\(\s*<(https?://[^\s\)]*)>\s*\)").unwrap();
+        let markdown_escaped = re.replace_all(&markdown_escaped, "[$1]($2)");
+        // ここまでリンクの処理
+
+        println!("markdown escaped {}", markdown_escaped); // => "MZ-[8][0]K[2]E" が表示される
+
         // Set parser options
         let mut options = Options::empty();
         options.insert(Options::ENABLE_STRIKETHROUGH);
@@ -35,10 +53,19 @@ impl Page {
 
         // Parse the given markdown with the pulldown_cmark parser
         println!("parsing the given markdown with the pulldown_cmark parser");
-        let parser = Parser::new(&markdown);
+        let parser = Parser::new(&markdown_escaped);
         let mut html_buf = String::new();
         html::push_html(&mut html_buf, parser);
-        println!("parsed: {}", html_buf);
+        // println!("parsed: {}", html_buf);
+
+        // decode the path to obtain the title
+        Ok(html_buf)
+    }
+
+    /// Create or update the page
+    /// handles the POST request
+    pub fn create(path: &str, markdown: &str) -> Result<Page, Error> {
+        let html_buf = Page::html_of_markdown(&markdown)?;
 
         // decode the path to obtain the title
         let name = urlencoding::decode(&path).expect("cannot decode");

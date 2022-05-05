@@ -2,7 +2,22 @@ wiki.rs
 
 A simple wiki created with Rust from scratch.
 
-![Demo](/docs/wiki-rs-demo.png)
+![Demo](./docs/demo-diary.png)
+
+# 特徴
+
+- レスポンシブ対応
+- ダークモード対応
+- 数式対応
+- ソースコードのシンタックスハイライトが可能
+- データベース不要で，rust 環境さえあればすぐに導入可能
+  （DB は後から導入するかも知れない．要検討）
+
+これから対応予定のもの
+
+- ユーザごとのプライベートなページ
+- github, youtube などの外部サイトとの連携
+  - ソースコードや動画の埋め込み表示
 
 # API design
 
@@ -16,18 +31,18 @@ A simple wiki created with Rust from scratch.
 
 ## Backend API
 
-- GET `/page/xxxxxx`
-  - html ページのレスポンスを返す
+- GET `/page?path=<Path to the page>`
+  - `<Path to the page>` にある html ページを返す
   - サーバ上のファイルから読み込む
-- GET `/edit?path=<Path to the page">`
+- GET `/edit?path=<Path to the page>`
   - 編集用の markdown を返す
   - サーバ上のファイルから読み込む
 - POST `/edit {path:"<Path to the page>", body: "<The updated markdown>"}`
-  - markdown を投げ，それで /xxxxxx.html を更新する
+  - markdown を投げ，それで `<Path to the page>` を更新する
   - そのページがもともと存在しない場合は新しく作る．
   - サーバ上のファイルに書き出しておく
 - DELETE `/edit?path=<Path to the page>`
-  - /xxxxxx.html を消去する
+  - `<Path to the page>` を消去する
   - サーバ上のファイルは消去する
 
 ## 構成
@@ -45,3 +60,7 @@ cargo run
 ```
 
 and access <https://127.0.0.1:8443/> on your browser.
+
+# Demo
+
+![Demo](./docs/wiki-rs-demo.png)

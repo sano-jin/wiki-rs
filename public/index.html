@@ -20,59 +20,60 @@
     <div class="wrapper">
       <div class="wrapper">
         <div class="site-header">
-          <h1>HOME</h1>
+          <div class="site-title">HOME</div>
         </div>
       </div>
 
-      <div class="wrapper">
-        <ul>
-          INDEX_UL
-        </ul>
+      <div class="sidebar">
+        <div class="wrapper">
+          <ul>
+            INDEX_UL
+          </ul>
+        </div>
       </div>
 
-      <div class="wrapper">
-        Create a new page:
-        <form action="/edit" method="GET">
-          <input
-            type="text"
-            id="input_path"
-            name="input_path"
-            required
-            minlength="4"
-            maxlength="100"
-            size="100"
-            value=""
-          />
-          <br />
-          <input
-            type="submit"
-            id="btn_submit"
-            name="btn_submit"
-            value="Create"
-          />
-        </form>
-      </div>
+      <div class="wrapper body-contents">
+        <div class="wrapper">
+          Create a new page:
+          <form action="/edit" method="GET">
+            <input
+              type="text"
+              id="input_path"
+              name="input_path"
+              required
+              size="50"
+              value=""
+            />
+            <br />
+            <input
+              type="submit"
+              id="btn_submit"
+              name="btn_submit"
+              value="Create"
+            />
+          </form>
+        </div>
 
-      <div class="wrapper">
-        <form action="/edit" method="DELETE">
-          <input
-            type="text"
-            id="input_delete_path"
-            name="input_delete_path"
-            required
-            minlength="4"
-            maxlength="100"
-            size="100"
-            value=""
-          />
-          <br />
-          <input
-            type="submit"
-            id="btn_delete"
-            name="btn_delete"
-            value="Delete"
-          />
-        </form>
+        <div class="wrapper">
+          Delete a page:
+          <form action="/edit" method="DELETE">
+            <input
+              type="text"
+              id="input_delete_path"
+              name="input_delete_path"
+              required
+              size="50"
+              value=""
+            />
+            <br />
+            <input
+              type="submit"
+              id="btn_delete"
+              name="btn_delete"
+              value="Delete"
+            />
+          </form>
+        </div>
       </div>
     </div>
   </body>

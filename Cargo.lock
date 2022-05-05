@@ -1344,6 +1344,7 @@ dependencies = [
  "json",
  "openssl",
  "pulldown-cmark",
+ "regex",
  "serde",
  "serde_json",
  "urlencoding",

@@ -20,6 +20,15 @@
       hljs.highlightAll();
     </script>
 
+    <!-- mathjax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      type="text/javascript"
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+    ></script>
+
     <title>TITLE</title>
     <link rel="stylesheet" href="/files/assets/main.css" />
   </head>
@@ -30,24 +39,27 @@
           <div class="site-title">TITLE</div>
         </div>
       </div>
-      <div class="wrapper">
-        <a href="/">HOME</a>
-        <a href="/edit?path=PATH">Update</a>
+      <div class="wrapper header-menu">
+        <a href="/" class="button">HOME</a>
+        <a href="/edit?path=PATH" class="button">Update</a>
         <form action="/edit" method="DELETE">
           <input
             type="submit"
             id="btn_submit"
             name="btn_submit"
             value="Delete"
+            class="button"
           />
         </form>
       </div>
-      <div class="wrapper">
-        <ul>
-          INDEX_UL
-        </ul>
+      <div class="sidebar">
+        <div class="wrapper">
+          <ul>
+            INDEX_UL
+          </ul>
+        </div>
       </div>
-      <div class="wrapper">BODY</div>
+      <div class="body-contents wrapper">BODY</div>
     </div>
   </body>
 
