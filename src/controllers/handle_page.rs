@@ -1,17 +1,7 @@
 use crate::models::pages::Page;
-// use std::io;
 
-use crate::util;
-// use actix_files;
-// use actix_web::{middleware, web, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web::{web, Error, HttpResponse};
-// use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
-// use pulldown_cmark::{html, Options, Parser};
 use serde::{Deserialize, Serialize};
-// use std::fs::File;
-// use std::io::prelude::*;
-// use std::path::{Path, PathBuf};
-use urlencoding;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewPageObj {
@@ -58,22 +48,12 @@ pub async fn get_page(item: web::Query<QueryPath>) -> Result<HttpResponse, Error
     Ok(HttpResponse::Ok().content_type("text/html").body(contents))
 }
 
-/// This handler uses json extractor with limit
 /// GET the page for editing the page
 pub async fn get_editor(item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
     println!("get_edit_page ? {:?}", item);
-    let path = util::get_path("public/edit", &item.path);
-    let contents = util::read_with_default(&path.to_string_lossy(), "");
 
-    // decode the path to obtain the title
-    let title = urlencoding::decode(&item.path).expect("cannot decode");
-
-    // Open the file for editing
-    let editor = std::fs::read_to_string("public/layouts/edit.html")?;
-    // Replace the contents
-    let editor = editor
-        .replace("{{ TITLE }}", &title.into_owned())
-        .replace("{{ MARKDOWN }}", &contents);
+    // get the editor html with the given file path
+    let editor = Page::get_editor(&item.path)?;
 
     Ok(HttpResponse::Ok().content_type("text/html").body(editor))
 }

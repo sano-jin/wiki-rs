@@ -181,4 +181,23 @@ impl Page {
         }
         Some(vec)
     }
+
+    /// This handler uses json extractor with limit
+    /// GET the page for editing the page
+    pub fn get_editor(path_str: &str) -> Result<String, Error> {
+        let path = util::get_path("public/edit", &path_str);
+        let contents = util::read_with_default(&path.to_string_lossy(), "");
+
+        // decode the path to obtain the title
+        let title = urlencoding::decode(&path_str).expect("cannot decode");
+
+        // Open the file for editing
+        let editor = std::fs::read_to_string("public/layouts/edit.html")?;
+        // Replace the contents
+        let editor = editor
+            .replace("{{ TITLE }}", &title.into_owned())
+            .replace("{{ MARKDOWN }}", &contents);
+
+        Ok(editor)
+    }
 }

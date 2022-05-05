@@ -29,8 +29,10 @@
       src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
     ></script>
 
-    <title>{{ TITLE }}</title>
+    <!-- custom css -->
     <link rel="stylesheet" href="/files/assets/main.css" />
+
+    <title>{{ TITLE }}</title>
   </head>
   <body>
     <div class="wrapper">
@@ -64,6 +66,24 @@
   </body>
 
   <script>
+    function copyToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+
+      // Avoid scrolling to bottom
+      textArea.style.top = "0";
+      textArea.style.left = "0";
+      textArea.style.position = "fixed";
+
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      document.execCommand("copy");
+
+      textArea.parentNode.removeChild(textArea);
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
       // 送信ボタンのHTMLを取得
       const btn_submit = document.getElementById("btn-submit-delete");
@@ -79,6 +99,40 @@
         // redirect to the home page
         window.location = "/";
       });
+
+      // ソースコードをコピーできるボタンの追加
+      // const btn_submit = document.getElementById("btn-submit-delete");
+      const collection = document.getElementsByTagName("pre");
+      for (let cell of collection) {
+        console.log(cell);
+        // create a new div element
+        const newDiv = document.createElement("div");
+        newDiv.classList.add("code-copy-button");
+
+        const newI = document.createElement("i");
+        newI.classList.add("fa-solid");
+        newI.classList.add("fa-copy");
+
+        newDiv.appendChild(newI);
+
+        newDiv.addEventListener("click", async (e) => {
+          console.log(e.target);
+          e.target.classList.add("copied");
+          console.log(newDiv);
+          e.preventDefault();
+          const code = cell.innerText;
+          console.log(code);
+          copyToClipboard(code);
+          setTimeout(() => {
+            console.log("Delayed for 5 second.");
+            e.target.classList.remove("copied");
+          }, 5000);
+        });
+
+        cell.appendChild(newDiv);
+
+        console.log(cell);
+      }
     });
   </script>
 </html>
