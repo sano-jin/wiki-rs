@@ -22,8 +22,7 @@ A simple wiki created with Rust from scratch.
 - GET `/edit?path=<Path to the page">`
   - 編集用の markdown を返す
   - サーバ上のファイルから読み込む
-- POST /edit
-  - body: `{path:"Path to the page", body: "The updated markdown"}`
+- POST `/edit {path:"<Path to the page>", body: "<The updated markdown>"}`
   - markdown を投げ，それで /xxxxxx.html を更新する
   - そのページがもともと存在しない場合は新しく作る．
   - サーバ上のファイルに書き出しておく

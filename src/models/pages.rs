@@ -59,6 +59,7 @@ impl Page {
         })
     }
 
+    /// Save the page to files
     pub fn save(page: &Page) -> Result<(), Error> {
         // Update the file with the given contents
         let path = util::get_path("public/edit", &page.path);
@@ -75,6 +76,7 @@ impl Page {
         Ok(())
     }
 
+    /// Delete the page
     pub fn delete(filepath: &str) -> Result<(), Error> {
         // delete the markdown file
         let path = util::get_path("public/edit", &filepath);
@@ -87,10 +89,69 @@ impl Page {
         Ok(())
     }
 
+    /// Get the html contents
     pub fn get_html(filepath: &str) -> Result<String, Error> {
         // Load the file
         let path = util::get_path("public/pages", &filepath);
         let contents = std::fs::read_to_string(&path)?;
+        let contents = Page::embed_pages_list(&contents).expect("error");
         Ok(contents)
+    }
+
+    /// Embed the list of files in the given html contents
+    pub fn embed_pages_list(contents: &str) -> Option<String> {
+        let pages_list = Page::list_pages().expect("file list");
+        println!("pages list {:?}", pages_list);
+        let mut vec_pages_list = Vec::new();
+        for (decoded, path) in pages_list {
+            vec_pages_list.push(format!(
+                "<li><a href=\"pages?path={}\">{}</a></li>",
+                path, decoded
+            ));
+        }
+
+        // Load the file
+        let contents = contents.replace("INDEX_UL", &vec_pages_list.join("\n"));
+        Some(contents)
+    }
+
+    /// get modified date from DirEntry
+    pub fn get_modified(entry: &std::fs::DirEntry) -> Result<u64, std::io::Error> {
+        let path = entry.path();
+
+        let metadata = std::fs::metadata(&path)?;
+        let last_modified = metadata.modified()?.elapsed().expect("hoge").as_secs();
+        Ok(last_modified)
+    }
+
+    /// Get the list of files
+    pub fn list_pages() -> Option<Vec<(String, String)>> {
+        let mut vec = Vec::new();
+        let paths = std::fs::read_dir("public/pages/").unwrap();
+        let mut vec_files = Vec::new();
+        for dir_entry in paths {
+            if let Ok(entry) = dir_entry {
+                vec_files.push(entry)
+            }
+        }
+        // sort by the modified date
+        vec_files.sort_by(|a, b| {
+            let a_modified = Page::get_modified(&a).unwrap();
+            let b_modified = Page::get_modified(&b).unwrap();
+            a_modified.partial_cmp(&b_modified).unwrap()
+        });
+
+        // for path in paths {
+        for path in vec_files {
+            let filename = path.path();
+            let filename = filename.file_name()?.to_str()?;
+
+            // decode the path to obtain the title
+            let decoded_filename = urlencoding::decode(&filename).expect("cannot decode");
+
+            println!("Name: {}", filename);
+            vec.push((decoded_filename.to_string(), filename.to_string()));
+        }
+        Some(vec)
     }
 }

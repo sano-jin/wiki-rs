@@ -7,7 +7,7 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.route("/edit", web::get().to(handle_page::get_editor)); // GET the editor
     cfg.route("/edit", web::post().to(handle_page::post)); // POST the new contents to update the file
     cfg.route("/edit", web::delete().to(handle_page::delete)); // Delete the file
-    cfg.service(actix_files::Files::new("/assets", "public/assets").show_files_listing());
+    cfg.service(actix_files::Files::new("/files", "public").show_files_listing());
     cfg.route("/index.html", web::get().to(index::index));
     // with path parameters
     cfg.route(
