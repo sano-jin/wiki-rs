@@ -1,15 +1,8 @@
-// use std::io;
-
 use crate::util;
-// use actix_files;
-// use actix_web::{middleware, web, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web::Error;
-// use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use pulldown_cmark::{html, Options, Parser};
-// use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::prelude::*;
-// use std::path::{Path, PathBuf};
 use urlencoding;
 
 use regex::Regex;
@@ -28,23 +21,24 @@ impl Page {
         // backslash をエスケープする．
         // pulldown-cmark は backslash を無視してしまうっぽい．
         // TODO: markdown の仕様を確認して backslash をどう扱うべきか再考する．
-        let markdown_escaped = markdown.replace("\\", "\\\\");
+        let markdown = markdown.replace("\\", "\\\\");
 
         // リンクの処理
         // リンクを <> でかこむ
+        // TODO: pulldown-cmark の機能を使ってより効率的に行うように refactor する
         let re = Regex::new(r"([^<])(https?://[^\s\)]*)([^>])").unwrap();
-        let markdown_escaped = re.replace_all(&markdown_escaped, "$1<$2>$3");
+        let markdown = re.replace_all(&markdown, "$1<$2>$3");
 
         // 括弧で囲まれていた場合（ユーザがちゃんとリンクとして書いていた場合）は取り除く
         let re = Regex::new(r"\[([^\]]*)\]\(\s*<(https?://[^\s\)]*)>\s*\)").unwrap();
-        let markdown_escaped = re.replace_all(&markdown_escaped, "[$1]($2)");
+        let markdown = re.replace_all(&markdown, "[$1]($2)");
         // ここまでリンクの処理
 
         // コメントアウトを削除
         let re = Regex::new(r"(?m)^//.*$\n?").unwrap();
-        let markdown_escaped = re.replace_all(&markdown_escaped, "");
+        let markdown = re.replace_all(&markdown, "");
 
-        println!("markdown escaped {}", markdown_escaped);
+        println!("markdown {}", markdown);
 
         // Set parser options
         let mut options = Options::empty();
@@ -57,7 +51,8 @@ impl Page {
 
         // Parse the given markdown with the pulldown_cmark parser
         println!("parsing the given markdown with the pulldown_cmark parser");
-        let parser = Parser::new_ext(&markdown_escaped, options);
+
+        let parser = Parser::new_ext(&markdown, options);
         let mut html_buf = String::new();
         html::push_html(&mut html_buf, parser);
         // println!("parsed: {}", html_buf);
