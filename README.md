@@ -94,11 +94,19 @@ Install Cargo
 
 ## Run
 
-```sh
-cargo run
-```
+1. サンプルの public directory が docs 以下にあるので，それを持ってくる．
 
-and access <https://127.0.0.1:8443/> on your browser.
+   ```sh
+   cp -r docs/public .
+   ```
+
+2. cargo で backend を実行する
+
+   ```sh
+   cargo run
+   ```
+
+3. and access <https://127.0.0.1:8443/> on your browser.
 
 # Demo
 
