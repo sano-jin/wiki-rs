@@ -47,6 +47,43 @@ A simple wiki created with Rust from scratch.
 
 ## 構成
 
+### client-side
+
+```sh
+public/
+├── assets/ # some assets files
+│   ├── dracula.css
+│   └── main.css
+├── edit/ # directory to save markdown files
+├── index.html # the root index.html file
+├── layouts/ # some template html files
+│   ├── edit.html
+│   └── page.html
+└── pages/ # directory to save the transformed html files
+```
+
+### server-side
+
+```sh
+src
+├── controllers
+│   ├── handle_page.rs
+│   ├── index.rs
+│   └── mod.rs
+├── lib.rs
+├── main.rs
+├── models
+│   ├── mod.rs
+│   └── pages.rs
+├── routes.rs
+└── util.rs
+```
+
+## TODOs
+
+- [ ] clean architecture などをもとにアーキテクチャを再考する．
+- [ ] issue に挙げたものの解決
+
 # Development
 
 ## Prerequisties
