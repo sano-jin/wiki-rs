@@ -1,6 +1,7 @@
 use crate::util;
 use actix_web::Error;
-use pulldown_cmark::{html, Options, Parser};
+// use pulldown_cmark::{html, Options, Parser};
+use pulldown_cmark::{html, CowStr, Event, LinkType, Options, Parser, Tag};
 use std::fs::File;
 use std::io::prelude::*;
 use urlencoding;
@@ -52,10 +53,35 @@ impl Page {
         // Parse the given markdown with the pulldown_cmark parser
         println!("parsing the given markdown with the pulldown_cmark parser");
 
-        let parser = Parser::new_ext(&markdown, options);
+        // let parser = Parser::new_ext(&markdown, options);
+        // Set up parser. We can treat is as any other iterator. We replace Peter by John
+        // and image by its alt text.
+        let parser = Parser::new_ext(&markdown, Options::empty())
+            .map(|event| match event {
+                Event::Text(text) => Event::Text(text.replace("Peter", "John").into()),
+                _ => event,
+            })
+            // .filter(|event| match event {
+            //     Event::Start(Tag::Image(..)) | Event::End(Tag::Image(..)) => false,
+            //     _ => true,
+            // })
+            .map(|event| match event {
+                Event::Start(Tag::Image(LinkType::Inline, url, title)) => {
+                    println!("url is {}", url);
+                    let re = Regex::new(r"(^https?://[^\s]*)|^/").unwrap();
+                    let mut url = url.into_string();
+                    // let mut url = url;
+                    if !re.is_match(&url) {
+                        url = String::from("/files/files/") + &url;
+                    }
+                    Event::Start(Tag::Image(LinkType::Inline, CowStr::from(url), title))
+                }
+                _ => event,
+            });
+
         let mut html_buf = String::new();
         html::push_html(&mut html_buf, parser);
-        // println!("parsed: {}", html_buf);
+        println!("parsed: {}", html_buf);
 
         // decode the path to obtain the title
         Ok(html_buf)
@@ -151,6 +177,7 @@ impl Page {
     }
 
     /// Get the list of files
+    /// sorted by the modified date
     pub fn list_pages() -> Option<Vec<(String, String)>> {
         let mut vec = Vec::new();
         let paths = std::fs::read_dir("public/pages/").unwrap();
@@ -175,7 +202,7 @@ impl Page {
             // decode the path to obtain the title
             let decoded_filename = urlencoding::decode(&filename).expect("cannot decode");
 
-            println!("Name: {}", filename);
+            // println!("Name: {}", filename);
             vec.push((decoded_filename.to_string(), filename.to_string()));
         }
         Some(vec)
