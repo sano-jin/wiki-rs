@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300&family=JetBrains+Mono:wght@300&family=Noto+Sans+JP:wght@300&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="/files/assets/dracula.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+
+    <!-- mathjax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      type="text/javascript"
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+    ></script>
+
+    <!-- custom css -->
+    <link rel="stylesheet" href="/files/assets/main.css" />
+
+    <title>TITLE2</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="wrapper">
+        <div class="site-header">
+          <div class="site-title">TITLE2</div>
+        </div>
+      </div>
+      <div class="wrapper header-menu">
+        <a href="/" class="button">HOME</a>
+        <a href="/edit?path=TITLE2" class="button">Update</a>
+        <form action="/edit" method="DELETE">
+          <input
+            type="submit"
+            id="btn-submit-delete"
+            name="btn-submit-delete"
+            value="Delete"
+            class="button"
+          />
+        </form>
+      </div>
+      <div class="sidebar">
+        <div class="wrapper">
+          <ul>
+            {{ INDEX_UL }}
+          </ul>
+        </div>
+      </div>
+      <div class="body-contents wrapper"><h1>人間は愚かな生物！</h1>
+<p>Here comes some text
+Here is a text.</p>
+</div>
+    </div>
+  </body>
+
+  <script>
+    function copyToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+
+      // Avoid scrolling to bottom
+      textArea.style.top = "0";
+      textArea.style.left = "0";
+      textArea.style.position = "fixed";
+
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      document.execCommand("copy");
+
+      textArea.parentNode.removeChild(textArea);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      // 送信ボタンのHTMLを取得
+      const btn_submit = document.getElementById("btn-submit-delete");
+      btn_submit.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        // フォームの入力値を送信
+        const response = await fetch(
+          "/edit?" + new URLSearchParams({ path: "TITLE" }),
+          { method: "DELETE" }
+        );
+
+        // redirect to the home page
+        window.location = "/";
+      });
+
+      // ソースコードをコピーできるボタンの追加
+      // const btn_submit = document.getElementById("btn-submit-delete");
+      const collection = document.getElementsByTagName("pre");
+      for (let cell of collection) {
+        console.log(cell);
+        // create a new div element
+        const newDiv = document.createElement("div");
+        newDiv.classList.add("code-copy-button");
+
+        const newI = document.createElement("i");
+        newI.classList.add("fa-solid");
+        newI.classList.add("fa-copy");
+
+        newDiv.appendChild(newI);
+
+        newDiv.addEventListener("click", async (e) => {
+          console.log(e.target);
+          e.target.classList.add("copied");
+          console.log(newDiv);
+          e.preventDefault();
+          const code = cell.innerText;
+          console.log(code);
+          copyToClipboard(code);
+          setTimeout(() => {
+            console.log("Delayed for 5 second.");
+            e.target.classList.remove("copied");
+          }, 5000);
+        });
+
+        cell.appendChild(newDiv);
+
+        console.log(cell);
+      }
+    });
+  </script>
+</html>

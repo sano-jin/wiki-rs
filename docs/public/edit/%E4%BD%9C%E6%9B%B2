@@ -1,0 +1,12 @@
+A concise, modern approach:
+
+```
+fetch('https://example.com?' + new URLSearchParams({
+    foo: 'value',
+    bar: 2,
+}))
+```
+How it works: When a string (e.g. the URL) is being concatenated with an instance of `URLSearchParams`, its toString() method will automatically be called to convert the instance into a string representation, which happens to be a properly encoded query string. If the automatic invoking of toString() is too magical for your liking, you may prefer to explicitly call it like so:
+
+
+ホゲホゲ

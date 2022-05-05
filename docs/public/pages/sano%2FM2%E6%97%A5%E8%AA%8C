@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300&family=JetBrains+Mono:wght@300&family=Noto+Sans+JP:wght@300&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="/files/assets/dracula.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+
+    <!-- mathjax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      type="text/javascript"
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+    ></script>
+
+    <!-- custom css -->
+    <link rel="stylesheet" href="/files/assets/main.css" />
+
+    <title>sano/M2日誌</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="wrapper">
+        <div class="site-header">
+          <div class="site-title">sano/M2日誌</div>
+        </div>
+      </div>
+      <div class="wrapper header-menu">
+        <a href="/" class="button">HOME</a>
+        <a href="/edit?path=sano/M2日誌" class="button">Update</a>
+        <form action="/edit" method="DELETE">
+          <input
+            type="submit"
+            id="btn-submit-delete"
+            name="btn-submit-delete"
+            value="Delete"
+            class="button"
+          />
+        </form>
+      </div>
+      <div class="sidebar">
+        <div class="wrapper">
+          <ul>
+            {{ INDEX_UL }}
+          </ul>
+        </div>
+      </div>
+      <div class="body-contents wrapper"><h1>2022/05/05</h1>
+<p>When \(a \ne 0 \), there are two solutions to 
+\(ax^2 + bx + c = 0\) and they are
+$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</p>
+<h1>2022/04/26</h1>
+<p>hogehoge</p>
+<h1>2022/04/23</h1>
+<p>メモ：
+rust で何作ろうか考えていた．wiki を作ってみるのは良いかもしれない．</p>
+<hr />
+<p>今日のクソコード</p>
+<p>python/selenium で，</p>
+<pre><code class="language-python"> elem.implicityly_wait = 5
+</code></pre>
+<p>とか言う意味不明なことをやっていた．</p>
+<ul>
+<li>そもそも，<code>elem.implicitly_wait(5)</code> のように関数適用するはずで，なぜ代入しだすのか意味不明．</li>
+<li>しかもスペルミスしてる implicitYly_wait となっていた．代入を関数適用に直しただけだと実行時エラーになってクソ．</li>
+</ul>
+<p>誰だこれ書いたの（憤怒．とか言って，もしかしてぼくか？？？）</p>
+<hr />
+<p><a href="https://arxiv.org/pdf/1701.00854.pdf">Is Parallel Programming Hard, And, If So, What Can You Do About It?</a> を冒頭 110 ページくらいをザーッと流し読みした．</p>
+<ul>
+<li>（かなり初歩的な部分から）相当わかりやすく書かれている印象を受けた．確かに並列をやるなら眺めておくべきと言う感じではある．</li>
+<li>appendix を除くと，全部で 400 ページ（そんなに多くない）．ミニクイズの答えもちゃんとついてきているし，暇つぶし感覚でもう少し読んでみようかなと思っております．</li>
+<li><a href="http://liburcu.org/">http://liburcu.org/</a></li>
+</ul>
+<h1>2022/04/22</h1>
+<p>to yamamoto:
+<a href="https://www.researchgate.net/publication/220398770_Dactl_an_experimental_graph_rewriting_language">Dactl</a> には，モジュールやアクセス修飾子もある．</p>
+<ul>
+<li>「単なるモジュール化（？）」にあまり興味は持てない．</li>
+<li>けど，データフロー言語が現状どうなっているかとか，外界は常に気になる．</li>
+<li>session types とか．GraphQL とか．</li>
+</ul>
+<h1>2022/04/20</h1>
+<p><a href="https://moves.rwth-aachen.de/wp-content/uploads/proposal-inclusion-problem.pdf">graph grammar inclusion problem で検索して出てきた謎の pdf</a></p>
+<ul>
+<li>一体どういうものなのかよくわからない（まだ解決されていないと思って良いよね？）</li>
+</ul>
+<h1>2022/04/19</h1>
+<p>差分リストの連結の証明を（例として）スライドにする．</p>
+<p>タイトルを決めて論文を書き始めた方が良い．</p>
+<ul>
+<li>書けるところを決めて書き始める</li>
+</ul>
+<p>POPL とか isopp とかを適当に眺めておく．</p>
+<hr />
+<p>rust に関するメモ：</p>
+<p>rust documentation</p>
+<ul>
+<li><a href="https://doc.rust-lang.org/book/">https://doc.rust-lang.org/book/</a></li>
+</ul>
+<p>writing an os in rust</p>
+<ul>
+<li><a href="https://os.phil-opp.com/">https://os.phil-opp.com/</a></li>
+<li>x86 なので，研究室に転がってるクソ雑魚マシンを適当に使う予定．</li>
+</ul>
+<p>rust compiler documentation</p>
+<ul>
+<li><a href="https://rustc-dev-guide.rust-lang.org/">https://rustc-dev-guide.rust-lang.org/</a></li>
+<li>コンパイラの構成などについてもかなり詳しくドキュメント化されている．</li>
+<li>この辺に課題とかが書いてあるので，解決できると．．．？？？
+-- <a href="https://rustc-dev-guide.rust-lang.org/overview.html">https://rustc-dev-guide.rust-lang.org/overview.html</a></li>
+</ul>
+<p>rust でバックエンド実装のサンプル</p>
+<ul>
+<li><a href="https://ozway.jp/2020/10/rust%E3%81%A7webapplication%E3%82%92%E5%AE%9F%E8%A3%85%E3%81%99%E3%82%8B%E3%80%80-%E3%81%9D%E3%81%AE1/">RustでWebApplicationを実装する</a></li>
+<li>actix-web で api サーバを立てて，diesel でデータベースと接続（ORM）してる．</li>
+<li>バイト先ではこいつをベースを実装してる（ふりをしてる．あんまり進んでないが．．．）．</li>
+</ul>
+<p>front のためのフレームワークもある</p>
+<ul>
+<li><a href="https://github.com/yewstack/yew">https://github.com/yewstack/yew</a></li>
+<li>view 以外は WASM にトランスパイルするっぽい．</li>
+</ul>
+<p>rust to WASM</p>
+<ul>
+<li><a href="https://rustwasm.github.io/book/">https://rustwasm.github.io/book/</a></li>
+</ul>
+<hr />
+<p>jekyll の theme を適当にいじって自分のサイトのデザイン（色とフォントだけだが）を変えてみた．</p>
+<ul>
+<li><a href="https://www.ueda.info.waseda.ac.jp/%7Esano/">https://www.ueda.info.waseda.ac.jp/~sano/</a></li>
+<li>[[gitlab repository&gt;<a href="https://gitlab.ueda.info.waseda.ac.jp/sano/mypage%5D%5D">https://gitlab.ueda.info.waseda.ac.jp/sano/mypage]]</a></li>
+<li>sass デビューです．</li>
+</ul>
+<h1>2022/04/17</h1>
+<p>&amp;ref(./invalid-pre-proof.png,20%);</p>
+<p><a href="http://www0.cs.ucl.ac.uk/staff/J.Brotherston/slides/imperial_04_08.pdf">an introduction to cyclic proof</a></p>
+<h1>2022/04/16</h1>
+<p>差分スキップリストと control flow graph の違いの話に関して追記（山本さんの日誌に対応して）：</p>
+<ul>
+<li>ただ切断するだけじゃなくて，切断したあとに根からのパスが正規言語になっている必要がある．ということ．</li>
+</ul>
+<p>// 「◁」に関しては，普通に「：」を使えば良い気がしてきた．</p>
+<hr />
+<p><a href="https://gitlab.haskell.org/ghc/ghc/-/wikis/index">ghc (haskell) の wiki</a></p>
+<p>haskell の拡張まわりの面白い話が色々転がっていそう．</p>
+<hr />
+<p>[[egison documentation&gt;<a href="https://www.egison.org/tutorial.pdf%5D%5D">https://www.egison.org/tutorial.pdf]]</a></p>
+<p>egison は edge を整数の id で持たせる隣接リストを書いて，それに対してパターンマッチができる．</p>
+<ul>
+<li>つまり，グラフとそのパターンマッチが扱える．
+-- 多重集合書き換え系としての lmntal の機能は大体再現できそう．</li>
+<li>ポインタを使ったデータ構造としての（lmntal の）グラフが直接扱えるわけではない．</li>
+</ul>
+<h1>2022/04/15 [#h4c45aae]</h1>
+<p>D ゼミ：</p>
+<p>今考えていることについて話した．</p>
+<p>グラフの合成，分解の定義は？</p>
+<ul>
+<li>用語があまりよろしくない．特に分解に関して．</li>
+<li>合成は終端記号や非終端記号を適当にくっつけたグラフの型検査</li>
+<li>分解はパターンマッチの際の話：
+-- パターンマッチの網羅性，全てのパターンがマッチしうるものになっているかの検証，パターンマッチが決定的に行われるかの検証</li>
+<li>のつもり．</li>
+</ul>
+<p>差分スキップリストはなぜ Regular に入るのか？（control flow graph は入らないのに）</p>
+<ul>
+<li>うまいこと切断してやっている．</li>
+<li>control flow graph は差分スキップリストとは違い，（少なくとも，素朴には）「うまい切断」ができない．</li>
+</ul>
+<p>「◁」の定義は外延的だけど，もう少し扱いやすい形にできるのではないか？（完全性を捨てても良い？）</p>
+<ul>
+<li>いまいち意図が理解できていないかも知れない．定義だし，個人的には綺麗で自然な定義という感じがする．</li>
+<li>todo: 外延的な定義を加えたのは，「開始記号まで辿れる」というだけだと差分リストの末尾問題が解消できないから．という説明を加える．</li>
+</ul>
+<p>マーカの話（leaf linked tree で leaf だけを伝わるということ）は別に検証できなかったとしても，
+ユーザに余計なパターンを書かせれば良いだけ（安全ではある）なので，
+重要度はそこまで高くないのでは？</p>
+<ul>
+<li>それはそう．</li>
+</ul>
+<p>マーカーとかいう新しい概念を入れるよりも，型定義を複雑にしてでもそれでやった方が綺麗になるのでは？</p>
+<ul>
+<li>わからない（そうではないと思ってはいる）．</li>
+<li>実際に型定義を書いて検証してみた方が良いだろう．とのこと．</li>
+</ul>
+<p>これは関数型のための手法なのか？というか関数はないのか？</p>
+<ul>
+<li>データ構造の検証で，将来的な落とし所は Rust の拡張である．</li>
+<li>関数型に限らず応用できる．</li>
+</ul>
+<p>プログラムを，グラフ部分を図として表すと見やすいことがわかった．</p>
+<hr />
+<p><a href="https://speakerdeck.com/kaityo256/how-to-survey?slide=15">論文の読み方</a></p>
+<h1>2022/04/14 [#qb80840f]</h1>
+<p>班ゼミ：</p>
+<ul>
+<li>PPL2022 の報告</li>
+</ul>
+<p>cyclic proof を用いたメタ定理：</p>
+<h1>2022/04/12 [#t6c773c5]</h1>
+<p>git(hub) 紹介をしました．</p>
+<ul>
+<li>去年までは，なんかこういうのあれば良いな．と思っていて，やってみたけど，実際にやるとなんかどうなんだろう（果たして必要だったのか）という気分になった．</li>
+</ul>
+<p>todo:</p>
+<ul>
+<li>uzawa くん（または M0）に zoom 接続係をたのむ．</li>
+</ul>
+<h1>2022/04/08 [#o48ce779]</h1>
+<p>メモ：</p>
+<p>高信頼化ソフトウェアのための開発手法ガイドブック</p>
+<ul>
+<li><a href="https://www.ipa.go.jp/files/000005144.pdf">https://www.ipa.go.jp/files/000005144.pdf</a></li>
+<li>現場用のテストの話．モデル検査とかはない（たぶん）</li>
+</ul>
+<h1>2022/04/07 [#cbab4dd4]</h1>
+<p>そろそろ研究がしたい．</p>
+<p>今何ができているか：</p>
+<ul>
+<li>グラフの合成に関して型検査の手法を考えた．
+<ul>
+<li>手法に関してはそれなりに自信がある．と思っている．</li>
+<li>一応実装も進めていたけど，問題が発覚したので，ゼロから作り直した方が良いかも（が時間も労力もかかる）</li>
+<li>この正当性に関して（特に cyclic proof 周り）は，特にきちんと議論したい（ので明日の余った時間と日曜日に資料を作る予定）．</li>
+</ul>
+</li>
+<li>グラフの分解に関しては，実はまだ手法は確立していない．
+<ul>
+<li>頭の中に何となくはある．</li>
+</ul>
+</li>
+<li>マーカーの導入．その型検査．
+<ul>
+<li>これも手法が確立していない．頭の中に何となくといった感じ．</li>
+</ul>
+</li>
+</ul>
+<p>何をすべきか？</p>
+<ul>
+<li>実装は一旦放置して分解やマーカーの検査の手法をきちんと確立する？</li>
+</ul>
+<p>相談すべきこと：</p>
+<ul>
+<li>論文にするとしたらどういう形になるのか．正直よくわかっていないので，そこから要相談．というか先に自分で調べないといけない．</li>
+<li>グラフの合成の正当性の議論</li>
+<li>グラフの分解やマーカの検査（これはまだ持ち出さない方が良いかも？）</li>
+</ul>
+<p>その他論文にできるかも知れないと考えている話：
+flat hyperlmntal の semantics</p>
+<ul>
+<li>正直これ以上意味論を発展させるほぼ気はない（プロセスの等価性とか）
+<ul>
+<li>土台がふわふわしていて私にはよくわからなかった（現時点での私には理解できていないというだけで，価値がないだとか主張しているわけではない）．</li>
+</ul>
+</li>
+<li>「自由リンクの集合が構造合同なプロセス間で変わらない」というのは，
+要するに，「全てのリンクがつながっている」ことを証明できてしまった素朴な flat lmntal の拡張とは違うということにつながっているはずなので，
+このあたりの証明をもうちょっとだけちゃんとやれば，それっぽく見えるようになるのではないかと思っている（つまり，「全てのリンクがつながっている」わけではないということをきちんと証明してやる）．</li>
+</ul>
+<p>やらなきゃいけないこと：</p>
+<ul>
+<li>資料作成．現状の整理．</li>
+<li>投稿先を調べる？</li>
+</ul>
+<h1>2022/04/04 [#wf82023f]</h1>
+<p>this is a test</p>
+</div>
+    </div>
+  </body>
+
+  <script>
+    function copyToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+
+      // Avoid scrolling to bottom
+      textArea.style.top = "0";
+      textArea.style.left = "0";
+      textArea.style.position = "fixed";
+
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      document.execCommand("copy");
+
+      textArea.parentNode.removeChild(textArea);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      // 送信ボタンのHTMLを取得
+      const btn_submit = document.getElementById("btn-submit-delete");
+      btn_submit.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        // フォームの入力値を送信
+        const response = await fetch(
+          "/edit?" + new URLSearchParams({ path: "TITLE" }),
+          { method: "DELETE" }
+        );
+
+        // redirect to the home page
+        window.location = "/";
+      });
+
+      // ソースコードをコピーできるボタンの追加
+      // const btn_submit = document.getElementById("btn-submit-delete");
+      const collection = document.getElementsByTagName("pre");
+      for (let cell of collection) {
+        console.log(cell);
+        // create a new div element
+        const newDiv = document.createElement("div");
+        newDiv.classList.add("code-copy-button");
+
+        const newI = document.createElement("i");
+        newI.classList.add("fa-solid");
+        newI.classList.add("fa-copy");
+
+        newDiv.appendChild(newI);
+
+        newDiv.addEventListener("click", async (e) => {
+          console.log(e.target);
+          e.target.classList.add("copied");
+          console.log(newDiv);
+          e.preventDefault();
+          const code = cell.innerText;
+          console.log(code);
+          copyToClipboard(code);
+          setTimeout(() => {
+            console.log("Delayed for 5 second.");
+            e.target.classList.remove("copied");
+          }, 5000);
+        });
+
+        cell.appendChild(newDiv);
+
+        console.log(cell);
+      }
+    });
+  </script>
+</html>

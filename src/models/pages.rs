@@ -57,7 +57,7 @@ impl Page {
 
         // Parse the given markdown with the pulldown_cmark parser
         println!("parsing the given markdown with the pulldown_cmark parser");
-        let parser = Parser::new(&markdown_escaped);
+        let parser = Parser::new_ext(&markdown_escaped, options);
         let mut html_buf = String::new();
         html::push_html(&mut html_buf, parser);
         // println!("parsed: {}", html_buf);

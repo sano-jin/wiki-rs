@@ -1,0 +1,49 @@
+# 人間は愚かな生物！
+
+最近の猫は優秀なので OS も書けるし，コンパイラも書ける．
+
+## 吾輩は猫である．
+
+猫でも python が書けるのに，書けない人間もいる？
+
+```python
+# Python Program to find the factors of a number
+
+# This function computes the factor of the argument passed
+def print_factors(x):
+   print("The factors of",x,"are:")
+   for i in range(1, x + 1):
+       if x % i == 0:
+           print(i)
+
+num = 320
+
+print_factors(num)
+```
+
+結論：**猫の場合も**，猫による．
+
+## 猫でも数学ができる
+
+When \(a \ne 0 \), there are two solutions to 
+\(ax^2 + bx + c = 0\) and they are
+$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
+
+## リンクとリスト
+
+リンクを貼ったりリストを作ったりできる
+
+----
+
+[Is Parallel Programming Hard, And, If So, What Can You Do About It?](https://arxiv.org/pdf/1701.00854.pdf)
+を冒頭 110 ページくらいをザーッと流し読みした．
+- （かなり初歩的な部分から）相当わかりやすく書かれている印象を受けた．確かに並列をやるなら眺めておくべきと言う感じではある．
+- appendix を除くと，全部で 400 ページ（そんなに多くない）．ミニクイズの答えもちゃんとついてきているし，暇つぶし感覚でもう少し読んでみようかなと思っております．
+- http://liburcu.org/
+hogehoge
+
+すでに囲まれているリンク
+<http://liburcu.org/>
+
+囲まれていないリンク
+http://liburcu.org/
