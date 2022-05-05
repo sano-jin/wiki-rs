@@ -72,8 +72,8 @@ pub async fn get_editor(item: web::Query<QueryPath>) -> Result<HttpResponse, Err
     let editor = std::fs::read_to_string("public/layouts/edit.html")?;
     // Replace the contents
     let editor = editor
-        .replace("TITLE", &title.into_owned())
-        .replace("MARKDOWN", &contents);
+        .replace("{{ TITLE }}", &title.into_owned())
+        .replace("{{ MARKDOWN }}", &contents);
 
     Ok(HttpResponse::Ok().content_type("text/html").body(editor))
 }

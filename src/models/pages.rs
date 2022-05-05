@@ -74,9 +74,9 @@ impl Page {
         let default_page = std::fs::read_to_string("public/layouts/page.html")?;
         // Replace the title, path, contents
         let html = default_page
-            .replace("TITLE", &name)
-            .replace("PATH", &path)
-            .replace("BODY", &html_buf);
+            .replace("{{ TITLE }}", &name)
+            .replace("{{ PATH }}", &path)
+            .replace("{{ BODY }}", &html_buf);
 
         Ok(Page {
             path: path.to_string(),
@@ -138,7 +138,7 @@ impl Page {
         }
 
         // Load the file
-        let contents = contents.replace("INDEX_UL", &vec_pages_list.join("\n"));
+        let contents = contents.replace("{{ INDEX_UL }}", &vec_pages_list.join("\n"));
         Some(contents)
     }
 

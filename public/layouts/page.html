@@ -29,24 +29,24 @@
       src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
     ></script>
 
-    <title>TITLE</title>
+    <title>{{ TITLE }}</title>
     <link rel="stylesheet" href="/files/assets/main.css" />
   </head>
   <body>
     <div class="wrapper">
       <div class="wrapper">
         <div class="site-header">
-          <div class="site-title">TITLE</div>
+          <div class="site-title">{{ TITLE }}</div>
         </div>
       </div>
       <div class="wrapper header-menu">
         <a href="/" class="button">HOME</a>
-        <a href="/edit?path=PATH" class="button">Update</a>
+        <a href="/edit?path={{ PATH }}" class="button">Update</a>
         <form action="/edit" method="DELETE">
           <input
             type="submit"
-            id="btn_submit"
-            name="btn_submit"
+            id="btn-submit-delete"
+            name="btn-submit-delete"
             value="Delete"
             class="button"
           />
@@ -55,28 +55,25 @@
       <div class="sidebar">
         <div class="wrapper">
           <ul>
-            INDEX_UL
+            {{ INDEX_UL }}
           </ul>
         </div>
       </div>
-      <div class="body-contents wrapper">BODY</div>
+      <div class="body-contents wrapper">{{ BODY }}</div>
     </div>
   </body>
 
   <script>
     window.addEventListener("DOMContentLoaded", () => {
       // 送信ボタンのHTMLを取得
-      const btn_submit = document.getElementById("btn_submit");
-
+      const btn_submit = document.getElementById("btn-submit-delete");
       btn_submit.addEventListener("click", async (e) => {
         e.preventDefault();
 
         // フォームの入力値を送信
         const response = await fetch(
           "/edit?" + new URLSearchParams({ path: "TITLE" }),
-          {
-            method: "DELETE", // *GET, POST, PUT, DELETE, etc.
-          }
+          { method: "DELETE" }
         );
 
         // redirect to the home page
