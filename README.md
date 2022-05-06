@@ -21,6 +21,28 @@ A simple wiki created with Rust from scratch.
 - github, youtube などの外部サイトとの連携
   - ソースコードや動画の埋め込み表示
 
+# Development
+
+## Prerequisties
+
+Install Cargo
+
+## Run
+
+1. サンプルの public directory が docs 以下にあるので，それを持ってくる．
+
+   ```sh
+   cp -r docs/public .
+   ```
+
+2. cargo で backend を実行する
+
+   ```sh
+   cargo run
+   ```
+
+3. and access <https://127.0.0.1:8443/> on your browser.
+
 # API design
 
 ## Front
@@ -85,28 +107,6 @@ src
 
 - [ ] clean architecture などをもとにアーキテクチャを再考する．
 - [ ] issue に挙げたものの解決
-
-# Development
-
-## Prerequisties
-
-Install Cargo
-
-## Run
-
-1. サンプルの public directory が docs 以下にあるので，それを持ってくる．
-
-   ```sh
-   cp -r docs/public .
-   ```
-
-2. cargo で backend を実行する
-
-   ```sh
-   cargo run
-   ```
-
-3. and access <https://127.0.0.1:8443/> on your browser.
 
 # Demo
 
