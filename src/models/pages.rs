@@ -6,6 +6,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use urlencoding;
 
+use either::*;
 use regex::Regex;
 
 #[derive(Debug)]
@@ -24,16 +25,16 @@ impl Page {
         // TODO: markdown の仕様を確認して backslash をどう扱うべきか再考する．
         let markdown = markdown.replace("\\", "\\\\");
 
-        // リンクの処理
-        // リンクを <> でかこむ
-        // TODO: pulldown-cmark の機能を使ってより効率的に行うように refactor する
-        let re = Regex::new(r"([^<])(https?://[^\s\)]*)([^>])").unwrap();
-        let markdown = re.replace_all(&markdown, "$1<$2>$3");
+        // // リンクの処理
+        // // リンクを <> でかこむ
+        // // TODO: pulldown-cmark の機能を使ってより効率的に行うように refactor する
+        // let re = Regex::new(r"([^<])(https?://[^\s\)]*)([^>])").unwrap();
+        // let markdown = re.replace_all(&markdown, "$1<$2>$3");
 
-        // 括弧で囲まれていた場合（ユーザがちゃんとリンクとして書いていた場合）は取り除く
-        let re = Regex::new(r"\[([^\]]*)\]\(\s*<(https?://[^\s\)]*)>\s*\)").unwrap();
-        let markdown = re.replace_all(&markdown, "[$1]($2)");
-        // ここまでリンクの処理
+        // // 括弧で囲まれていた場合（ユーザがちゃんとリンクとして書いていた場合）は取り除く
+        // let re = Regex::new(r"\[([^\]]*)\]\(\s*<(https?://[^\s\)]*)>\s*\)").unwrap();
+        // let markdown = re.replace_all(&markdown, "[$1]($2)");
+        // // ここまでリンクの処理
 
         // コメントアウトを削除
         let re = Regex::new(r"(?m)^//.*$\n?").unwrap();
@@ -79,36 +80,26 @@ impl Page {
                 let text_str = text.to_string();
                 // let mut url = url;
                 if re.is_match(&text_str) {
-                    // return vec![
-                    //     Event::Start(Tag::Image(
-                    //         LinkType::Inline,
-                    //         CowStr::from(text_str),
-                    //         CowStr::from(text_str),
-                    //     )),
-                    //     Event::End(Tag::Image(
-                    //         LinkType::Inline,
-                    //         CowStr::from(text_str),
-                    //         CowStr::from(text_str),
-                    //     )),
-                    // ]
-                    // .iter();
-                    return std::iter::once(Event::Start(Tag::Image(
-                        LinkType::Inline,
-                        CowStr::from(text_str),
-                        CowStr::from(text_str),
-                    )))
-                    .chain(std::iter::once(Event::End(Tag::Image(
-                        LinkType::Inline,
-                        CowStr::from(text_str),
-                        CowStr::from(text_str),
-                    ))));
+                    println!("{}", text_str);
+                    return Left(
+                        std::iter::once(Event::Start(Tag::Link(
+                            LinkType::Inline,
+                            CowStr::from(text_str.to_owned()),
+                            CowStr::from(text_str.to_owned()),
+                        )))
+                        .chain(std::iter::once(Event::End(Tag::Link(
+                            LinkType::Inline,
+                            CowStr::from(text_str.to_owned()),
+                            CowStr::from(text_str.to_owned()),
+                        )))),
+                    );
                     // return std::iter::once(Event::Text(text));
                 }
-                std::iter::once(Event::Text(text))
+                Right(std::iter::once(Event::Text(text)))
                 // vec![Event::Text(text)].iter()
             }
             // _ => vec![event].iter(),
-            _ => std::iter::once(event),
+            _ => Right(std::iter::once(event)),
         });
 
         let mut html_buf = String::new();

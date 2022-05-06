@@ -21,3 +21,4 @@ dotenv = "0.15.0"
 actix-cors = "0.6.0"
 uuid = { version = "0.8", features = [ "serde", "v4" ] }
 regex = "1"
+either = "1"
