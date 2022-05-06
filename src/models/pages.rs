@@ -56,28 +56,60 @@ impl Page {
         // let parser = Parser::new_ext(&markdown, options);
         // Set up parser. We can treat is as any other iterator. We replace Peter by John
         // and image by its alt text.
-        let parser = Parser::new_ext(&markdown, Options::empty())
-            .map(|event| match event {
-                Event::Text(text) => Event::Text(text.replace("Peter", "John").into()),
-                _ => event,
-            })
-            // .filter(|event| match event {
-            //     Event::Start(Tag::Image(..)) | Event::End(Tag::Image(..)) => false,
-            //     _ => true,
-            // })
-            .map(|event| match event {
-                Event::Start(Tag::Image(LinkType::Inline, url, title)) => {
-                    println!("url is {}", url);
-                    let re = Regex::new(r"(^https?://[^\s]*)|^/").unwrap();
-                    let mut url = url.into_string();
-                    // let mut url = url;
-                    if !re.is_match(&url) {
-                        url = String::from("/files/files/") + &url;
-                    }
-                    Event::Start(Tag::Image(LinkType::Inline, CowStr::from(url), title))
+        let parser = Parser::new_ext(&markdown, Options::empty()).map(|event| match event {
+            Event::Text(text) => Event::Text(text.replace("Peter", "John").into()),
+            Event::Start(Tag::Image(LinkType::Inline, url, title))
+            | Event::End(Tag::Image(LinkType::Inline, url, title)) => {
+                println!("url is {}", url);
+                let re = Regex::new(r"(^https?://[^\s]*)|^/").unwrap();
+                let mut url = url.to_string();
+                // let mut url = url;
+                if !re.is_match(&url) {
+                    url = String::from("/files/files/") + &url;
                 }
-                _ => event,
-            });
+                Event::Start(Tag::Image(LinkType::Inline, CowStr::from(url), title))
+            }
+            _ => event,
+        });
+        let parser = parser.flat_map(|event| match event {
+            // Event::Text(text) => Event::Text(text.replace("Peter", "John").into()),
+            Event::Text(text) => {
+                println!("text is {}", text);
+                let re = Regex::new(r"(^https?://[^\s]*)|^/").unwrap();
+                let text_str = text.to_string();
+                // let mut url = url;
+                if re.is_match(&text_str) {
+                    // return vec![
+                    //     Event::Start(Tag::Image(
+                    //         LinkType::Inline,
+                    //         CowStr::from(text_str),
+                    //         CowStr::from(text_str),
+                    //     )),
+                    //     Event::End(Tag::Image(
+                    //         LinkType::Inline,
+                    //         CowStr::from(text_str),
+                    //         CowStr::from(text_str),
+                    //     )),
+                    // ]
+                    // .iter();
+                    return std::iter::once(Event::Start(Tag::Image(
+                        LinkType::Inline,
+                        CowStr::from(text_str),
+                        CowStr::from(text_str),
+                    )))
+                    .chain(std::iter::once(Event::End(Tag::Image(
+                        LinkType::Inline,
+                        CowStr::from(text_str),
+                        CowStr::from(text_str),
+                    ))));
+                    // return std::iter::once(Event::Text(text));
+                }
+                std::iter::once(Event::Text(text))
+                // vec![Event::Text(text)].iter()
+            }
+            // _ => vec![event].iter(),
+            _ => std::iter::once(event),
+        });
 
         let mut html_buf = String::new();
         html::push_html(&mut html_buf, parser);
