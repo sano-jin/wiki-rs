@@ -1,12 +1,12 @@
 use crate::util;
 use actix_web::Error;
 // use pulldown_cmark::{html, Options, Parser};
+use either::*;
 use pulldown_cmark::{html, CowStr, Event, LinkType, Options, Parser, Tag};
+use regex::Regex;
 use std::fs::File;
 use std::io::prelude::*;
 use urlencoding;
-
-use regex::Regex;
 
 #[derive(Debug)]
 pub struct Page {
@@ -23,17 +23,6 @@ impl Page {
         // pulldown-cmark は backslash を無視してしまうっぽい．
         // TODO: markdown の仕様を確認して backslash をどう扱うべきか再考する．
         let markdown = markdown.replace("\\", "\\\\");
-
-        // リンクの処理
-        // リンクを <> でかこむ
-        // TODO: pulldown-cmark の機能を使ってより効率的に行うように refactor する
-        let re = Regex::new(r"([^<])(https?://[^\s\)]*)([^>])").unwrap();
-        let markdown = re.replace_all(&markdown, "$1<$2>$3");
-
-        // 括弧で囲まれていた場合（ユーザがちゃんとリンクとして書いていた場合）は取り除く
-        let re = Regex::new(r"\[([^\]]*)\]\(\s*<(https?://[^\s\)]*)>\s*\)").unwrap();
-        let markdown = re.replace_all(&markdown, "[$1]($2)");
-        // ここまでリンクの処理
 
         // コメントアウトを削除
         let re = Regex::new(r"(?m)^//.*$\n?").unwrap();
@@ -71,6 +60,50 @@ impl Page {
                 Event::Start(Tag::Image(LinkType::Inline, CowStr::from(url), title))
             }
             _ => event,
+        });
+
+        // 本文中の url をリンクに変換する．
+        // すでにリンクになっている場合はそのままにする必要があるので，
+        // リンクのネスト具合を link_level で管理する
+        let mut link_level = 0;
+        let parser = parser.flat_map(|event| match event {
+            // Event::Text(text) => Event::Text(text.replace("Peter", "John").into()),
+            Event::Start(Tag::Image(..)) | Event::Start(Tag::Link(..)) => {
+                link_level += 1;
+                Right(std::iter::once(event))
+            }
+            Event::End(Tag::Image(..)) | Event::End(Tag::Link(..)) => {
+                link_level -= 1;
+                Right(std::iter::once(event))
+            }
+            Event::Text(text) => {
+                if link_level > 0 {
+                    return Right(std::iter::once(Event::Text(text)));
+                }
+                println!("text is {}", text);
+                let re = Regex::new(r"^https?://[^\s]*").unwrap();
+                let text_str = text.to_string();
+                if re.is_match(&text_str) {
+                    println!("{}", text_str);
+                    return Left(
+                        std::iter::once(Event::Start(Tag::Link(
+                            LinkType::Inline,
+                            CowStr::from(text_str.to_owned()),
+                            CowStr::from(text_str.to_owned()),
+                        )))
+                        .chain(std::iter::once(Event::Text(CowStr::from(
+                            text_str.to_owned(),
+                        ))))
+                        .chain(std::iter::once(Event::End(Tag::Link(
+                            LinkType::Inline,
+                            CowStr::from(text_str.to_owned()),
+                            CowStr::from(text_str.to_owned()),
+                        )))),
+                    );
+                }
+                Right(std::iter::once(Event::Text(text)))
+            }
+            _ => Right(std::iter::once(event)),
         });
 
         let mut html_buf = String::new();
