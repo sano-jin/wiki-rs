@@ -13,6 +13,7 @@ pub struct Page {
     pub markdown: String,
     pub html: String,
     pub modified: DateTime<Utc>,
+    // let mut headings: Vec<(String, usize, String)> = Vec::new();
 }
 
 impl Page {
@@ -20,7 +21,12 @@ impl Page {
     /// handles the POST request
     /// Create a page from the default page template, path and markdown
     pub fn create(default_page: &str, path: &str, markdown: &str) -> Result<Page, Error> {
-        let html_buf = pages::html_of_markdown(&markdown)?;
+        // heading にリンクが追加されていなかったら uuid を活用して id をふる
+        let (markdown, toc) = pages::add_heading_ids(&markdown);
+        println!("heading map: {:?}", toc);
+
+        // markdown を html に変換する
+        let html_buf = pages::html_of_markdown(&path, &markdown)?;
 
         // decode the path to obtain the title
         let name = urlencoding::decode(&path).expect("cannot decode");

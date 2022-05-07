@@ -40,7 +40,7 @@ pub fn save(page: &Page) -> Result<(), Error> {
 
     // serialize the data structure to json
     let page_data_json = serde_json::to_string(&page_data)?;
-    print!("page_data_json: {:?}", page_data_json);
+    // print!("page_data_json: {:?}", page_data_json);
 
     // Update the file with the given contents
     let path = util::get_path("public/db", &page.path);
