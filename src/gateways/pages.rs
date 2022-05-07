@@ -134,8 +134,7 @@ pub fn list_pages() -> Option<Vec<(String, String)>> {
 
 /// GET the page for editing the page
 pub fn get_editor(path_str: &str) -> Result<String, Error> {
-    let path = util::get_path("public/db", &path_str);
-    let contents = match get_page(&path.to_string_lossy()) {
+    let contents = match get_page(&path_str) {
         Err(..) => String::from(""),
         Ok(page) => page.markdown,
     };

@@ -2,17 +2,8 @@
 /// データベースとのやりとりとかは書かない
 use crate::entities::pages;
 use actix_web::Error;
-// use serde::{Deserialize, Serialize};
-use urlencoding;
-// use either::*;
-// use pulldown_cmark::{html, CowStr, Event, LinkType, Options, Parser, Tag};
-// use pulldown_cmark::{html, Options, Parser};
-// use regex::Regex;
-// use crate::util;
-// use std::fs::File;
-// use std::io::prelude::*;
-// use chrono::{Date, DateTime, Local, Utc};
 use chrono::{DateTime, Utc};
+use urlencoding;
 
 // #[derive(Debug, Serialize, Deserialize)]
 #[derive(Debug)]

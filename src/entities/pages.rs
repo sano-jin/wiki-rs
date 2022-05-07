@@ -6,11 +6,6 @@ use actix_web::Error;
 use either::*;
 use pulldown_cmark::{html, CowStr, Event, LinkType, Options, Parser, Tag};
 use regex::Regex;
-// use urlencoding;
-// use crate::util;
-// use pulldown_cmark::{html, Options, Parser};
-// use std::fs::File;
-// use std::io::prelude::*;
 
 /// convert markdown to html
 pub fn html_of_markdown(markdown: &str) -> Result<String, Error> {
@@ -108,61 +103,3 @@ pub fn html_of_markdown(markdown: &str) -> Result<String, Error> {
     // decode the path to obtain the title
     Ok(html_buf)
 }
-
-// /// Embed the list of files in the given html contents
-// pub fn embed_pages_list(contents: &str) -> Option<String> {
-//     let pages_list = list_pages().expect("file list");
-//     println!("pages list {:?}", pages_list);
-//     let mut vec_pages_list = Vec::new();
-//     for (decoded, path) in pages_list {
-//         vec_pages_list.push(format!(
-//             "<li><a href=\"pages?path={}\">{}</a></li>",
-//             path, decoded
-//         ));
-//     }
-//
-//     // Load the file
-//     let contents = contents.replace("{{ INDEX_UL }}", &vec_pages_list.join("\n"));
-//     Some(contents)
-// }
-//
-// /// get modified date from DirEntry
-// pub fn get_modified(entry: &std::fs::DirEntry) -> Result<u64, std::io::Error> {
-//     let path = entry.path();
-//
-//     let metadata = std::fs::metadata(&path)?;
-//     let last_modified = metadata.modified()?.elapsed().expect("hoge").as_secs();
-//     Ok(last_modified)
-// }
-//
-// /// Get the list of files
-// /// sorted by the modified date
-// pub fn list_pages() -> Option<Vec<(String, String)>> {
-//     let mut vec = Vec::new();
-//     let paths = std::fs::read_dir("public/pages/").unwrap();
-//     let mut vec_files = Vec::new();
-//     for dir_entry in paths {
-//         if let Ok(entry) = dir_entry {
-//             vec_files.push(entry)
-//         }
-//     }
-//     // sort by the modified date
-//     vec_files.sort_by(|a, b| {
-//         let a_modified = get_modified(&a).unwrap();
-//         let b_modified = get_modified(&b).unwrap();
-//         a_modified.partial_cmp(&b_modified).unwrap()
-//     });
-//
-//     // for path in paths {
-//     for path in vec_files {
-//         let filename = path.path();
-//         let filename = filename.file_name()?.to_str()?;
-//
-//         // decode the path to obtain the title
-//         let decoded_filename = urlencoding::decode(&filename).expect("cannot decode");
-//
-//         // println!("Name: {}", filename);
-//         vec.push((decoded_filename.to_string(), filename.to_string()));
-//     }
-//     Some(vec)
-// }
