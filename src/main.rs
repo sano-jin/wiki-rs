@@ -1,7 +1,9 @@
 use actix_cors::Cors;
 use actix_web::{http, middleware, App, HttpServer};
+use actix_web_httpauth::extractors::basic::Config;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use wiki_rs::routes;
+// use actix_web_httpauth::extractors::basic::{BasicAuth, Config};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -30,6 +32,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(cors) // allow access from http://localhost
             .wrap(middleware::Logger::default()) // enable logger
+            .app_data(Config::default().realm("Restricted area"))
             .configure(routes::routes)
     })
     .bind_openssl("127.0.0.1:8443", builder)?
