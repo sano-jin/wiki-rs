@@ -107,20 +107,44 @@ public/
 └── pages/ # directory to save the transformed html files
 ```
 
+現在，
+`public/pages/*`, `public/edit/*` は廃止して，
+`public/db/*` に json ファイルを置くことにしている．
+
+- TODO: 後で上記のファイル構成の方にも反映する．
+
 ### server-side
+
+clean architecture を参考にしようともがいている
+（けどそもそも理解できていない）．
+
+- （けどそもそも理解できていない．．．
+
+参考資料：
+
+- https://qiita.com/nrslib/items/a5f902c4defc83bd46b8#%E7%9F%A2%E5%8D%B0%E3%81%AE%E6%96%B9%E5%90%91
+- https://nrslib.com/clean-architecture-with-java/#outline__6_3
+- https://gist.github.com/mpppk/609d592f25cab9312654b39f1b357c60
+- https://nrslib.com/clean-architecture-with-java/#outline__6_3
 
 ```sh
 src
-├── controllers
+├── controllers/ # client と通信する POST API
 │   ├── handle_page.rs
 │   ├── index.rs
 │   └── mod.rs
-├── lib.rs
-├── main.rs
-├── models
+├── entities/ # markdown to html converter などの補助関数とか
 │   ├── mod.rs
 │   └── pages.rs
+├── gateways # データベースもどき
+│   ├── mod.rs
+│   └── pages.rs
+├── lib.rs
+├── main.rs
 ├── routes.rs
+├── usecases # ページのデータ構造の定義とか
+│   ├── mod.rs
+│   └── pages.rs
 └── util.rs
 ```
 
