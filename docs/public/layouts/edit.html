@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300&family=JetBrains+Mono:wght@300&family=Noto+Sans+JP:wght@300&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Editing</title>
+    <link rel="stylesheet" href="/files/assets/main.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="wrapper">
+        <div class="site-header">
+          <div class="site-title">Editing</div>
+        </div>
+      </div>
+      <div class="wrapper">
+        <a href="/">HOME</a>
+      </div>
+
+      <div class="wrapper">
+        <form action="/edit" method="GET">
+          <input
+            type="text"
+            id="input_path"
+            name="input_path"
+            required
+            minlength="4"
+            maxlength="100"
+            size="100"
+            value="{{ TITLE }}"
+          />
+          <br />
+          <textarea name="input_content" id="input_content">
+{{ MARKDOWN }}</textarea
+          >
+          <br />
+          <input
+            type="submit"
+            id="btn_submit"
+            name="btn_submit"
+            value="Update"
+            class="button"
+          />
+        </form>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      // 送信ボタンのHTMLを取得
+      const btn_submit = document.getElementById("btn_submit");
+
+      btn_submit.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        // (3) フォーム入力欄のHTMLを取得
+        const input_path = document.querySelector("input[name=input_path]");
+        const path = input_path.value;
+
+        // (3) フォーム入力欄のHTMLを取得
+        const input_content = document.querySelector(
+          "textarea[name=input_content]"
+        );
+
+        // (4) FormDataオブジェクトにデータをセット
+        const body = input_content.value;
+
+        // (5) フォームの入力値を送信
+        const response = await fetch("/edit", {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify({ path: path, body: body }), // body data type must match "Content-Type" header
+        });
+
+        const location = await response.json();
+        console.log("location: ", location);
+
+        // redirect to the returned location
+        window.location = location;
+      });
+    });
+  </script>
+</html>
