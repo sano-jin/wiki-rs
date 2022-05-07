@@ -1,10 +1,11 @@
+use crate::controllers::authenticate::User;
 /// これは POST API を actix-web で扱うことが前提なコードになっているので，
 /// 本来は，controller ではなく，もうひとつ上のレイヤ（framework）に来る気はしている．
 /// gateways (DB) に依存しているのもよくない気がする．
 use crate::gateways;
 use crate::usecases::pages::Page;
-
 use actix_web::{web, Error, HttpResponse};
+use actix_web_httpauth::extractors::basic::BasicAuth;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -14,7 +15,9 @@ pub struct NewPageObj {
 }
 
 /// Create and Update the file with POST method
-pub async fn post(item: web::Json<NewPageObj>) -> Result<HttpResponse, Error> {
+pub async fn post(auth: BasicAuth, item: web::Json<NewPageObj>) -> Result<HttpResponse, Error> {
+    User::load().authenticate(auth)?;
+
     println!("post {:?}", item);
 
     let default_page: String = gateways::pages::get_default_page()?;
@@ -32,7 +35,9 @@ pub struct QueryPath {
 }
 
 /// Delete the file with DELETE method
-pub async fn delete(item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
+pub async fn delete(auth: BasicAuth, item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
+    User::load().authenticate(auth)?;
+
     println!("delete ? {:?}", item);
 
     // delete the page
@@ -43,7 +48,8 @@ pub async fn delete(item: web::Query<QueryPath>) -> Result<HttpResponse, Error> 
 }
 
 /// GET the page
-pub async fn get_page(item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
+pub async fn get_page(auth: BasicAuth, item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
+    User::load().authenticate(auth)?;
     println!("get_page ? {:?}", item);
 
     // Load the page
@@ -54,7 +60,11 @@ pub async fn get_page(item: web::Query<QueryPath>) -> Result<HttpResponse, Error
 }
 
 /// GET the page for editing the page
-pub async fn get_editor(item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
+pub async fn get_editor(
+    auth: BasicAuth,
+    item: web::Query<QueryPath>,
+) -> Result<HttpResponse, Error> {
+    User::load().authenticate(auth)?;
     println!("get_edit_page ? {:?}", item);
 
     // get the editor html with the given file path
