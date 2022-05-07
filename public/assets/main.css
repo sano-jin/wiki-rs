@@ -432,3 +432,17 @@ pre > .code-copy-button.copied {
 pre {
   position: relative;
 }
+
+/**
+ * Headings
+ */
+h1 > a::before,
+h2 > a::before,
+h3 > a::before,
+h4 > a::before,
+h5 > a::before,
+h6 > a::before {
+  margin-right: 10px;
+  font-size: 80%;
+  content: "†";
+}
