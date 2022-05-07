@@ -9,8 +9,77 @@ use regex::Regex;
 // use std::collections::HashMap;
 use uuid::Uuid;
 
-// heading にリンクが追加されていなかったら uuid を活用して id をふる
-// `# heading title { #id }` のようにする
+#[derive(Debug, PartialEq, Copy, Clone)]
+enum State {
+    IsNormal,  // normal text
+    IsInCode1, // is in singly quoted inline code block
+    IsInCode2, // is in doubly quoted inline code block
+    IsInCode3, // is in triply quoted inline code block
+    IsInCode4, // is in quadruply quoted inline code block
+}
+
+/// 一行読んで，読み終わった後の状態を返す
+fn next_state_of(state: State, line: &str) -> State {
+    if line.starts_with("    ") {
+        // This is in a code block
+        return state;
+    }
+    let mut state = state;
+    let mut quotes_num = 0; // 連続して出現するバッククオートの数
+    for c in line.chars() {
+        if c == '`' {
+            println!("quoting...");
+            quotes_num += 1;
+            if state == State::IsInCode1 && quotes_num == 1
+                || state == State::IsInCode2 && quotes_num == 2
+                || state == State::IsInCode3 && quotes_num == 3
+                || state == State::IsInCode4 && quotes_num == 4
+            {
+                state = State::IsNormal;
+                quotes_num = 0;
+            } else if state == State::IsNormal && quotes_num == 4 {
+                state = State::IsInCode4;
+                quotes_num = 0;
+            } else if quotes_num > 4 {
+                panic!("unreachable");
+            }
+        } else {
+            if quotes_num == 1 {
+                if state == State::IsNormal {
+                    state = State::IsInCode1;
+                } else if state == State::IsInCode1 {
+                    state = State::IsNormal;
+                }
+            } else if quotes_num == 2 {
+                if state == State::IsNormal {
+                    state = State::IsInCode2;
+                } else if state == State::IsInCode2 {
+                    state = State::IsNormal;
+                }
+            } else if quotes_num == 3 {
+                if state == State::IsNormal {
+                    state = State::IsInCode3;
+                    println!("in code3...");
+                } else if state == State::IsInCode3 {
+                    state = State::IsNormal;
+                }
+            } else if quotes_num == 4 {
+                if state == State::IsNormal {
+                    state = State::IsInCode4;
+                } else if state == State::IsInCode4 {
+                    state = State::IsNormal;
+                }
+            } else if quotes_num > 4 {
+                panic!("unreachable");
+            }
+            quotes_num = 0;
+        }
+    }
+    state
+}
+
+/// heading にリンクが追加されていなかったら uuid を活用して id をふる
+/// `# heading title { #id }` のようにする
 pub fn add_heading_ids(markdown: &str) -> (String, Vec<(String, usize, String)>) {
     println!("adding heading ids");
     let lines = markdown.split("\n"); // 改行で区切る
@@ -21,30 +90,47 @@ pub fn add_heading_ids(markdown: &str) -> (String, Vec<(String, usize, String)>)
     // let mut headings: HashMap<String, String> = HashMap::new();
     // Heading のベクタ
     let mut headings: Vec<(String, usize, String)> = Vec::new();
+    let mut state = State::IsNormal; // コードブロックの中にいるかどうかの状態
 
     // TODO: Vec<String> じゃなくて，Vec<&str> を返すようにしたい（効率化）
     let lines: Vec<String> = lines
-        .map(|line| match is_heading.captures(line) {
-            Some(caps) => {
-                let level_match = caps.get(1).unwrap();
-                let level = level_match.end() - level_match.start();
-                match has_id.captures(line) {
-                    Some(caps) => {
-                        let heading_text = caps.get(1).unwrap().as_str();
-                        let id = caps.get(2).unwrap().as_str();
-                        headings.push((id.to_string(), level, heading_text.to_string()));
-                        return line.to_string();
-                    }
-                    None => {
-                        let heading_text = caps.get(2).unwrap().as_str();
-                        let id = Uuid::new_v4().to_string();
-                        let line = format!("{} {{ #{} }}", line, &id);
-                        headings.push((id, level, heading_text.to_string()));
-                        return line;
-                    }
-                };
+        .map(|line| {
+            println!("line: \"{}\", state: {:?}", line, state);
+            if line.starts_with("    ") {
+                return line.to_string();
             }
-            None => line.to_string(),
+            if state != State::IsNormal {
+                state = next_state_of(state, &line);
+                return line.to_string();
+            }
+            state = next_state_of(state, &line);
+            match is_heading.captures(line) {
+                Some(caps) => {
+                    let level_match = caps.get(1).unwrap();
+                    let level = level_match.end() - level_match.start();
+                    match has_id.captures(line) {
+                        Some(caps) => {
+                            let heading_text = caps.get(1).unwrap().as_str();
+                            let id = caps.get(2).unwrap().as_str();
+                            headings.push((id.to_string(), level, heading_text.to_string()));
+                            return line.to_string();
+                        }
+                        None => {
+                            let heading_text = caps.get(2).unwrap().as_str();
+                            let id = Uuid::new_v4().to_string();
+                            let line = format!(
+                                "{} {} {{ #{} }}",
+                                level_match.as_str(),
+                                heading_text.trim(),
+                                &id
+                            );
+                            headings.push((id, level, heading_text.to_string()));
+                            return line;
+                        }
+                    };
+                }
+                None => line.to_string(),
+            }
         })
         .collect();
 
