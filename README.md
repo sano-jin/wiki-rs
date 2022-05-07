@@ -43,6 +43,27 @@ Install Cargo
 
 3. and access <https://127.0.0.1:8443/> on your browser.
 
+# Design
+
+とりあえずの architecture:
+
+- model
+  - page の型宣言をしておく
+  - markdown から page に変換したりするコードを置いておく
+- interface adapters :: controllers, presenters, gateways
+  - ページの更新や取得などを行うコードを書いておく
+- frameworks and drivers :: web, ui, external interfaces, devices, db
+
+clean architecture:
+
+- Enterprise business rules :: entities
+  - page の型宣言をしておく
+- application business rules :: use cases, interactor
+  - markdown から page に変換したりするコードを置いておく
+- interface adapters :: controllers, presenters, gateways
+  - ページの更新や取得などを行うコードを書いておく
+- frameworks and drivers :: web, ui, external interfaces, devices, db
+
 # API design
 
 ## Front

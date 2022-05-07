@@ -1,4 +1,8 @@
-use crate::models::pages::Page;
+/// これは POST API を actix-web で扱うことが前提なコードになっているので，
+/// 本来は，controller ではなく，もうひとつ上のレイヤ（framework）に来る気はしている．
+/// gateways (DB) に依存しているのもよくない気がする．
+use crate::gateways;
+use crate::usecases::pages::Page;
 
 use actix_web::{web, Error, HttpResponse};
 use serde::{Deserialize, Serialize};
@@ -13,8 +17,9 @@ pub struct NewPageObj {
 pub async fn post(item: web::Json<NewPageObj>) -> Result<HttpResponse, Error> {
     println!("post {:?}", item);
 
-    let page = Page::create(&item.path, &item.body)?;
-    Page::save(&page)?;
+    let default_page: String = gateways::pages::get_default_page()?;
+    let page = Page::create(&default_page, &item.path, &item.body)?;
+    gateways::pages::save(&page)?;
 
     // TODO: navigate to the new page created
     let url = format!("/pages?path={}", &item.path);
@@ -31,7 +36,7 @@ pub async fn delete(item: web::Query<QueryPath>) -> Result<HttpResponse, Error> 
     println!("delete ? {:?}", item);
 
     // delete the page
-    Page::delete(&item.path)?;
+    gateways::pages::delete(&item.path)?;
 
     // TODO: navigate to the root page
     Ok(HttpResponse::Ok().json("deleted"))
@@ -42,7 +47,7 @@ pub async fn get_page(item: web::Query<QueryPath>) -> Result<HttpResponse, Error
     println!("get_page ? {:?}", item);
 
     // Load the page
-    let contents = Page::get_html(&item.path)?;
+    let contents = gateways::pages::get_html(&item.path)?;
 
     // Return the response and display the html file on the browser
     Ok(HttpResponse::Ok().content_type("text/html").body(contents))
@@ -53,7 +58,7 @@ pub async fn get_editor(item: web::Query<QueryPath>) -> Result<HttpResponse, Err
     println!("get_edit_page ? {:?}", item);
 
     // get the editor html with the given file path
-    let editor = Page::get_editor(&item.path)?;
+    let editor = gateways::pages::get_editor(&item.path)?;
 
     Ok(HttpResponse::Ok().content_type("text/html").body(editor))
 }
