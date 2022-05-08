@@ -443,15 +443,33 @@ pre {
 /**
  * Headings
  */
-h1 > a::before,
-h2 > a::before,
-h3 > a::before,
-h4 > a::before,
-h5 > a::before,
-h6 > a::before {
-  margin-right: 10px;
-  font-size: 80%;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  position: relative;
+  margin-left: -30px;
+  padding-left: 30px;
+  /*
+  */
+}
+
+h1:hover > a::before,
+h2:hover > a::before,
+h3:hover > a::before,
+h4:hover > a::before,
+h5:hover > a::before,
+h6:hover > a::before {
+  /*
+    margin-right: 10px;
+  font-size: calc(50% + 10px);
+  */
+  font-size: calc(30% + 15px);
   content: "†";
+  left: 0.5rem;
+  position: absolute;
 }
 
 html {
@@ -489,6 +507,7 @@ div.menu {
 */
   border-radius: 10px;
 }
+
 div.menu > ul {
   max-width: 300px;
   overflow: hidden;
@@ -522,7 +541,7 @@ div.menu ul li {
 
 div.menu ul li:after {
   position: absolute;
-  top: 4px;
+  top: 5px;
   left: 0px;
   content: "";
   border-radius: 50%;
