@@ -152,35 +152,34 @@ pub fn get_modified(entry: &std::fs::DirEntry) -> Result<u64, std::io::Error> {
 /// Get the list of files
 /// sorted by the modified date
 pub fn list_pages() -> Option<Vec<(String, String)>> {
-    let mut vec = Vec::new();
-    let paths = std::fs::read_dir("public/db/").unwrap();
+    let dir_entries = std::fs::read_dir("public/db/").unwrap();
     let mut vec_files = Vec::new();
-    for dir_entry in paths {
+    for dir_entry in dir_entries {
         if let Ok(entry) = dir_entry {
             if let Ok(metadata) = entry.metadata() {
                 if metadata.is_file() {
-                    vec_files.push(entry)
+                    if let Ok(filepath) = entry.file_name().into_string() {
+                        let filepath = urlencoding::decode(&filepath).expect("cannot decode");
+                        println!("filepath: {}", filepath);
+                        let page = get_page(&filepath).unwrap();
+                        vec_files.push((page.modified, page.path));
+                    }
                 }
             }
         }
     }
+
     // sort by the modified date
-    vec_files.sort_by(|a, b| {
-        let a_modified = get_modified(&a).unwrap();
-        let b_modified = get_modified(&b).unwrap();
-        a_modified.partial_cmp(&b_modified).unwrap()
-    });
+    vec_files.sort_by(|(t1, _), (t2, _)| t1.partial_cmp(t2).unwrap());
 
     // for path in paths {
-    for path in vec_files {
-        let filename = path.path();
-        let filename = filename.file_name()?.to_str()?;
-
+    let mut vec = Vec::new();
+    for (_, path) in vec_files {
         // decode the path to obtain the title
-        let decoded_filename = urlencoding::decode(&filename).expect("cannot decode");
+        let decoded_filename = urlencoding::decode(&path).expect("cannot decode");
 
         // println!("Name: {}", filename);
-        vec.push((decoded_filename.to_string(), filename.to_string()));
+        vec.push((decoded_filename.to_string(), path.to_string()));
     }
     Some(vec)
 }
