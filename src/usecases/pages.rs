@@ -25,8 +25,12 @@ impl Page {
         let (markdown, toc) = pages::add_heading_ids(&markdown);
         println!("heading map: {:?}", toc);
 
+        // headings からマークダウンの toc を生成する
+        let toc = pages::markdown_of_toc(&toc);
+        let toc_markdown = format!("Table of contents\n{}\n\n\n\n{}", toc, markdown);
+
         // markdown を html に変換する
-        let html_buf = pages::html_of_markdown(&path, &markdown)?;
+        let html_buf = pages::html_of_markdown(&path, &toc_markdown)?;
 
         // decode the path to obtain the title
         let name = urlencoding::decode(&path).expect("cannot decode");

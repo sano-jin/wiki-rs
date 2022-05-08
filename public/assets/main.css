@@ -452,3 +452,7 @@ h6 > a::before {
   font-size: 80%;
   content: "†";
 }
+
+html {
+  scroll-behavior: smooth;
+}
