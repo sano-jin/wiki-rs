@@ -78,6 +78,29 @@ fn next_state_of(state: State, line: &str) -> State {
     state
 }
 
+// /// The elements of toc
+// /// 目次の要素
+// #[derive(Debug, PartialEq, Copy, Clone)]
+// enum TocElem {
+//     IsNormal,  // normal text
+//     IsInCode1, // is in singly quoted inline code block
+//     IsInCode2, // is in doubly quoted inline code block
+//     IsInCode3, // is in triply quoted inline code block
+//     IsInCode4, // is in quadruply quoted inline code block
+// }
+
+/// TOC からその markdown を生成する
+pub fn markdown_of_toc(toc: &Vec<(String, usize, String)>) -> String {
+    let toc: Vec<String> = toc
+        .iter()
+        .map(|(id, level, title)| {
+            let spaces = std::iter::repeat("   ").take(level - 1).collect::<String>();
+            format!("> {}- [{}](#{})", spaces, title, id)
+        })
+        .collect();
+    toc.join("\n")
+}
+
 /// heading にリンクが追加されていなかったら uuid を活用して id をふる
 /// `# heading title { #id }` のようにする
 pub fn add_heading_ids(markdown: &str) -> (String, Vec<(String, usize, String)>) {
