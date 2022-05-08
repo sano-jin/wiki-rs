@@ -25,15 +25,13 @@
       </div>
 
       <div class="sidebar">
-        <div class="wrapper">
-          <ul>
-            {{ INDEX_UL }}
-          </ul>
-        </div>
+        <ul>
+          {{ INDEX_UL }}
+        </ul>
       </div>
 
       <div class="wrapper body-contents">
-        <div class="wrapper">
+        <div class="form-element">
           Create a new page:
           <form action="/edit" method="GET">
             <input
@@ -54,7 +52,7 @@
           </form>
         </div>
 
-        <div class="wrapper">
+        <div class="form-element">
           Delete a page:
           <form action="/edit" method="DELETE">
             <input

@@ -9,12 +9,12 @@ async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=debug");
     env_logger::init();
 
-    println!("Started http server: 127.0.0.1:8443");
+    println!("Started http server: 0.0.0.0:8080");
 
     let args: Vec<String> = std::env::args().collect();
     println!("{:?}", args);
 
-    if args[1] == "non-secure" {
+    if args.len() > 1 && args[1] == "non-secure" {
         // enable in http (not https)
         println!("run http (not https) server");
 
@@ -24,7 +24,7 @@ async fn main() -> std::io::Result<()> {
                 .app_data(Config::default().realm("Restricted area")) // basic authemtication
                 .configure(routes::routes)
         })
-        .bind(("hostname", 8080))?
+        .bind(("0.0.0.0", 8080))?
         .run()
         .await
     } else {

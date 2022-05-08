@@ -41,9 +41,19 @@
           <div class="site-title">{{ TITLE }}</div>
         </div>
       </div>
+
+      <!-- header menu bar -->
       <div class="wrapper header-menu">
         <a href="/" class="button">HOME</a>
         <a href="/edit?path={{ PATH }}" class="button">Update</a>
+        <form
+          action="/attach?path={{ PATH }}"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <input type="file" multiple name="file" />
+          <button type="submit" class="button">Submit</button>
+        </form>
         <form action="/edit" method="DELETE">
           <input
             type="submit"
@@ -54,14 +64,19 @@
           />
         </form>
       </div>
+
+      <!-- side menu bar -->
       <div class="sidebar">
-        <div class="wrapper">
-          <ul>
-            {{ INDEX_UL }}
-          </ul>
-        </div>
+        <ul>
+          {{ INDEX_UL }}
+        </ul>
       </div>
-      <div class="body-contents wrapper">{{ BODY }}</div>
+
+      <!-- body contents -->
+      <div class="body-contents">
+        <div class="updated-date">Last modified: {{ UPDATED_DATE }}</div>
+        <div class="body">{{ BODY }}</div>
+      </div>
     </div>
   </body>
 
@@ -85,7 +100,7 @@
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      // 送信ボタンのHTMLを取得
+      // ページの削除
       const btn_submit = document.getElementById("btn-submit-delete");
       btn_submit.addEventListener("click", async (e) => {
         e.preventDefault();
@@ -99,6 +114,47 @@
         // redirect to the home page
         window.location = "/";
       });
+
+      //  // ファイルの添付
+      //  const btn_select_attach = document.getElementById("btn-select-attach");
+      //  const btn_post_attach = document.getElementById("btn-post-attach");
+      //  btn_post_attach.addEventListener("click", async (e) => {
+      //    e.preventDefault();
+
+      //    // 送信データの準備
+      //    const formData = new FormData();
+
+      //    console.log("btn_select_attach", btn_select_attach.files);
+      //    const data = btn_select_attach.files[0];
+
+      //    formData.append("avatar", data); // ファイル内容を詰める
+      //    console.log("this.files[0]", data);
+      //    console.log("formData", formData);
+      //    console.log(`formData {formData}`);
+
+      //    // const param = {
+      //    //   method: "POST",
+      //    //   body: formData,
+      //    // };
+
+      //    // // アップロードする
+      //    // fetch("https://example.com/receive.php", param)
+      //    //   .then((res) => {
+      //    //     return res.json();
+      //    //   })
+      //    //   .then((json) => {
+      //    //     // 通信が成功した際の処理
+      //    //   })
+      //    //   .catch((error) => {
+      //    //     // エラー処理
+      //    //   });
+
+      //    // // フォームの入力値を送信
+      //    // const response = await fetch(
+      //    //   "/attach?" + new URLSearchParams({ path: "TITLE" }),
+      //    //   { method: "DELETE" }
+      //    // );
+      //  });
 
       // ソースコードをコピーできるボタンの追加
       // const btn_submit = document.getElementById("btn-submit-delete");
