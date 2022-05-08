@@ -165,6 +165,7 @@ pub fn html_of_markdown(path: &str, markdown: &str) -> Result<String, Error> {
     // backslash をエスケープする．
     // pulldown-cmark は backslash を無視してしまうっぽい．
     // TODO: markdown の仕様を確認して backslash をどう扱うべきか再考する．
+    // これだとコードブロック内もエスケープしてしまうのでまずい．
     let markdown = markdown.replace("\\", "\\\\");
 
     // コメントアウトを削除
@@ -213,7 +214,6 @@ pub fn html_of_markdown(path: &str, markdown: &str) -> Result<String, Error> {
     // Heading にリンクをつける
     let mut link_level = 0;
     let parser = parser.flat_map(|event| match event {
-        // Event::Text(text) => Event::Text(text.replace("Peter", "John").into()),
         Event::Start(Tag::Image(..)) | Event::Start(Tag::Link(..)) => {
             link_level += 1;
             Right(std::iter::once(event))

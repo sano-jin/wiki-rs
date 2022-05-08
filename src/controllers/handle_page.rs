@@ -6,7 +6,7 @@ use crate::gateways;
 use crate::usecases::pages::Page;
 use actix_multipart::Multipart;
 // use actix_web::{middleware, web, App, Error, HttpResponse, HttpServer};
-use actix_web::{http::header, web, Error, HttpResponse};
+use actix_web::{web, Error, HttpResponse};
 use actix_web_httpauth::extractors::basic::BasicAuth;
 use futures::{StreamExt, TryStreamExt};
 use serde::{Deserialize, Serialize};
