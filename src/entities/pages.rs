@@ -94,8 +94,8 @@ pub fn markdown_of_toc(toc: &Vec<(String, usize, String)>) -> String {
     let toc: Vec<String> = toc
         .iter()
         .map(|(id, level, title)| {
-            let spaces = std::iter::repeat("   ").take(level - 1).collect::<String>();
-            format!("> {}- [{}](#{})", spaces, title, id)
+            let spaces = std::iter::repeat("   ").take(level - 0).collect::<String>();
+            format!("{}- [{}](#{})", spaces, title, id)
         })
         .collect();
     toc.join("\n")
