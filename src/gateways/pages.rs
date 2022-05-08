@@ -60,6 +60,55 @@ pub fn delete(filepath: &str) -> Result<(), Error> {
     Ok(())
 }
 
+/// handle attached files
+/// Save the attach file
+pub fn save_attach(path: &str, buf: &Vec<u8>) -> Result<(), Error> {
+    // Update the file with the given contents
+    let path = util::get_path("public/db/attach", &path);
+    println!("writing to the file {:?}", path);
+
+    let mut file = File::create(&path)?;
+    file.write_all(buf)?;
+
+    Ok(())
+}
+
+/// Delete the attached file
+pub fn delete_attach(filepath: &str) -> Result<(), Error> {
+    // delete the file
+    let path = util::get_path("public/db", &filepath);
+    std::fs::remove_file(&path)?;
+
+    Ok(())
+}
+
+/// Get the attached file
+pub fn get_attach(filepath: &str) -> Result<Vec<u8>, Error> {
+    // Load the file
+    let path = util::get_path("public/db/attach", &filepath);
+    println!("path is {:?}", path);
+    // let data = std::io::Read::read_to_end(&path)?;
+
+    let mut file = File::open(path)?;
+    let mut buf = Vec::new();
+    let _ = file.read_to_end(&mut buf)?;
+    // println!("{:?}", buf);
+
+    Ok(buf)
+    //     // transform the data in DB to the Page
+    //     let page_data: PageData = serde_json::from_str(&page_data_json)?;
+    //     let modified = DateTime::parse_from_rfc3339(&page_data.modified_rfc3339).expect("joge");
+    //     let modified = DateTime::from(modified);
+    //
+    //     Ok(Page {
+    //         path: page_data.path,
+    //         name: page_data.name,
+    //         markdown: page_data.markdown,
+    //         html: page_data.html,
+    //         modified: modified,
+    //     })
+}
+
 /// Get the page
 pub fn get_page(filepath: &str) -> Result<Page, Error> {
     // Load the file
@@ -108,7 +157,11 @@ pub fn list_pages() -> Option<Vec<(String, String)>> {
     let mut vec_files = Vec::new();
     for dir_entry in paths {
         if let Ok(entry) = dir_entry {
-            vec_files.push(entry)
+            if let Ok(metadata) = entry.metadata() {
+                if metadata.is_file() {
+                    vec_files.push(entry)
+                }
+            }
         }
     }
     // sort by the modified date

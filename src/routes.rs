@@ -3,6 +3,8 @@ use crate::controllers::index;
 use actix_web::{web, HttpResponse};
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
+    cfg.route("/attach", web::get().to(handle_page::get_attach)); // GET the attached files
+    cfg.route("/attach", web::post().to(handle_page::post_attach2)); // GET the attached files
     cfg.route("/pages", web::get().to(handle_page::get_page)); // GET the page
     cfg.route("/edit", web::get().to(handle_page::get_editor)); // GET the editor
     cfg.route("/edit", web::post().to(handle_page::post)); // POST the new contents to update the file

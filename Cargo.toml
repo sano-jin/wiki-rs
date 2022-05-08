@@ -24,4 +24,5 @@ regex = "1"
 either = "1"
 chrono = "0.4"
 actix-web-httpauth = "0.6"
-
+actix-multipart = "0.4"
+futures = "0.3"
