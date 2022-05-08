@@ -2,7 +2,7 @@
 /// データベースとのやりとりとかは書かない
 use crate::entities::pages;
 use actix_web::Error;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Local, Utc};
 use urlencoding;
 
 // #[derive(Debug, Serialize, Deserialize)]
@@ -43,13 +43,18 @@ impl Page {
         // // Open the default file
         // let default_page = std::fs::read_to_string("public/layouts/page.html")?;
 
+        let modified_datetime: DateTime<Utc> = Utc::now();
+        let local_updated_time: DateTime<Local> = DateTime::from(modified_datetime);
+
         // Replace the title, path, contents
         let html = default_page
             .replace("{{ TITLE }}", &name)
             .replace("{{ PATH }}", &path)
+            .replace(
+                "{{ UPDATED_DATE }}",
+                &local_updated_time.format("%Y-%m-%d %H:%M:%S").to_string(),
+            )
             .replace("{{ BODY }}", &html_buf);
-
-        let modified_datetime: DateTime<Utc> = Utc::now();
 
         Ok(Page {
             path: path.to_string(),

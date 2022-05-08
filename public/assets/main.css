@@ -594,3 +594,8 @@ div.menu ul li ul li:before {
   width: 0;
   border-left: 1.5px dashed #556;
 }
+
+/* last modified date */
+.updated-date {
+  color: #778;
+}
