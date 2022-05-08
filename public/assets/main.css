@@ -252,12 +252,14 @@ pre > code {
 /**
  * Clearfix
  */
+/*
 .wrapper:after,
 .footer-col-wrapper:after {
   content: "";
   display: table;
   clear: both;
 }
+*/
 
 /**
  * Icons

@@ -30,47 +30,55 @@
         </ul>
       </div>
 
-      <div class="wrapper body-contents">
-        <div class="form-element">
-          Create a new page:
-          <form action="/edit" method="GET">
-            <input
-              type="text"
-              id="input_path"
-              name="input_path"
-              required
-              size="50"
-              value=""
-            />
-            <br />
-            <input
-              type="submit"
-              id="btn_submit"
-              name="btn_submit"
-              value="Create"
-            />
-          </form>
+      <div class="body-contents">
+        <div class="wrapper">
+          <a href="https://github.com/sano-jin/wiki-rs" target="_blank"
+            >View source code on github</a
+          >
         </div>
 
-        <div class="form-element">
-          Delete a page:
-          <form action="/edit" method="DELETE">
-            <input
-              type="text"
-              id="input_delete_path"
-              name="input_delete_path"
-              required
-              size="50"
-              value=""
-            />
-            <br />
-            <input
-              type="submit"
-              id="btn_delete"
-              name="btn_delete"
-              value="Delete"
-            />
-          </form>
+        <div class="wrapper">
+          <div class="form-element">
+            Create a new page:
+            <form action="/edit" method="GET">
+              <input
+                type="text"
+                id="input_path"
+                name="input_path"
+                required
+                size="50"
+                value=""
+              />
+              <br />
+              <input
+                type="submit"
+                id="btn_submit"
+                name="btn_submit"
+                value="Create"
+              />
+            </form>
+          </div>
+
+          <div class="form-element">
+            Delete a page:
+            <form action="/edit" method="DELETE">
+              <input
+                type="text"
+                id="input_delete_path"
+                name="input_delete_path"
+                required
+                size="50"
+                value=""
+              />
+              <br />
+              <input
+                type="submit"
+                id="btn_delete"
+                name="btn_delete"
+                value="Delete"
+              />
+            </form>
+          </div>
         </div>
       </div>
     </div>
