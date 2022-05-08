@@ -19,14 +19,6 @@ pub struct QueryPath {
     path: String,
 }
 
-/// API for attached files
-#[derive(Debug, Serialize, Deserialize)]
-pub struct NewAttachObj {
-    path: String, // path to the page
-    file: String, // name of the file
-    body: Vec<u8>,
-}
-
 pub async fn post_attach(
     auth: BasicAuth,
     item: web::Query<QueryPath>,

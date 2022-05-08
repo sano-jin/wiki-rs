@@ -608,3 +608,11 @@ div.menu ul li ul li:before {
 .updated-date {
   color: #778;
 }
+
+.input-hided {
+  display: none;
+  /**/
+}
+.form-hided {
+  /**/
+}

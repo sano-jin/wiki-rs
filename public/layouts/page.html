@@ -50,9 +50,21 @@
           action="/attach?path={{ PATH }}"
           method="post"
           enctype="multipart/form-data"
+          class="form-hided"
         >
-          <input type="file" multiple name="file" />
+          <label class="button">
+            Attach
+            <input
+              id="btn-select-attach"
+              type="file"
+              multiple
+              name="file"
+              class="input-hided"
+            />
+          </label>
+          <!--
           <button type="submit" class="button">Submit</button>
+          -->
         </form>
         <form action="/edit" method="DELETE">
           <input
@@ -115,46 +127,29 @@
         window.location = "/";
       });
 
-      //  // ファイルの添付
-      //  const btn_select_attach = document.getElementById("btn-select-attach");
-      //  const btn_post_attach = document.getElementById("btn-post-attach");
-      //  btn_post_attach.addEventListener("click", async (e) => {
-      //    e.preventDefault();
+      // ファイルの添付
+      const btn_select_attach = document.getElementById("btn-select-attach");
+      // const btn_post_attach = document.getElementById("btn-post-attach");
+      // Select your input type file and store it in a variable
 
-      //    // 送信データの準備
-      //    const formData = new FormData();
+      // This will upload the file after having read it
+      const upload = (file) => {
+        const formData = new FormData();
+        formData.append("filename", file);
 
-      //    console.log("btn_select_attach", btn_select_attach.files);
-      //    const data = btn_select_attach.files[0];
+        fetch("/attach?" + new URLSearchParams({ path: "{{ PATH }}" }), {
+          // Your POST endpoint
+          method: "POST",
+          body: formData, // This is your file object
+        });
+      };
 
-      //    formData.append("avatar", data); // ファイル内容を詰める
-      //    console.log("this.files[0]", data);
-      //    console.log("formData", formData);
-      //    console.log(`formData {formData}`);
+      // Event handler executed when a file is selected
+      const onSelectFile = () => upload(btn_select_attach.files[0]);
 
-      //    // const param = {
-      //    //   method: "POST",
-      //    //   body: formData,
-      //    // };
-
-      //    // // アップロードする
-      //    // fetch("https://example.com/receive.php", param)
-      //    //   .then((res) => {
-      //    //     return res.json();
-      //    //   })
-      //    //   .then((json) => {
-      //    //     // 通信が成功した際の処理
-      //    //   })
-      //    //   .catch((error) => {
-      //    //     // エラー処理
-      //    //   });
-
-      //    // // フォームの入力値を送信
-      //    // const response = await fetch(
-      //    //   "/attach?" + new URLSearchParams({ path: "TITLE" }),
-      //    //   { method: "DELETE" }
-      //    // );
-      //  });
+      // Add a listener on your input
+      // It will be triggered when a file will be selected
+      btn_select_attach.addEventListener("change", onSelectFile, false);
 
       // ソースコードをコピーできるボタンの追加
       // const btn_submit = document.getElementById("btn-submit-delete");
