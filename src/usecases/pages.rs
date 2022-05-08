@@ -27,10 +27,15 @@ impl Page {
 
         // headings からマークダウンの toc を生成する
         let toc = pages::markdown_of_toc(&toc);
-        let toc_markdown = format!("Table of contents\n{}\n\n\n\n{}", toc, markdown);
+        // let toc = format!("- Table of contents\n{}", &toc);
+        // html に変換する
+        let toc = pages::html_of_markdown(&path, &toc)?;
 
         // markdown を html に変換する
-        let html_buf = pages::html_of_markdown(&path, &toc_markdown)?;
+        let html_buf = pages::html_of_markdown(&path, &markdown)?;
+
+        let html_buf = format!("<div class=\"menu collapse\">{}</div>\n{}", toc, html_buf);
+        let toc = format!("{}", &toc);
 
         // decode the path to obtain the title
         let name = urlencoding::decode(&path).expect("cannot decode");
