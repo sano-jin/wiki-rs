@@ -107,7 +107,7 @@
 
         // フォームの入力値を送信
         const response = await fetch(
-          "/edit?" + new URLSearchParams({ path: "TITLE" }),
+          "/edit?" + new URLSearchParams({ path: "{{ PATH }}" }),
           { method: "DELETE" }
         );
 
