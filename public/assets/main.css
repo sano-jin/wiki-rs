@@ -508,8 +508,8 @@ div.menu ul {
   margin: 0 auto;
   list-style-type: none;
   margin: 0;
-  font-family: sans-serif;
 }
+
 div.menu ul li {
   padding: 0 0 0px 25px;
   position: relative;
@@ -519,6 +519,7 @@ div.menu ul li {
   padding-left: 5px;
   */
 }
+
 div.menu ul li:after {
   position: absolute;
   top: 4px;
@@ -538,9 +539,11 @@ div.menu ul li:after {
   background: #556;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
 }
+
 div.menu ul li:hover:after {
   background: #fff;
 }
+
 div.menu ul li:before {
   position: absolute;
   left: 6px;
@@ -550,16 +553,19 @@ div.menu ul li:before {
   width: 0;
   border-left: 2px solid #556;
 }
+
 div.menu ul li:last-of-type:before {
   border: none;
   height: 0;
 }
+
 div.menu ul li ul li:after {
   border: 2px solid #1e1e20;
   top: 7px;
   height: 7px;
   width: 7px;
 }
+
 div.menu ul li ul li:before {
   position: absolute;
   left: 5px;
