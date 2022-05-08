@@ -60,55 +60,6 @@ pub fn delete(filepath: &str) -> Result<(), Error> {
     Ok(())
 }
 
-/// handle attached files
-/// Save the attach file
-pub fn save_attach(path: &str, buf: &Vec<u8>) -> Result<(), Error> {
-    // Update the file with the given contents
-    let path = util::get_path("public/db/attach", &path);
-    println!("writing to the file {:?}", path);
-
-    let mut file = File::create(&path)?;
-    file.write_all(buf)?;
-
-    Ok(())
-}
-
-/// Delete the attached file
-pub fn delete_attach(filepath: &str) -> Result<(), Error> {
-    // delete the file
-    let path = util::get_path("public/db", &filepath);
-    std::fs::remove_file(&path)?;
-
-    Ok(())
-}
-
-/// Get the attached file
-pub fn get_attach(filepath: &str) -> Result<Vec<u8>, Error> {
-    // Load the file
-    let path = util::get_path("public/db/attach", &filepath);
-    println!("path is {:?}", path);
-    // let data = std::io::Read::read_to_end(&path)?;
-
-    let mut file = File::open(path)?;
-    let mut buf = Vec::new();
-    let _ = file.read_to_end(&mut buf)?;
-    // println!("{:?}", buf);
-
-    Ok(buf)
-    //     // transform the data in DB to the Page
-    //     let page_data: PageData = serde_json::from_str(&page_data_json)?;
-    //     let modified = DateTime::parse_from_rfc3339(&page_data.modified_rfc3339).expect("joge");
-    //     let modified = DateTime::from(modified);
-    //
-    //     Ok(Page {
-    //         path: page_data.path,
-    //         name: page_data.name,
-    //         markdown: page_data.markdown,
-    //         html: page_data.html,
-    //         modified: modified,
-    //     })
-}
-
 /// Get the page
 pub fn get_page(filepath: &str) -> Result<Page, Error> {
     // Load the file
@@ -140,15 +91,6 @@ pub fn get_html(filepath: &str) -> Result<String, Error> {
     Ok(contents)
 }
 
-/// get modified date from DirEntry
-pub fn get_modified(entry: &std::fs::DirEntry) -> Result<u64, std::io::Error> {
-    let path = entry.path();
-
-    let metadata = std::fs::metadata(&path)?;
-    let last_modified = metadata.modified()?.elapsed().expect("hoge").as_secs();
-    Ok(last_modified)
-}
-
 /// Get the list of files
 /// sorted by the modified date
 pub fn list_pages() -> Option<Vec<(String, String)>> {
@@ -160,7 +102,7 @@ pub fn list_pages() -> Option<Vec<(String, String)>> {
                 if metadata.is_file() {
                     if let Ok(filepath) = entry.file_name().into_string() {
                         let filepath = urlencoding::decode(&filepath).expect("cannot decode");
-                        println!("filepath: {}", filepath);
+                        // println!("filepath: {}", filepath);
                         let page = get_page(&filepath).unwrap();
                         vec_files.push((page.modified, page.path));
                     }

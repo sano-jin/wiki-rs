@@ -9,14 +9,13 @@ async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=debug");
     env_logger::init();
 
-    println!("Started http server: 0.0.0.0:8080");
-
     let args: Vec<String> = std::env::args().collect();
     println!("{:?}", args);
 
     if args.len() > 1 && args[1] == "non-secure" {
         // enable in http (not https)
         println!("run http (not https) server");
+        println!("Started http server: 0.0.0.0:8080");
 
         HttpServer::new(|| {
             App::new()
@@ -29,6 +28,7 @@ async fn main() -> std::io::Result<()> {
         .await
     } else {
         println!("run https (http with ssl/tsl) server");
+        println!("Started http server: 127.0.0.1:8443");
 
         // load ssl keys
         let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();

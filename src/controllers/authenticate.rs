@@ -22,8 +22,9 @@ impl User {
         user_id == self.user_id && password == self.password
     }
 
+    /// Basic 認証を行う
     pub fn authenticate(&self, auth: BasicAuth) -> Result<(), Error> {
-        println!("auth: {:?}", auth);
+        // println!("auth: {:?}", auth);
 
         let user_id = auth.user_id().to_string();
         let password = auth.password().expect("password").to_string();
@@ -35,6 +36,8 @@ impl User {
         Ok(())
     }
 
+    /// .env からユーザ ID と password を取得してくる
+    /// TODO: 現状リクエスト時に毎回これを取得してくるようになっているので，要改良
     pub fn load() -> User {
         dotenv().ok();
         let user_id = env::var("USER_ID").expect("USER_ID must be set");

@@ -28,7 +28,7 @@ fn next_state_of(state: State, line: &str) -> State {
     let mut quotes_num = 0; // 連続して出現するバッククオートの数
     for c in line.chars() {
         if c == '`' {
-            println!("quoting...");
+            // println!("quoting...");
             quotes_num += 1;
             if state == State::IsInCode1 && quotes_num == 1
                 || state == State::IsInCode2 && quotes_num == 2
@@ -59,7 +59,6 @@ fn next_state_of(state: State, line: &str) -> State {
             } else if quotes_num == 3 {
                 if state == State::IsNormal {
                     state = State::IsInCode3;
-                    println!("in code3...");
                 } else if state == State::IsInCode3 {
                     state = State::IsNormal;
                 }
@@ -118,7 +117,7 @@ pub fn add_heading_ids(markdown: &str) -> (String, Vec<(String, usize, String)>)
     // TODO: Vec<String> じゃなくて，Vec<&str> を返すようにしたい（効率化）
     let lines: Vec<String> = lines
         .map(|line| {
-            println!("line: \"{}\", state: {:?}", line, state);
+            // println!("line: \"{}\", state: {:?}", line, state);
             if line.starts_with("    ") {
                 return line.to_string();
             }
