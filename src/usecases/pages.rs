@@ -34,8 +34,8 @@ impl Page {
         // markdown を html に変換する
         let html_buf = pages::html_of_markdown(&path, &markdown)?;
 
+        // toc を html に埋め込む
         let html_buf = format!("<div class=\"menu collapse\">{}</div>\n{}", toc, html_buf);
-        let toc = format!("{}", &toc);
 
         // decode the path to obtain the title
         let name = urlencoding::decode(&path).expect("cannot decode");

@@ -199,7 +199,8 @@ pub fn html_of_markdown(path: &str, markdown: &str) -> Result<String, Error> {
             let mut url = url.to_string();
             // let mut url = url;
             if !re.is_match(&url) {
-                url = String::from("/files/files/") + &url;
+                // ファイルパスだった場合．
+                url = format!("/attach?path={}&file={}", path, url);
             }
             Event::Start(Tag::Image(LinkType::Inline, CowStr::from(url), title))
         }
