@@ -170,7 +170,7 @@ pub fn list_pages() -> Option<Vec<(String, String)>> {
     }
 
     // sort by the modified date
-    vec_files.sort_by(|(t1, _), (t2, _)| t1.partial_cmp(t2).unwrap());
+    vec_files.sort_by(|(t1, _), (t2, _)| t2.partial_cmp(t1).unwrap());
 
     // for path in paths {
     let mut vec = Vec::new();
