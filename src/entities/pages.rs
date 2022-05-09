@@ -5,7 +5,7 @@
 use actix_web::Error;
 use either::*;
 use pulldown_cmark::{html, CowStr, Event, LinkType, Options, Parser, Tag};
-use regex::Regex;
+use regex::{Captures, Regex};
 // use std::collections::HashMap;
 use uuid::Uuid;
 
@@ -75,6 +75,33 @@ fn next_state_of(state: State, line: &str) -> State {
         }
     }
     state
+}
+
+/// 数式の中の backslash を escape する
+fn escape_backslash_in_math(markdown: &str) -> String {
+    println!("> escaping markdown: {}", markdown);
+
+    // escape in inline math mode
+    let re = Regex::new(r"(?s)\\\((([^\\]*(\\[^\)])*)*)\\\)").unwrap();
+    let markdown = re.replace_all(markdown, |caps: &Captures| {
+        let escaped = &caps[1].replace("\\", "\\\\");
+        println!("escaped backslash in inline math mode: {}", escaped);
+        format!("\\\\({}\\\\)", escaped)
+    });
+    let markdown = markdown.to_string();
+
+    // escape in block math mode
+    let re = Regex::new(r"(?s)\\\[(([^\\]*(\\[^\)])*)*)\\\]").unwrap();
+    let markdown = re.replace_all(&markdown, |caps: &Captures| {
+        let escaped = &caps[1].replace("\\", "\\\\");
+        println!("escaped backslash in inline math mode: {}", escaped);
+        format!("\\\\[{}\\\\]", escaped)
+    });
+    let markdown = markdown.to_string();
+
+    // println!("{}", markdown);
+    println!("> escaped markdown: {}", markdown);
+    markdown.to_string()
 }
 
 // /// The elements of toc
@@ -162,10 +189,7 @@ pub fn add_heading_ids(markdown: &str) -> (String, Vec<(String, usize, String)>)
 /// convert markdown to html
 pub fn html_of_markdown(path: &str, markdown: &str) -> Result<String, Error> {
     // backslash をエスケープする．
-    // pulldown-cmark は backslash を無視してしまうっぽい．
-    // TODO: markdown の仕様を確認して backslash をどう扱うべきか再考する．
-    // これだとコードブロック内もエスケープしてしまうのでまずい．
-    let markdown = markdown.replace("\\", "\\\\");
+    let markdown = escape_backslash_in_math(&markdown);
 
     // コメントアウトを削除
     let re = Regex::new(r"(?m)^//.*$\n?").unwrap();
