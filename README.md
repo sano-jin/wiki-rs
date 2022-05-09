@@ -2,7 +2,7 @@ wiki.rs
 
 A simple wiki created with Rust from scratch.
 
-![Demo](./docs/wiki-rs-demo.png)
+![Demo](./docs/images/wiki-rs-demo.png)
 
 # 特徴
 
@@ -155,5 +155,5 @@ src
 
 # Demo
 
-![Demo](./docs/code-copy-button-demo.png)
-![Demo](./docs/demo-diary.png)
+![Demo](./docs/images/code-copy-button-demo.png)
+![Demo](./docs/images/demo-diary.png)
