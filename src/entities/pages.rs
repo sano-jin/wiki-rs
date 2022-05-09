@@ -256,7 +256,7 @@ pub fn html_of_markdown(path: &str, markdown: &str) -> Result<String, Error> {
                 println!("{}", text_str);
                 return Left(
                     std::iter::once(Event::Start(Tag::Link(
-                        LinkType::Inline,
+                        LinkType::Autolink,
                         CowStr::from(text_str.to_owned()),
                         CowStr::from(text_str.to_owned()),
                     )))
@@ -264,7 +264,7 @@ pub fn html_of_markdown(path: &str, markdown: &str) -> Result<String, Error> {
                         text_str.to_owned(),
                     ))))
                     .chain(std::iter::once(Event::End(Tag::Link(
-                        LinkType::Inline,
+                        LinkType::Autolink,
                         CowStr::from(text_str.to_owned()),
                         CowStr::from(text_str.to_owned()),
                     )))),

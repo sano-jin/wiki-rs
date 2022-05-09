@@ -619,3 +619,8 @@ div.menu ul li ul li:before {
 .form-hided {
   /**/
 }
+
+/* 長いリンク名は改行する */
+.body-contents a {
+  word-break: break-all;
+}
