@@ -22,6 +22,12 @@ pub struct PageData {
     pub modified_rfc3339: String, // ISO8601 string for datetime
 }
 
+pub fn get_default_top_page() -> Result<String, Error> {
+    // Open the default file
+    let default_page = std::fs::read_to_string("public/layouts/top.html")?;
+    Ok(default_page)
+}
+
 pub fn get_default_page() -> Result<String, Error> {
     // Open the default file
     let default_page = std::fs::read_to_string("public/layouts/page.html")?;
@@ -53,6 +59,8 @@ pub fn save(page: &Page) -> Result<(), Error> {
 
 /// Delete the page
 pub fn delete(filepath: &str) -> Result<(), Error> {
+    // TODO: return error if the filepath is TOP (the root page)
+
     // delete the file
     let path = util::get_path("public/db", &filepath);
     std::fs::remove_file(&path)?;

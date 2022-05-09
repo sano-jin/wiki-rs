@@ -26,7 +26,15 @@ pub async fn post(auth: BasicAuth, item: web::Json<NewPageObj>) -> Result<HttpRe
 
     println!("post {:?}", item);
 
-    let default_page: String = gateways::pages::get_default_page()?;
+    // トップページか普通のページかで切り分け
+    let default_page: String = if item.path == "top" {
+        println!("is top page");
+        gateways::pages::get_default_top_page()?
+    } else {
+        println!("is normal page");
+        gateways::pages::get_default_page()?
+    };
+
     let page = Page::create(&default_page, &item.path, &item.body)?;
     gateways::pages::save(&page)?;
 

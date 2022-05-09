@@ -13,26 +13,8 @@
       rel="stylesheet"
     />
 
-    <!-- highlight.js -->
-    <link rel="stylesheet" href="/files/assets/dracula.css" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-    <script>
-      hljs.highlightAll();
-    </script>
-
-    <!-- mathjax -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script
-      type="text/javascript"
-      id="MathJax-script"
-      async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
-    ></script>
-
-    <!-- custom css -->
+    <title>HOME</title>
     <link rel="stylesheet" href="/files/assets/main.css" />
-
-    <title>{{ TITLE }}</title>
   </head>
   <body>
     <div class="wrapper">
@@ -44,7 +26,6 @@
 
       <!-- header menu bar -->
       <div class="wrapper header-menu">
-        <a href="/" class="button">HOME</a>
         <a href="/edit?path={{ PATH }}" class="button">Update</a>
         <form
           action="/attach?path={{ PATH }}"
@@ -62,18 +43,6 @@
               class="input-hided"
             />
           </label>
-          <!--
-          <button type="submit" class="button">Submit</button>
-          -->
-        </form>
-        <form action="/edit" method="DELETE">
-          <input
-            type="submit"
-            id="btn-submit-delete"
-            name="btn-submit-delete"
-            value="Delete"
-            class="button"
-          />
         </form>
       </div>
 
@@ -86,46 +55,62 @@
 
       <!-- body contents -->
       <div class="body-contents">
-        <div class="updated-date">Last modified: {{ UPDATED_DATE }}</div>
+        <div class="wrapper">
+          <div class="updated-date">Last modified: {{ UPDATED_DATE }}</div>
+          <div class="form-element">
+            Create a new page:
+            <form action="/edit" method="GET">
+              <input
+                type="text"
+                id="input_path"
+                name="input_path"
+                required
+                size="50"
+                value=""
+              />
+              <input
+                type="submit"
+                id="btn_submit"
+                name="btn_submit"
+                value="Create"
+              />
+            </form>
+          </div>
+        </div>
+
+        <!-- links to pages -->
+        <!-- 
+        <div class="menu">
+          <ul>
+            {{ INDEX_UL }}
+          </ul>
+        </div>
+        -->
+
+        <!-- body -->
         <div class="body">{{ BODY }}</div>
       </div>
     </div>
   </body>
 
   <script>
-    function copyToClipboard(text) {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-
-      // Avoid scrolling to bottom
-      textArea.style.top = "0";
-      textArea.style.left = "0";
-      textArea.style.position = "fixed";
-
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-
-      document.execCommand("copy");
-
-      textArea.parentNode.removeChild(textArea);
-    }
-
     window.addEventListener("DOMContentLoaded", () => {
-      // ページの削除
-      const btn_submit = document.getElementById("btn-submit-delete");
+      // 新しいページを作る
+      // (1) 送信ボタンのHTMLを取得
+      const btn_submit = document.getElementById("btn_submit");
       btn_submit.addEventListener("click", async (e) => {
         e.preventDefault();
 
-        // フォームの入力値を送信
-        const response = await fetch(
-          "/edit?" + new URLSearchParams({ path: "{{ PATH }}" }),
-          { method: "DELETE" }
-        );
+        // (3) フォーム入力欄のHTMLを取得
+        const input_path = document.querySelector("input[name=input_path]");
+        const path = input_path.value;
+        if (path.length === 0) return;
 
-        // redirect to the home page
-        window.location = "/";
+        const location = "/edit?path=" + encodeURIComponent(path);
+        window.location = location;
       });
+
+      /** 以下は普通のページと同じコード */
 
       // ファイルの添付
       const btn_select_attach = document.getElementById("btn-select-attach");
@@ -134,6 +119,7 @@
 
       // This will upload the file after having read it
       const upload = (file) => {
+        console.log("uploading", file);
         const formData = new FormData();
         formData.append("filename", file);
 

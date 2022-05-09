@@ -244,20 +244,25 @@ pre > code {
     margin-top: 20px;
     margin-left: 200px;
     font-size: 18px;
-    max-width: calc(100vw - (30px * 2) - 200px - 40px);
-    min-width: calc(600px - (30px * 2) - 40px);
+    width: calc(100vw - (30px * 2) - 200px - 40px);
+    max-width: calc(100% - 200px);
+    /*
+    min-width: calc(100vw - (30px * 2) - 40px);
+ */
   }
 }
 
 /**
  * Clearfix
  */
+/*
 .wrapper:after,
 .footer-col-wrapper:after {
   content: "";
   display: table;
   clear: both;
 }
+*/
 
 /**
  * Icons
@@ -490,7 +495,9 @@ div.menu a:hover {
 div.menu {
   min-width: 20ch;
   display: flex;
+  /*
   flex-flow: column nowrap;
+  */
   position: relative;
   margin: 1rem auto;
   margin: 2rem auto;
@@ -509,10 +516,12 @@ div.menu {
 }
 
 div.menu > ul {
+  /*
   max-width: 300px;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  */
   padding: 0;
 }
 
@@ -523,7 +532,10 @@ div.menu:hover {
 
 /* line between list elements */
 div.menu ul {
+  /*
   max-width: 400px;
+  */
+  width: 100%;
   margin: 0 auto;
   list-style-type: none;
   margin: 0;
@@ -598,4 +610,12 @@ div.menu ul li ul li:before {
 /* last modified date */
 .updated-date {
   color: #778;
+}
+
+.input-hided {
+  display: none;
+  /**/
+}
+.form-hided {
+  /**/
 }
