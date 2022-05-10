@@ -172,8 +172,9 @@ code {
 }
 
 pre {
-  padding: 8px 12px;
+  padding: 16px 16px;
   overflow-x: auto;
+
   background: #282a36;
   /*
   background: #2b2b2b;
@@ -418,6 +419,8 @@ pre:hover > .code-copy-button {
   right: 5px;
   color: red;
   cursor: pointer;
+  z-index: 100;
+  border-radius: 10px;
 }
 
 pre > .code-copy-button:hover {
