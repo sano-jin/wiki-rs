@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300&family=JetBrains+Mono:wght@300&family=Noto+Sans+JP:wght@300&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="/files/assets/dracula.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+
+    <!-- mathjax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      type="text/javascript"
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+    ></script>
+
+    <!-- custom css -->
+    <link rel="stylesheet" href="/files/assets/main.css" />
+
+    <title>Users</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="wrapper">
+        <div class="site-header">
+          <div class="site-title">Users</div>
+        </div>
+      </div>
+
+      <!-- header menu bar -->
+      <div class="wrapper header-menu">
+        <a href="/" class="button">HOME</a>
+        <a href="/edit?path={{ PATH }}" class="button">Update</a>
+        <form
+          action="/attach?path={{ PATH }}"
+          method="post"
+          enctype="multipart/form-data"
+          class="form-hided"
+        >
+          <label class="button">
+            Attach
+            <input
+              id="btn-select-attach"
+              type="file"
+              multiple
+              name="file"
+              class="input-hided"
+            />
+          </label>
+          <!--
+          <button type="submit" class="button">Submit</button>
+          -->
+        </form>
+        <form action="/edit" method="DELETE">
+          <input
+            type="submit"
+            id="btn-submit-delete"
+            name="btn-submit-delete"
+            value="Delete"
+            class="button"
+          />
+        </form>
+      </div>
+
+      <!-- side menu bar -->
+      <div class="sidebar">
+        <ul>
+          {{ INDEX_UL }}
+        </ul>
+      </div>
+
+      <!-- body contents -->
+      <div class="body-contents">
+        <div class="wrapper">
+          <div class="updated-date">Last modified: {{ UPDATED_DATE }}</div>
+          <div class="form-element">
+            Create a new user:
+            <form action="/user" method="POST">
+              <input
+                type="text"
+                id="create_user_name"
+                name="create_user_name"
+                required
+                size="50"
+                value=""
+              />
+              <br />
+              <input
+                type="text"
+                id="create_user_password"
+                name="create_user_password"
+                required
+                size="50"
+                value=""
+              />
+              <br />
+              <input
+                type="submit"
+                id="create_user_submit"
+                name="create_user_submit"
+                value="Create"
+              />
+            </form>
+          </div>
+          <div class="form-element">
+            Delete user:
+            <form action="/edit" method="Delete">
+              <input
+                type="text"
+                id="delete_user_name"
+                name="delete_user_name"
+                required
+                size="50"
+                value=""
+              />
+              <input
+                type="submit"
+                id="delete_user_submit"
+                name="delete_user_submit"
+                value="Delete"
+              />
+            </form>
+          </div>
+          <div class="body">{{ USERS }}</div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      // 新しいユーザを作る
+      // (1) 送信ボタンのHTMLを取得
+      const create_user_submit = document.getElementById("create_user_submit");
+      create_user_submit.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        // (3) フォーム入力欄のHTMLを取得
+        const create_user_name = document.querySelector(
+          "input[name=create_user_name]"
+        );
+        const name = create_user_name.value;
+        if (name.length === 0) return;
+
+        // (3) フォーム入力欄のHTMLを取得
+        const create_user_password = document.querySelector(
+          "input[name=create_user_password]"
+        );
+        const password = create_user_password.value;
+        if (password.length === 0) return;
+
+        console.log("uploading", name, password);
+
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("password", password);
+        console.log("sending", formData);
+
+        const body = JSON.stringify({
+          name: name,
+          password: password,
+        }); // This is your file object
+        console.log("sending", body);
+
+        await fetch("/user", {
+          // Your POST endpoint
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: body,
+        });
+
+        const location = "/users";
+        window.location = location;
+      });
+      //
+
+      // ユーザを削除
+      const delete_user_submit = document.getElementById("delete_user_submit");
+      delete_user_submit.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        // (3) フォーム入力欄のHTMLを取得
+        const delete_user_name = document.querySelector(
+          "input[name=delete_user_name]"
+        );
+        const name = delete_user_name.value;
+        if (name.length === 0) return;
+
+        // const location = "/user?name=" + encodeURIComponent(path);
+        // window.location = location;
+        const path = encodeURIComponent(name);
+
+        await fetch("/user?" + new URLSearchParams({ name: name }), {
+          method: "DELETE",
+        });
+
+        const location = "/users";
+        window.location = location;
+      });
+
+      //
+
+      //
+    });
+  </script>
+</html>

@@ -1,15 +1,15 @@
 /// これは POST API を actix-web で扱うことが前提なコードになっているので，
 /// 本来は，controller ではなく，もうひとつ上のレイヤ（framework）に来る気はしている．
 /// gateways (DB) に依存しているのもよくない気がする．
-use crate::controllers::authenticate::{authenticate, load};
+use crate::controllers::authenticate::authenticate;
 use crate::gateways;
-// use crate::usecases::pages::Page;
 use actix_multipart::Multipart;
-// use actix_web::{middleware, web, App, Error, HttpResponse, HttpServer};
 use actix_web::{web, Error, HttpResponse};
 use actix_web_httpauth::extractors::basic::BasicAuth;
 use futures::{StreamExt, TryStreamExt};
 use serde::{Deserialize, Serialize};
+// use crate::usecases::pages::Page;
+// use actix_web::{middleware, web, App, Error, HttpResponse, HttpServer};
 // use std::fs::File;
 // use std::io::Result;
 // use std::io::Write;
@@ -24,7 +24,7 @@ pub async fn post_attach(
     item: web::Query<QueryPath>,
     mut payload: Multipart,
 ) -> Result<HttpResponse, Error> {
-    authenticate(load(), auth)?;
+    authenticate(auth)?;
 
     println!("post {:?}", item);
 
@@ -50,7 +50,7 @@ pub async fn post_attach(
             bytes_array.append(&mut data.to_vec());
         }
 
-        gateways::attaches::save_attach(&path, &bytes_array)?;
+        gateways::attaches::save(&path, &bytes_array)?;
     }
 
     let request_uri = format!("/pages?path={}", &item.path);
@@ -76,13 +76,13 @@ pub async fn delete_attach(
     item: web::Query<AttachQueryPath>,
 ) -> Result<HttpResponse, Error> {
     println!("delete ? {:?}", item);
-    authenticate(load(), auth)?;
+    authenticate(auth)?;
 
     // delete the page
     let path = format!("{}/{}", item.path, item.file);
     println!("delete_attach at {:?}", path);
 
-    gateways::attaches::delete_attach(&path)?;
+    gateways::attaches::delete(&path)?;
 
     // TODO: navigate to the root page
     Ok(HttpResponse::Ok().json("deleted"))
@@ -94,13 +94,13 @@ pub async fn get_attach(
     item: web::Query<AttachQueryPath>,
 ) -> Result<HttpResponse, Error> {
     println!("get_attach ? {:?}", item);
-    authenticate(load(), auth)?;
+    authenticate(auth)?;
 
     let path = format!("{}/{}", item.path, item.file);
     println!("get_attach at {:?}", path);
 
     // Load the file
-    let contents = gateways::attaches::get_attach(&path)?;
+    let contents = gateways::attaches::get(&path)?;
 
     // TODO: file type を取得できるようにする
     let content_type = "image/png";
