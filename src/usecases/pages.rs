@@ -40,9 +40,6 @@ impl Page {
         // decode the path to obtain the title
         let name = urlencoding::decode(&path).expect("cannot decode");
 
-        // // Open the default file
-        // let default_page = std::fs::read_to_string("public/layouts/page.html")?;
-
         let modified_datetime: DateTime<Utc> = Utc::now();
         let local_updated_time: DateTime<Local> = DateTime::from(modified_datetime);
 

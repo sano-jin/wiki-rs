@@ -1,4 +1,4 @@
-use crate::controllers::authenticate::User;
+use crate::controllers::authenticate::{authenticate, load};
 use crate::gateways;
 // use crate::usecases::pages::Page;
 use actix_web::{Error, HttpRequest, HttpResponse};
@@ -7,8 +7,7 @@ use actix_web_httpauth::extractors::basic::BasicAuth;
 /// simple handle
 pub async fn index(auth: BasicAuth, req: HttpRequest) -> Result<HttpResponse, Error> {
     println!("{:?}", req);
-
-    User::load().authenticate(auth)?;
+    authenticate(load(), auth)?;
 
     // Load the page
     let contents = gateways::pages::get_html("top")?;

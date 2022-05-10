@@ -1,7 +1,7 @@
 /// これは POST API を actix-web で扱うことが前提なコードになっているので，
 /// 本来は，controller ではなく，もうひとつ上のレイヤ（framework）に来る気はしている．
 /// gateways (DB) に依存しているのもよくない気がする．
-use crate::controllers::authenticate::User;
+use crate::controllers::authenticate::{authenticate, load};
 use crate::gateways;
 use crate::usecases::pages::Page;
 // use actix_multipart::Multipart;
@@ -22,9 +22,8 @@ pub struct NewPageObj {
 
 /// Create and Update the file with POST method
 pub async fn post(auth: BasicAuth, item: web::Json<NewPageObj>) -> Result<HttpResponse, Error> {
-    User::load().authenticate(auth)?;
-
     println!("post {:?}", item);
+    authenticate(load(), auth)?;
 
     // トップページか普通のページかで切り分け
     let default_page: String = if item.path == "top" {
@@ -50,9 +49,8 @@ pub struct QueryPath {
 
 /// Delete the file with DELETE method
 pub async fn delete(auth: BasicAuth, item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
-    User::load().authenticate(auth)?;
-
     println!("delete ? {:?}", item);
+    authenticate(load(), auth)?;
 
     // delete the page
     gateways::pages::delete(&item.path)?;
@@ -63,8 +61,8 @@ pub async fn delete(auth: BasicAuth, item: web::Query<QueryPath>) -> Result<Http
 
 /// GET the page
 pub async fn get_page(auth: BasicAuth, item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
-    User::load().authenticate(auth)?;
     println!("get_page ? {:?}", item);
+    authenticate(load(), auth)?;
 
     // Load the page
     let contents = gateways::pages::get_html(&item.path)?;
@@ -78,8 +76,8 @@ pub async fn get_editor(
     auth: BasicAuth,
     item: web::Query<QueryPath>,
 ) -> Result<HttpResponse, Error> {
-    User::load().authenticate(auth)?;
     println!("get_edit_page ? {:?}", item);
+    authenticate(load(), auth)?;
 
     // get the editor html with the given file path
     let editor = gateways::pages::get_editor(&item.path)?;

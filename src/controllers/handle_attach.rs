@@ -1,7 +1,7 @@
 /// これは POST API を actix-web で扱うことが前提なコードになっているので，
 /// 本来は，controller ではなく，もうひとつ上のレイヤ（framework）に来る気はしている．
 /// gateways (DB) に依存しているのもよくない気がする．
-use crate::controllers::authenticate::User;
+use crate::controllers::authenticate::{authenticate, load};
 use crate::gateways;
 // use crate::usecases::pages::Page;
 use actix_multipart::Multipart;
@@ -24,7 +24,7 @@ pub async fn post_attach(
     item: web::Query<QueryPath>,
     mut payload: Multipart,
 ) -> Result<HttpResponse, Error> {
-    User::load().authenticate(auth)?;
+    authenticate(load(), auth)?;
 
     println!("post {:?}", item);
 
@@ -75,9 +75,8 @@ pub async fn delete_attach(
     auth: BasicAuth,
     item: web::Query<AttachQueryPath>,
 ) -> Result<HttpResponse, Error> {
-    User::load().authenticate(auth)?;
-
     println!("delete ? {:?}", item);
+    authenticate(load(), auth)?;
 
     // delete the page
     let path = format!("{}/{}", item.path, item.file);
@@ -94,8 +93,8 @@ pub async fn get_attach(
     auth: BasicAuth,
     item: web::Query<AttachQueryPath>,
 ) -> Result<HttpResponse, Error> {
-    User::load().authenticate(auth)?;
     println!("get_attach ? {:?}", item);
+    authenticate(load(), auth)?;
 
     let path = format!("{}/{}", item.path, item.file);
     println!("get_attach at {:?}", path);
