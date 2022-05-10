@@ -45,36 +45,6 @@
       <!-- header menu bar -->
       <div class="wrapper header-menu">
         <a href="/" class="button">HOME</a>
-        <a href="/edit?path={{ PATH }}" class="button">Update</a>
-        <form
-          action="/attach?path={{ PATH }}"
-          method="post"
-          enctype="multipart/form-data"
-          class="form-hided"
-        >
-          <label class="button">
-            Attach
-            <input
-              id="btn-select-attach"
-              type="file"
-              multiple
-              name="file"
-              class="input-hided"
-            />
-          </label>
-          <!--
-          <button type="submit" class="button">Submit</button>
-          -->
-        </form>
-        <form action="/edit" method="DELETE">
-          <input
-            type="submit"
-            id="btn-submit-delete"
-            name="btn-submit-delete"
-            value="Delete"
-            class="button"
-          />
-        </form>
       </div>
 
       <!-- side menu bar -->
@@ -136,7 +106,10 @@
               />
             </form>
           </div>
-          <div class="body">{{ USERS }}</div>
+          <div class="wrapper">
+            Users list
+            <div>{{ USERS }}</div>
+          </div>
         </div>
       </div>
     </div>
