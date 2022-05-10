@@ -1,9 +1,13 @@
 use crate::controllers::handle_attach;
 use crate::controllers::handle_page;
+use crate::controllers::handle_user;
 use crate::controllers::index;
 use actix_web::{web, HttpResponse};
 
 pub fn routes(cfg: &mut web::ServiceConfig) {
+    cfg.route("/user", web::delete().to(handle_user::delete)); // POST the new contents to update the file
+    cfg.route("/user", web::post().to(handle_user::post)); // POST the new contents to update the file
+    cfg.route("/users", web::get().to(handle_user::get_users)); // GET the users
     cfg.route("/attach", web::get().to(handle_attach::get_attach)); // GET the attached files
     cfg.route("/attach", web::post().to(handle_attach::post_attach)); // GET the attached files
     cfg.route("/pages", web::get().to(handle_page::get_page)); // GET the page

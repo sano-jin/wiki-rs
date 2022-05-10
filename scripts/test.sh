@@ -13,6 +13,7 @@ EOM
 case "$1" in
 "get") curl -kX GET https://127.0.0.1:8443/"$2" ;;
 "get_pages") curl -kX GET "https://127.0.0.1:8443/pages?path=$2" ;;
+"get_users") curl -kX GET "https://127.0.0.1:8443/users" ;;
 "get_edit") curl -kX GET "https://localhost:8443/edit?path=$2" ;;
 "post") curl -H "content-type: application/json" -kX POST -d \
     "{\"path\": \"$2\", \"body\": \"$3\"}" \

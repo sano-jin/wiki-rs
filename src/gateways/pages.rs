@@ -49,7 +49,7 @@ pub fn save(page: &Page) -> Result<(), Error> {
     // print!("page_data_json: {:?}", page_data_json);
 
     // Update the file with the given contents
-    let path = util::get_path("public/db", &page.path);
+    let path = util::get_path("public/db/pages", &page.path);
     println!("writing to the file {:?}", path);
     let mut file = File::create(&path)?;
     file.write_all(page_data_json.as_bytes())?;
@@ -62,7 +62,7 @@ pub fn delete(filepath: &str) -> Result<(), Error> {
     // TODO: return error if the filepath is TOP (the root page)
 
     // delete the file
-    let path = util::get_path("public/db", &filepath);
+    let path = util::get_path("public/db/pages", &filepath);
     std::fs::remove_file(&path)?;
 
     Ok(())
@@ -71,7 +71,7 @@ pub fn delete(filepath: &str) -> Result<(), Error> {
 /// Get the page
 pub fn get_page(filepath: &str) -> Result<Page, Error> {
     // Load the file
-    let path = util::get_path("public/db", &filepath);
+    let path = util::get_path("public/db/pages", &filepath);
     let page_data_json = std::fs::read_to_string(&path)?;
 
     // transform the data in DB to the Page
@@ -102,7 +102,7 @@ pub fn get_html(filepath: &str) -> Result<String, Error> {
 /// Get the list of files
 /// sorted by the modified date
 pub fn list_pages() -> Option<Vec<(String, String)>> {
-    let dir_entries = std::fs::read_dir("public/db/").unwrap();
+    let dir_entries = std::fs::read_dir("public/db/pages").unwrap();
     let mut vec_files = Vec::new();
     for dir_entry in dir_entries {
         if let Ok(entry) = dir_entry {

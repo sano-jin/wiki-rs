@@ -23,7 +23,7 @@ use std::io::prelude::*;
 
 /// handle attached files
 /// Save the attach file
-pub fn save_attach(path: &str, buf: &Vec<u8>) -> Result<(), Error> {
+pub fn save(path: &str, buf: &Vec<u8>) -> Result<(), Error> {
     // Update the file with the given contents
     let path = util::get_path("public/db/attach", &path);
     println!("writing to the file {:?}", path);
@@ -35,16 +35,16 @@ pub fn save_attach(path: &str, buf: &Vec<u8>) -> Result<(), Error> {
 }
 
 /// Delete the attached file
-pub fn delete_attach(filepath: &str) -> Result<(), Error> {
+pub fn delete(filepath: &str) -> Result<(), Error> {
     // delete the file
-    let path = util::get_path("public/db", &filepath);
+    let path = util::get_path("public/db/attach", &filepath);
     std::fs::remove_file(&path)?;
 
     Ok(())
 }
 
 /// Get the attached file
-pub fn get_attach(filepath: &str) -> Result<Vec<u8>, Error> {
+pub fn get(filepath: &str) -> Result<Vec<u8>, Error> {
     // Load the file
     let path = util::get_path("public/db/attach", &filepath);
     println!("path is {:?}", path);
