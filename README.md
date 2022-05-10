@@ -35,13 +35,14 @@ Install Cargo
    cp -r docs/public .
    ```
 
-2. cargo で backend を実行する
+2. `.env.template` を参考に，`.env` を生成する
+3. cargo で backend を実行する
 
    ```sh
    cargo run
    ```
 
-3. and access <https://127.0.0.1:8443/> on your browser.
+4. and access <https://127.0.0.1:8443/> on your browser.
 
 # Design
 
