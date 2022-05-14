@@ -1,0 +1,131 @@
+function copyToClipboard(text) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+
+  // Avoid scrolling to bottom
+  textArea.style.top = "0";
+  textArea.style.left = "0";
+  textArea.style.position = "fixed";
+
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  document.execCommand("copy");
+
+  textArea.parentNode.removeChild(textArea);
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  // 新しいページを作る
+  // (1) 送信ボタンのHTMLを取得
+  const btn_submit = document.getElementById("btn_submit");
+  btn_submit.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    // (3) フォーム入力欄のHTMLを取得
+    const input_path = document.querySelector("input[name=input_path]");
+    const path = input_path.value;
+    if (path.length === 0) return;
+
+    const location = "/edit?path=" + encodeURIComponent(path);
+    window.location = location;
+  });
+
+  /** 以下は普通のページと同じコード */
+
+  // ファイルの添付
+  const btn_select_attach = document.getElementById("btn-select-attach");
+  // const btn_post_attach = document.getElementById("btn-post-attach");
+  // Select your input type file and store it in a variable
+
+  // This will upload the file after having read it
+  const upload = (file) => {
+    console.log("uploading", file);
+    const formData = new FormData();
+    formData.append("filename", file);
+
+    fetch("/attach?" + new URLSearchParams({ path: "{{ PATH }}" }), {
+      // Your POST endpoint
+      method: "POST",
+      body: formData, // This is your file object
+    });
+  };
+
+  // Event handler executed when a file is selected
+  const onSelectFile = () => upload(btn_select_attach.files[0]);
+
+  // Add a listener on your input
+  // It will be triggered when a file will be selected
+  btn_select_attach.addEventListener("change", onSelectFile, false);
+
+  // ファイルの削除
+  const btn_delete_attaches =
+    document.getElementsByClassName("btn-delete-attach");
+  for (let i = 0; i < btn_delete_attaches.length; i++) {
+    const btn = btn_delete_attaches[i];
+    const filename = btn.parentElement.firstChild.innerText;
+    btn.addEventListener("click", async (e) => {
+      console.log("deleting attach", filename);
+      e.preventDefault();
+
+      // const encodedFilename = encodeURIComponent(filename);
+
+      const file = filename.split("\\").pop().split("/").pop();
+      // console.log(`file: {file}, path: {path}`);
+
+      // フォームの入力値を送信
+      const response = await fetch(
+        "/attach?" +
+          new URLSearchParams({
+            path: "{{ PATH }}",
+            file: file,
+          }),
+        { method: "DELETE" }
+      );
+
+      console.log(response);
+
+      // reload the page
+      location.reload();
+    });
+  }
+
+  // ソースコードをコピーできるボタンの追加
+  // const btn_submit = document.getElementById("btn-submit-delete");
+  const collection = document.getElementsByTagName("pre");
+  for (let cell of collection) {
+    // create a new div element
+    const newDiv = document.createElement("div");
+    newDiv.classList.add("code-copy-button");
+
+    const newI = document.createElement("i");
+    newI.classList.add("fa-solid");
+    newI.classList.add("fa-copy");
+
+    newDiv.appendChild(newI);
+
+    newDiv.addEventListener("click", async (e) => {
+      e.target.classList.add("copied");
+      e.preventDefault();
+
+      const code = cell.innerText;
+      console.log(code);
+      copyToClipboard(code);
+      setTimeout(() => {
+        console.log("Delayed for 5 second.");
+        e.target.classList.remove("copied");
+      }, 3000);
+    });
+
+    cell.appendChild(newDiv);
+  }
+});
+
+/// ページの一番上へ行くボタン
+const gotop = () => {
+  console.log("go top");
+  document.body.scrollIntoView({
+    behavior: "smooth",
+  });
+};
