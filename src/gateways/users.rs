@@ -30,7 +30,7 @@ pub fn save(user: &User) -> Result<(), Error> {
     // print!("user_data_json: {:?}", user_data_json);
 
     // Update the file with the given contents
-    let path = util::get_path("public/db/users", &user.path);
+    let path = util::get_path("db/users", &user.path);
     println!("writing to the file {:?}", path);
     let mut file = File::create(&path)?;
     file.write_all(user_data_json.as_bytes())?;
@@ -43,7 +43,7 @@ pub fn delete(filepath: &str) -> Result<(), Error> {
     // TODO: return error if the filepath is TOP (the root user)
 
     // delete the file
-    let path = util::get_path("public/db/users", &filepath);
+    let path = util::get_path("db/users", &filepath);
     std::fs::remove_file(&path)?;
 
     Ok(())
@@ -52,7 +52,7 @@ pub fn delete(filepath: &str) -> Result<(), Error> {
 /// Get the user
 pub fn get_user(user_name: &str) -> Result<User, Error> {
     // Load the file
-    let path = util::get_path("public/db/users", &user_name);
+    let path = util::get_path("db/users", &user_name);
     let user_data_json = std::fs::read_to_string(&path)?;
 
     // transform the data in DB to the User
@@ -68,7 +68,7 @@ pub fn get_user(user_name: &str) -> Result<User, Error> {
 /// Get the list of files
 /// sorted by the modified date
 pub fn get_users() -> Option<Vec<User>> {
-    let dir_entries = std::fs::read_dir("public/db/users").unwrap();
+    let dir_entries = std::fs::read_dir("db/users").unwrap();
     let mut vec_users = Vec::new();
     for dir_entry in dir_entries {
         if let Ok(entry) = dir_entry {

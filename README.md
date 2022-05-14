@@ -33,15 +33,15 @@ Install Cargo
    プロジェクトのルートディレクトリに置く．
    TLS/SSL を有効にしないなら不要．
 
-2. サンプルの public directory が docs 以下にあるので，それを持ってくる．
+2. サンプルの db が docs 以下にあるので，それを持ってくる．
 
    ```sh
-   cp -r docs/public .
+   cp -r docs/db .
    ```
 
 3. 初期ユーザを追加する．
    ユーザ名が `foo`，パスワードが `bar` のユーザを追加したい場合は，
-   `public/db/users` directory に
+   `db/users` directory に
    ファイル名が `foo` で，以下のような JSON が書かれたファイルを配置する．
 
    ```json
@@ -51,7 +51,7 @@ Install Cargo
    つまり，
 
    ```sh
-   echo '{"name":"foo","password":"bar"} > public/db/users/foo'
+   echo '{"name":"foo","password":"bar"} > db/users/foo'
    ```
 
    を実行すれば良い．

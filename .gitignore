@@ -1,9 +1,10 @@
+
+# Target files of rust
 /target
 
-/public/pages/*
-/public/edit/*
-/public/index
-/public/index_ul
-/public/db/*
-
+# Environment
 .env
+
+# DB (currently file system)
+/db/*
+

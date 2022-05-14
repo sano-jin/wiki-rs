@@ -25,7 +25,7 @@ use std::io::prelude::*;
 /// Save the attach file
 pub fn save(path: &str, buf: &Vec<u8>) -> Result<(), Error> {
     // Update the file with the given contents
-    let path = util::get_path("public/db/attach", &path);
+    let path = util::get_path("db/attach", &path);
     println!("writing to the file {:?}", path);
 
     let mut file = File::create(&path)?;
@@ -37,7 +37,7 @@ pub fn save(path: &str, buf: &Vec<u8>) -> Result<(), Error> {
 /// Delete the attached file
 pub fn delete(filepath: &str) -> Result<(), Error> {
     // delete the file
-    let path = util::get_path("public/db/attach", &filepath);
+    let path = util::get_path("db/attach", &filepath);
 
     println!("removing the file {:?}", path);
     std::fs::remove_file(&path)?;
@@ -48,7 +48,7 @@ pub fn delete(filepath: &str) -> Result<(), Error> {
 /// Get the attached file
 pub fn get(filepath: &str) -> Result<Vec<u8>, Error> {
     // Load the file
-    let path = util::get_path("public/db/attach", &filepath);
+    let path = util::get_path("db/attach", &filepath);
     println!("path is {:?}", path);
     // let data = std::io::Read::read_to_end(&path)?;
 
@@ -75,7 +75,7 @@ pub fn get(filepath: &str) -> Result<Vec<u8>, Error> {
 /// Get the list of file names and paths
 /// sorted by the modified date
 pub fn get_attach_names_in_page(page_path: &str) -> Option<Vec<(String, String)>> {
-    let dir_entries = std::fs::read_dir("public/db/attach").unwrap();
+    let dir_entries = std::fs::read_dir("db/attach").unwrap();
     let mut vec_attaches = Vec::new();
     for dir_entry in dir_entries {
         if let Ok(entry) = dir_entry {
@@ -101,7 +101,7 @@ pub fn get_attach_names_in_page(page_path: &str) -> Option<Vec<(String, String)>
 /// Get the list of file names and paths
 /// sorted by the modified date
 pub fn get_attach_names() -> Option<Vec<(String, String)>> {
-    let dir_entries = std::fs::read_dir("public/db/attach").unwrap();
+    let dir_entries = std::fs::read_dir("db/attach").unwrap();
     let mut vec_attaches = Vec::new();
     for dir_entry in dir_entries {
         if let Ok(entry) = dir_entry {
@@ -125,7 +125,7 @@ pub fn get_attach_names() -> Option<Vec<(String, String)>> {
 /// Get the list of files
 /// // sorted by the modified date
 pub fn get_attaches() -> Option<Vec<Vec<u8>>> {
-    let dir_entries = std::fs::read_dir("public/db/attach").unwrap();
+    let dir_entries = std::fs::read_dir("db/attach").unwrap();
     let mut vec_attaches = Vec::new();
     for dir_entry in dir_entries {
         if let Ok(entry) = dir_entry {
