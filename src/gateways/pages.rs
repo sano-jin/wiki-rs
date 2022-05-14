@@ -23,12 +23,21 @@ pub struct PageData {
     pub modified_rfc3339: String, // ISO8601 string for datetime
 }
 
+/// トップページの template を取得する
 pub fn get_default_top_page() -> Result<String, Error> {
     // Open the default file
     let default_page = std::fs::read_to_string("public/layouts/top.html")?;
     Ok(default_page)
 }
 
+/// Side menu の template を取得する
+pub fn get_default_menu_page() -> Result<String, Error> {
+    // Open the default file
+    let default_page = std::fs::read_to_string("public/layouts/menu.html")?;
+    Ok(default_page)
+}
+
+/// 通常のページの template を取得する
 pub fn get_default_page() -> Result<String, Error> {
     // Open the default file
     let default_page = std::fs::read_to_string("public/layouts/page.html")?;
@@ -97,8 +106,15 @@ pub fn get_html(filepath: &str) -> Result<String, Error> {
     let pages_list = list_pages().expect("file list");
     let attach_names = attaches::get_attach_names_in_page(&filepath).unwrap();
 
+    // Load the menu
+    let menu = get_page("menu")?;
+
     let contents = page
-        .render(pages_list.as_slice(), attach_names.as_slice())
+        .render(
+            &menu.markdown,
+            pages_list.as_slice(),
+            attach_names.as_slice(),
+        )
         .expect("error");
 
     Ok(contents)

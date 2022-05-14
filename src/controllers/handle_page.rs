@@ -29,6 +29,9 @@ pub async fn post(auth: BasicAuth, item: web::Json<NewPageObj>) -> Result<HttpRe
     let default_page: String = if item.path == "top" {
         println!("is top page");
         gateways::pages::get_default_top_page()?
+    } else if item.path == "menu" {
+        println!("is menu page");
+        gateways::pages::get_default_menu_page()?
     } else {
         println!("is normal page");
         gateways::pages::get_default_page()?
