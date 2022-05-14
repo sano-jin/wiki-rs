@@ -38,6 +38,8 @@ pub fn save(path: &str, buf: &Vec<u8>) -> Result<(), Error> {
 pub fn delete(filepath: &str) -> Result<(), Error> {
     // delete the file
     let path = util::get_path("public/db/attach", &filepath);
+
+    println!("removing the file {:?}", path);
     std::fs::remove_file(&path)?;
 
     Ok(())
@@ -68,4 +70,79 @@ pub fn get(filepath: &str) -> Result<Vec<u8>, Error> {
     //         html: page_data.html,
     //         modified: modified,
     //     })
+}
+
+/// Get the list of file names and paths
+/// sorted by the modified date
+pub fn get_attach_names_in_page(page_path: &str) -> Option<Vec<(String, String)>> {
+    let dir_entries = std::fs::read_dir("public/db/attach").unwrap();
+    let mut vec_attaches = Vec::new();
+    for dir_entry in dir_entries {
+        if let Ok(entry) = dir_entry {
+            if let Ok(metadata) = entry.metadata() {
+                if metadata.is_file() {
+                    if let Ok(filepath) = entry.file_name().into_string() {
+                        let filename = urlencoding::decode(&filepath).expect("cannot decode");
+                        let filename = filename.to_string();
+                        if filename.starts_with(&page_path) {
+                            vec_attaches.push((filename, filepath));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    println!("- attach names: {:?}", vec_attaches);
+
+    Some(vec_attaches)
+}
+
+/// Get the list of file names and paths
+/// sorted by the modified date
+pub fn get_attach_names() -> Option<Vec<(String, String)>> {
+    let dir_entries = std::fs::read_dir("public/db/attach").unwrap();
+    let mut vec_attaches = Vec::new();
+    for dir_entry in dir_entries {
+        if let Ok(entry) = dir_entry {
+            if let Ok(metadata) = entry.metadata() {
+                if metadata.is_file() {
+                    if let Ok(filepath) = entry.file_name().into_string() {
+                        let filename = urlencoding::decode(&filepath).expect("cannot decode");
+                        let filename = filename.to_string();
+                        vec_attaches.push((filename, filepath));
+                    }
+                }
+            }
+        }
+    }
+
+    println!("- attach names: {:?}", vec_attaches);
+
+    Some(vec_attaches)
+}
+
+/// Get the list of files
+/// // sorted by the modified date
+pub fn get_attaches() -> Option<Vec<Vec<u8>>> {
+    let dir_entries = std::fs::read_dir("public/db/attach").unwrap();
+    let mut vec_attaches = Vec::new();
+    for dir_entry in dir_entries {
+        if let Ok(entry) = dir_entry {
+            if let Ok(metadata) = entry.metadata() {
+                if metadata.is_file() {
+                    if let Ok(filepath) = entry.file_name().into_string() {
+                        let filepath = urlencoding::decode(&filepath).expect("cannot decode");
+                        // println!("filepath: {}", filepath);
+                        let attach = get(&filepath).unwrap();
+                        vec_attaches.push(attach);
+                    }
+                }
+            }
+        }
+    }
+
+    println!("attach files: {:?}", vec_attaches);
+
+    Some(vec_attaches)
 }

@@ -89,6 +89,11 @@
         <div class="updated-date">Last modified: {{ UPDATED_DATE }}</div>
         <div class="body">{{ BODY }}</div>
       </div>
+
+      <!-- footer -->
+      <div class="site-footer">
+        <div class="attach-names">{{ ATTACH_NAMES }}</div>
+      </div>
     </div>
   </body>
 
@@ -133,15 +138,18 @@
       // Select your input type file and store it in a variable
 
       // This will upload the file after having read it
-      const upload = (file) => {
+      const upload = async (file) => {
         const formData = new FormData();
         formData.append("filename", file);
 
-        fetch("/attach?" + new URLSearchParams({ path: "{{ PATH }}" }), {
+        await fetch("/attach?" + new URLSearchParams({ path: "{{ PATH }}" }), {
           // Your POST endpoint
           method: "POST",
           body: formData, // This is your file object
         });
+
+        // reload the page
+        location.reload();
       };
 
       // Event handler executed when a file is selected
@@ -150,6 +158,40 @@
       // Add a listener on your input
       // It will be triggered when a file will be selected
       btn_select_attach.addEventListener("change", onSelectFile, false);
+
+      // ファイルの削除
+      const btn_delete_attaches =
+        document.getElementsByClassName("btn-delete-attach");
+      for (let i = 0; i < btn_delete_attaches.length; i++) {
+        const btn = btn_delete_attaches[i];
+        console.log("btn", btn);
+        console.log("btn.parentElement", btn.parentElement);
+        const filename = btn.parentElement.firstChild.innerText;
+        btn.addEventListener("click", async (e) => {
+          console.log("deleting attach", filename);
+          e.preventDefault();
+
+          // const encodedFilename = encodeURIComponent(filename);
+
+          const file = filename.split("\\").pop().split("/").pop();
+          // console.log(`file: {file}, path: {path}`);
+
+          // フォームの入力値を送信
+          const response = await fetch(
+            "/attach?" +
+              new URLSearchParams({
+                path: "{{ PATH }}",
+                file: file,
+              }),
+            { method: "DELETE" }
+          );
+
+          console.log(response);
+
+          // reload the page
+          location.reload();
+        });
+      }
 
       // ソースコードをコピーできるボタンの追加
       // const btn_submit = document.getElementById("btn-submit-delete");

@@ -90,6 +90,11 @@
 
         <!-- body -->
         <div class="body">{{ BODY }}</div>
+
+        <!-- footer -->
+        <div class="site-footer">
+          <div class="attach-names">{{ ATTACH_NAMES }}</div>
+        </div>
       </div>
     </div>
   </body>
@@ -155,6 +160,40 @@
       // Add a listener on your input
       // It will be triggered when a file will be selected
       btn_select_attach.addEventListener("change", onSelectFile, false);
+
+      // ファイルの削除
+      const btn_delete_attaches =
+        document.getElementsByClassName("btn-delete-attach");
+      for (let i = 0; i < btn_delete_attaches.length; i++) {
+        const btn = btn_delete_attaches[i];
+        console.log("btn", btn);
+        console.log("btn.parentElement", btn.parentElement);
+        const filename = btn.parentElement.firstChild.innerText;
+        btn.addEventListener("click", async (e) => {
+          console.log("deleting attach", filename);
+          e.preventDefault();
+
+          // const encodedFilename = encodeURIComponent(filename);
+
+          const file = filename.split("\\").pop().split("/").pop();
+          // console.log(`file: {file}, path: {path}`);
+
+          // フォームの入力値を送信
+          const response = await fetch(
+            "/attach?" +
+              new URLSearchParams({
+                path: "{{ PATH }}",
+                file: file,
+              }),
+            { method: "DELETE" }
+          );
+
+          console.log(response);
+
+          // reload the page
+          location.reload();
+        });
+      }
 
       // ソースコードをコピーできるボタンの追加
       // const btn_submit = document.getElementById("btn-submit-delete");

@@ -115,6 +115,15 @@ fn escape_backslash_in_math(markdown: &str) -> String {
 //     IsInCode4, // is in quadruply quoted inline code block
 // }
 
+/// 添付ファイル名のリストからその markdown を生成する
+pub fn markdown_of_attach_names(page_path: &str, attach_names: &Vec<(String, String)>) -> String {
+    let attach_names: Vec<String> = attach_names
+        .iter()
+        .map(|(title, path)| format!("- [{}](/attach?path={}&file={})", title, page_path, path))
+        .collect();
+    attach_names.join("\n")
+}
+
 /// TOC からその markdown を生成する
 pub fn markdown_of_toc(toc: &Vec<(String, usize, String)>) -> String {
     let toc: Vec<String> = toc
