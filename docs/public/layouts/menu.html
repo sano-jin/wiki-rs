@@ -32,7 +32,7 @@
     <!-- custom css -->
     <link rel="stylesheet" href="/files/assets/main.css" />
 
-    <title>{{ TITLE }}</title>
+    <title>HOME</title>
   </head>
   <body>
     <div class="wrapper">
@@ -62,18 +62,6 @@
               class="input-hided"
             />
           </label>
-          <!--
-          <button type="submit" class="button">Submit</button>
-          -->
-        </form>
-        <form action="/edit" method="DELETE">
-          <input
-            type="submit"
-            id="btn-submit-delete"
-            name="btn-submit-delete"
-            value="Delete"
-            class="button"
-          />
         </form>
       </div>
 
@@ -83,7 +71,20 @@
 
         <!-- body contents -->
         <div class="body-contents">
-          <div class="updated-date">Last modified: {{ UPDATED_DATE }}</div>
+          <div class="wrapper">
+            <div class="updated-date">Last modified: {{ UPDATED_DATE }}</div>
+          </div>
+
+          <!-- links to pages -->
+          <!-- 
+        <div class="menu">
+          <ul>
+            {{ INDEX_UL }}
+          </ul>
+        </div>
+        -->
+
+          <!-- body -->
           <div class="body">{{ BODY }}</div>
         </div>
       </div>

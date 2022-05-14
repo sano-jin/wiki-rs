@@ -35,14 +35,32 @@ Install Cargo
    cp -r docs/public .
    ```
 
-2. `.env.template` を参考に，`.env` を生成する
-3. cargo で backend を実行する
+2. ユーザを追加する．
+   ユーザ名が `foo`，パスワードが `bar` のユーザを追加したい場合は，
+   `public/db/users` directory に
+   ファイル名が `foo` で，以下のような JSON が書かれたファイルを配置する．
+
+   ```json
+   { "name": "foo", "password": "bar" }
+   ```
+
+   ```sh
+   echo '{"name":"foo","password":"bar"} > public/db/users/foo'
+   ```
+
+   を実行すれば良い．
+
+3. `.env.template` を参考に，`.env` を生成する
+
+   - 追記：これは現時点では不要
+
+4. cargo で backend を実行する
 
    ```sh
    cargo run
    ```
 
-4. and access <https://127.0.0.1:8443/> on your browser.
+5. and access <https://127.0.0.1:8443/> on your browser.
 
 # Design
 
