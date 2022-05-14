@@ -26,6 +26,11 @@ figure {
  * Basic styling
  */
 body {
+  /*
+  font: 400 16px/1.5 "Fira Sans", "Noto Sans JP", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+ */
   font: 400 16px/1.5 "Fira Sans", "Noto Sans JP", -apple-system,
     BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -40,6 +45,17 @@ body {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
+}
+
+strong {
+  /*
+  font-size: 120%;
+  background: linear-gradient(transparent 50%, #a8eaff 50%);
+  background: linear-gradient(transparent 50%, #454 50%);
+  font-weight: bold;
+  */
+  background: linear-gradient(transparent 50%, #457 50%);
+  font-weight: 400;
 }
 
 /**
@@ -111,6 +127,11 @@ h3,
 h4,
 h5,
 h6 {
+  /*
+  font-weight: 400;
+  font-weight: 400;
+  font-weight: bold;
+*/
   font-weight: 400;
 }
 
@@ -173,7 +194,7 @@ code {
 }
 
 pre {
-  padding: 16px 16px;
+  padding: 13px 16px;
   overflow-x: auto;
 
   background: #282a36;
@@ -379,7 +400,8 @@ input[type="text"] {
 }
 
 hr {
-  border: 1px solid #445;
+  border: none;
+  border-top: 2px solid #445;
   margin: 20px 0;
 }
 
@@ -414,7 +436,7 @@ pre > .code-copy-button {
 }
 pre:hover > .code-copy-button {
   display: block;
-  padding: 10px;
+  padding: 15px;
   width: 23px;
   height: 23px;
   background-color: #445;
@@ -425,7 +447,6 @@ pre:hover > .code-copy-button {
   right: 5px;
   color: red;
   cursor: pointer;
-  z-index: 100;
   border-radius: 10px;
 }
 
@@ -440,10 +461,10 @@ pre > .code-copy-button.copied::after {
   color: #aab;
   content: "copied";
   transition: 0.5s;
-  width: 23px;
+  width: 24px;
   position: absolute;
-  right: 0px;
-  left: 0px;
+  right: 3px;
+  left: 3px;
   text-align: center;
   white-space: nowrap;
 }
@@ -456,7 +477,7 @@ pre {
 }
 
 /**
- * Headings
+ * headings
  */
 h1,
 h2,
@@ -467,7 +488,25 @@ h6 {
   position: relative;
   margin-left: -30px;
   padding-left: 30px;
+  font-weight: bold;
+
   /*
+  font-weight: bold;
+  */
+}
+
+/**
+ * headings
+ */
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 3rem;
+
+  /*
+  font-weight: bold;
   */
 }
 
@@ -658,6 +697,26 @@ ul.attach-names li {
   border: none;
   cursor: pointer;
   font-size: 40px;
-  color: #eef;
+  color: #aab;
   text-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+
+h1 {
+  font-weight: bold;
+  font-size: 1.8em;
+  margin-top: 80px;
+}
+
+h1::after {
+  content: "";
+  border-bottom: 2px solid #335;
+  width: calc(100% - 25px);
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 25px;
+  /*
+  background-color: blue;
+*/
 }

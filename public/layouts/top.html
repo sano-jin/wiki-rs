@@ -9,12 +9,30 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300&family=JetBrains+Mono:wght@300&family=Noto+Sans+JP:wght@300&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;700&family=JetBrains+Mono:wght@300;700&family=Noto+Sans+JP:wght@300;700&display=swap"
       rel="stylesheet"
     />
 
-    <title>HOME</title>
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="/files/assets/dracula.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+
+    <!-- mathjax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      type="text/javascript"
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+    ></script>
+
+    <!-- custom css -->
     <link rel="stylesheet" href="/files/assets/main.css" />
+
+    <title>HOME</title>
   </head>
   <body>
     <div class="wrapper">
@@ -95,6 +113,9 @@
         <div class="site-footer">
           <div class="attach-names">{{ ATTACH_NAMES }}</div>
         </div>
+
+        <!-- button to go top -->
+        <button id="go-up-button" onclick="gotop()">▲</button>
       </div>
     </div>
   </body>
@@ -223,5 +244,13 @@
         cell.appendChild(newDiv);
       }
     });
+
+    /// ページの一番上へ行くボタン
+    const gotop = () => {
+      console.log("go top");
+      document.body.scrollIntoView({
+        behavior: "smooth",
+      });
+    };
   </script>
 </html>
