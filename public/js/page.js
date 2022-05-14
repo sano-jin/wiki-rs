@@ -19,18 +19,20 @@ function copyToClipboard(text) {
 window.addEventListener("DOMContentLoaded", () => {
   // ページの削除
   const btn_submit = document.getElementById("btn-submit-delete");
-  btn_submit.addEventListener("click", async (e) => {
-    e.preventDefault();
+  if (btn_submit) {
+    btn_submit.addEventListener("click", async (e) => {
+      e.preventDefault();
 
-    // フォームの入力値を送信
-    const response = await fetch(
-      "/edit?" + new URLSearchParams({ path: "{{ PATH }}" }),
-      { method: "DELETE" }
-    );
+      // フォームの入力値を送信
+      const response = await fetch(
+        "/edit?" + new URLSearchParams({ path: "{{ PATH }}" }),
+        { method: "DELETE" }
+      );
 
-    // redirect to the home page
-    window.location = "/";
-  });
+      // redirect to the home page
+      window.location = "/";
+    });
+  }
 
   // ファイルの添付
   const btn_select_attach = document.getElementById("btn-select-attach");

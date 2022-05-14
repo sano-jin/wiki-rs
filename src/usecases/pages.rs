@@ -73,6 +73,7 @@ impl Page {
     /// Embed the list of files in the given html contents
     pub fn render(
         &self,
+        menu_markdown: &str,
         pages_list: &[(String, String)],
         attach_names: &[(String, String)],
     ) -> Option<String> {
@@ -80,7 +81,7 @@ impl Page {
 
         // Load the file
         let contents = &self.html;
-        let contents = Page::embed_pages_list(&contents, &pages_list)?;
+        let contents = Page::embed_pages_list(&contents, &menu_markdown, &pages_list)?;
 
         // Set the names of attached files
         let attach_names: Vec<String> = attach_names
@@ -102,9 +103,14 @@ impl Page {
     }
 
     /// Embed the list of files in the given html contents
-    pub fn embed_pages_list(contents: &str, pages_list: &[(String, String)]) -> Option<String> {
+    pub fn embed_pages_list(
+        contents: &str,
+        menu_markdown: &str,
+        pages_list: &[(String, String)],
+    ) -> Option<String> {
         // let pages_list = Page::list_pages().expect("file list");
 
+        // recently updated pages list
         println!("pages list {:?}", pages_list);
         let mut vec_pages_list = Vec::new();
         for (decoded, path) in pages_list {
@@ -113,9 +119,16 @@ impl Page {
                 path, decoded
             ));
         }
+        let pages_list = vec_pages_list.join("\n");
+        let pages_list = format!("<ul>{}<ul>", pages_list);
+
+        let menu = pages::html_of_markdown("", &menu_markdown).unwrap();
+        let menu = menu.replace("{{ INDEX_UL }}", &pages_list);
 
         // Load the file
-        let contents = contents.replace("{{ INDEX_UL }}", &vec_pages_list.join("\n"));
+        // Load the file
+        let contents = contents.replace("{{ INDEX_UL }}", &pages_list);
+        let contents = contents.replace("{{ SIDE_MENU }}", &menu);
         Some(contents)
     }
 }
