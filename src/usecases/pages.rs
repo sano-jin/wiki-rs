@@ -20,11 +20,18 @@ impl Page {
     /// Create or update the page
     /// handles the POST request
     /// Create a page from the default page template, path and markdown
-    pub fn create(default_page: &str, path: &str, markdown: &str) -> Result<Page, Error> {
+    pub fn create(
+        default_page: &str,
+        path: &str,
+        markdown: &str,
+        // attach_names: Vec<String>,
+    ) -> Result<Page, Error> {
         // heading にリンクが追加されていなかったら uuid を活用して id をふる
         let (markdown, toc) = pages::add_heading_ids(&markdown);
         println!("heading map: {:?}", toc);
 
+        ////////////////////////////////////////////////////////////////////////////////
+        // TOC
         // headings からマークダウンの toc を生成する
         let toc = pages::markdown_of_toc(&toc);
         // let toc = format!("- Table of contents\n{}", &toc);
@@ -36,6 +43,7 @@ impl Page {
 
         // toc を html に埋め込む
         let html_buf = format!("<div class=\"menu collapse\">{}</div>\n{}", toc, html_buf);
+        ////////////////////////////////////////////////////////////////////////////////
 
         // decode the path to obtain the title
         let name = urlencoding::decode(&path).expect("cannot decode");
@@ -63,12 +71,33 @@ impl Page {
     }
 
     /// Embed the list of files in the given html contents
-    pub fn render(&self, pages_list: &[(String, String)]) -> Option<String> {
+    pub fn render(
+        &self,
+        pages_list: &[(String, String)],
+        attach_names: &[(String, String)],
+    ) -> Option<String> {
         // let pages_list = Page::list_pages().expect("file list");
 
         // Load the file
         let contents = &self.html;
         let contents = Page::embed_pages_list(&contents, &pages_list)?;
+
+        // Set the names of attached files
+        let attach_names: Vec<String> = attach_names
+            .iter()
+            .map(|(name, _)| {
+                format!(
+                    "<li><span>{}</span><span class=\"button btn-delete-attach\">delete</span></li>",
+                    name
+                )
+            })
+            .collect();
+        let attach_names = attach_names.join("\n");
+        let attach_names = format!("<ul class=\"attach-names\">{}</ul>", attach_names);
+
+        println!(">>>> attach_names: {:?}", attach_names);
+        let contents = contents.replace("{{ ATTACH_NAMES }}", &attach_names);
+
         Some(contents)
     }
 

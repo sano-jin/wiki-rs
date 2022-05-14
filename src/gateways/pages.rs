@@ -1,3 +1,4 @@
+use crate::gateways::attaches;
 /// DB とやりとりするためのコード
 /// 今はファイルシステムをただ活用しているだけだけど，
 /// ここを差し替えれば RDBM とかでも動くようにできる（ようにしようとしている）
@@ -94,7 +95,11 @@ pub fn get_html(filepath: &str) -> Result<String, Error> {
     let page = get_page(&filepath)?;
 
     let pages_list = list_pages().expect("file list");
-    let contents = page.render(pages_list.as_slice()).expect("error");
+    let attach_names = attaches::get_attach_names_in_page(&filepath).unwrap();
+
+    let contents = page
+        .render(pages_list.as_slice(), attach_names.as_slice())
+        .expect("error");
 
     Ok(contents)
 }
