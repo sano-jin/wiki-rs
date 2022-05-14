@@ -648,3 +648,16 @@ div.menu ul li ul li:before {
 ul.attach-names li {
   margin: 20px 0px;
 }
+
+/* button to go up */
+#go-up-button {
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 40px;
+  color: #eef;
+  text-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+}

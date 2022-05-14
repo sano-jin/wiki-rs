@@ -94,6 +94,9 @@
       <div class="site-footer">
         <div class="attach-names">{{ ATTACH_NAMES }}</div>
       </div>
+
+      <!-- button to go top -->
+      <button id="go-up-button" onclick="gotop()">▲</button>
     </div>
   </body>
 
@@ -221,5 +224,13 @@
         cell.appendChild(newDiv);
       }
     });
+
+    /// ページの一番上へ行くボタン
+    const gotop = () => {
+      console.log("go top");
+      document.body.scrollIntoView({
+        behavior: "smooth",
+      });
+    };
   </script>
 </html>
