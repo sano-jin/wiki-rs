@@ -29,13 +29,16 @@ Install Cargo
 
 ## Run
 
+1. TLS/SSL の証明書を発行し，`cert.pem`, `key.pem` という名前にして，
+   プロジェクトのルートディレクトリに置く．
+   TLS/SSL を有効にしないなら不要．
 1. サンプルの public directory が docs 以下にあるので，それを持ってくる．
 
    ```sh
    cp -r docs/public .
    ```
 
-2. ユーザを追加する．
+1. ユーザを追加する．
    ユーザ名が `foo`，パスワードが `bar` のユーザを追加したい場合は，
    `public/db/users` directory に
    ファイル名が `foo` で，以下のような JSON が書かれたファイルを配置する．
@@ -44,23 +47,33 @@ Install Cargo
    { "name": "foo", "password": "bar" }
    ```
 
+   つまり，
+
    ```sh
    echo '{"name":"foo","password":"bar"} > public/db/users/foo'
    ```
 
    を実行すれば良い．
 
-3. `.env.template` を参考に，`.env` を生成する
+1. `.env.template` を参考に，`.env` を生成する
 
    - 追記：これは現時点では不要
 
-4. cargo で backend を実行する
+1. cargo で backend を実行する
 
    ```sh
    cargo run
    ```
 
-5. and access <https://127.0.0.1:8443/> on your browser.
+   TLS/SSL を有効にしないなら，
+
+   ```sh
+   cargo run unsecure
+   ```
+
+   を実行する
+
+1. and access <https://127.0.0.1:8443/> on your browser.
 
 # Design
 
