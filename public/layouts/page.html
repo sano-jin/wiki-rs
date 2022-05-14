@@ -164,8 +164,6 @@
         document.getElementsByClassName("btn-delete-attach");
       for (let i = 0; i < btn_delete_attaches.length; i++) {
         const btn = btn_delete_attaches[i];
-        console.log("btn", btn);
-        console.log("btn.parentElement", btn.parentElement);
         const filename = btn.parentElement.firstChild.innerText;
         btn.addEventListener("click", async (e) => {
           console.log("deleting attach", filename);
