@@ -251,10 +251,12 @@ pre > code {
     position: relative;
     display: flex;
     flex-diretion: row;
+    z-index: 2;
   }
 
   .sidebar {
     height: calc(100vh - 100px);
+    height: 100%;
     width: calc(300px - 40px);
     position: -webkit-sticky; /* for Safari users */
     position: sticky;
@@ -264,6 +266,7 @@ pre > code {
     padding: 20px;
     padding-right: 40px;
     padding-top: 40px;
+    z-index: 1;
 
     /*
   background-color: lightblue;
@@ -584,11 +587,6 @@ div.menu > ul {
   text-overflow: ellipsis;
   */
   padding: 0;
-}
-
-div.menu:hover {
-  height: 100%;
-  transition: 0.5s;
 }
 
 /* line between list elements */
