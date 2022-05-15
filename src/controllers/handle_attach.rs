@@ -1,30 +1,28 @@
+use crate::controllers::appstate::AppState;
 /// これは POST API を actix-web で扱うことが前提なコードになっているので，
 /// 本来は，controller ではなく，もうひとつ上のレイヤ（framework）に来る気はしている．
 /// gateways (DB) に依存しているのもよくない気がする．
 use crate::controllers::authenticate::authenticate;
 use crate::gateways;
+use crate::gateways::db::Database;
 use actix_multipart::Multipart;
 use actix_web::{web, Error, HttpResponse};
 use actix_web_httpauth::extractors::basic::BasicAuth;
 use futures::{StreamExt, TryStreamExt};
 use serde::{Deserialize, Serialize};
-// use crate::usecases::pages::Page;
-// use actix_web::{middleware, web, App, Error, HttpResponse, HttpServer};
-// use std::fs::File;
-// use std::io::Result;
-// use std::io::Write;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct QueryPath {
     path: String,
 }
 
-pub async fn post_attach(
+pub async fn post<T: Clone + Database>(
+    data: web::Data<AppState<T>>,
     auth: BasicAuth,
     item: web::Query<QueryPath>,
     mut payload: Multipart,
 ) -> Result<HttpResponse, Error> {
-    authenticate(auth)?;
+    authenticate(&data.db, auth)?;
 
     println!("post {:?}", item);
 
@@ -72,12 +70,13 @@ pub struct AttachQueryPath {
 }
 
 /// Delete the file with DELETE method
-pub async fn delete_attach(
+pub async fn delete<T: Clone + Database>(
+    data: web::Data<AppState<T>>,
     auth: BasicAuth,
     item: web::Query<AttachQueryPath>,
 ) -> Result<HttpResponse, Error> {
     println!("delete ? {:?}", item);
-    authenticate(auth)?;
+    authenticate(&data.db, auth)?;
 
     // delete the page
     // let path = format!("{}/{}", item.path, item.file);
@@ -90,12 +89,13 @@ pub async fn delete_attach(
 }
 
 /// GET the page
-pub async fn get_attach(
+pub async fn get<T: Clone + Database>(
+    data: web::Data<AppState<T>>,
     auth: BasicAuth,
     item: web::Query<AttachQueryPath>,
 ) -> Result<HttpResponse, Error> {
     println!("get_attach ? {:?}", item);
-    authenticate(auth)?;
+    authenticate(&data.db, auth)?;
 
     let path = format!("{}/{}", item.path, item.file);
     println!("get_attach at {:?}", path);

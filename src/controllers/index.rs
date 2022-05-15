@@ -1,8 +1,7 @@
+use crate::controllers::appstate::AppState;
 use crate::controllers::authenticate::authenticate;
-use crate::controllers::handle_page::AppState;
 use crate::gateways;
 use crate::gateways::db::Database;
-// use crate::usecases::pages::Page;
 use actix_web::{web, Error, HttpRequest, HttpResponse};
 use actix_web_httpauth::extractors::basic::BasicAuth;
 
@@ -13,7 +12,7 @@ pub async fn index<T: Clone + Database>(
     req: HttpRequest,
 ) -> Result<HttpResponse, Error> {
     println!("{:?}", req);
-    authenticate(auth)?;
+    authenticate(&data.db, auth)?;
 
     // Load the page
     let contents = gateways::pages::get_html(&data.db, "top")?;

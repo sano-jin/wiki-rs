@@ -1,18 +1,14 @@
 /// これは POST API を actix-web で扱うことが前提なコードになっているので，
 // 本来は，controller ではなく，もうひとつ上のレイヤ（framework）に来る気はしている．
 /// gateways (DB) に依存しているのもよくない気がする．
+use crate::controllers::appstate::AppState;
 use crate::controllers::authenticate::authenticate;
 use crate::gateways;
+use crate::gateways::db::Database;
 use crate::usecases::users::User;
 use actix_web::{web, Error, HttpResponse};
 use actix_web_httpauth::extractors::basic::BasicAuth;
 use serde::{Deserialize, Serialize};
-// use actix_multipart::Multipart;
-// use actix_web::{middleware, web, App, Error, HttpResponse, HttpServer};
-// use futures::{StreamExt, TryStreamExt};
-// use std::fs::File;
-// use std::io::Result;
-// use std::io::Write;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewUserObj {
@@ -21,12 +17,16 @@ pub struct NewUserObj {
 }
 
 /// Create and Update the user with POST method
-pub async fn post(auth: BasicAuth, item: web::Json<NewUserObj>) -> Result<HttpResponse, Error> {
+pub async fn post<T: Clone + Database>(
+    data: web::Data<AppState<T>>,
+    auth: BasicAuth,
+    item: web::Json<NewUserObj>,
+) -> Result<HttpResponse, Error> {
     println!("post {:?}", item);
-    authenticate(auth)?;
+    authenticate(&data.db, auth)?;
 
     let user = User::create(&item.name, &item.password);
-    gateways::users::save(&user)?;
+    gateways::users::save(&data.db, &user)?;
 
     // TODO: navigate to the new user created
     let url = "/users";
@@ -39,38 +39,31 @@ pub struct QueryPath {
 }
 
 /// Delete the file with DELETE method
-pub async fn delete(auth: BasicAuth, item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
+pub async fn delete<T: Clone + Database>(
+    data: web::Data<AppState<T>>,
+    auth: BasicAuth,
+    item: web::Query<QueryPath>,
+) -> Result<HttpResponse, Error> {
     println!("delete ? {:?}", item);
-    authenticate(auth)?;
+    authenticate(&data.db, auth)?;
 
     // delete the user
-    gateways::users::delete(&item.name)?;
+    gateways::users::delete(&data.db, &item.name)?;
 
     // TODO: navigate to the root user
     Ok(HttpResponse::Ok().json("deleted"))
 }
 
 /// GET the user
-pub async fn get_users(auth: BasicAuth) -> Result<HttpResponse, Error> {
+pub async fn get_users<T: Clone + Database>(
+    data: web::Data<AppState<T>>,
+    auth: BasicAuth,
+) -> Result<HttpResponse, Error> {
     println!("get_users");
-    authenticate(auth)?;
+    authenticate(&data.db, auth)?;
 
-    let contents = gateways::users::get_editor()?;
+    let contents = gateways::users::get_editor(&data.db)?;
 
     // Return the response and display the html file on the browser
     Ok(HttpResponse::Ok().content_type("text/html").body(contents))
 }
-
-// /// GET the user for editing the user
-// pub async fn get_editor(
-//     auth: BasicAuth,
-//     item: web::Query<QueryPath>,
-// ) -> Result<HttpResponse, Error> {
-//     println!("get_edit_user ? {:?}", item);
-//     authenticate(auth)?;
-//
-//     // get the editor html with the given file path
-//     let editor = gateways::users::get_editor(&item.path)?;
-//
-//     Ok(HttpResponse::Ok().content_type("text/html").body(editor))
-// }
