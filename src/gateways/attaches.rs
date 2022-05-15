@@ -4,6 +4,7 @@
 ///
 use crate::util;
 use actix_web::Error;
+// use regex::Regex;
 use std::fs::File;
 use std::io::prelude::*;
 
@@ -74,7 +75,9 @@ pub fn get_attach_names_in_page(page_id: &str) -> Option<Vec<(String, String)>> 
                 if metadata.is_file() {
                     if let Ok(filepath) = entry.file_name().into_string() {
                         if filepath.starts_with(&page_path) {
-                            let filename = urlencoding::decode(&filepath).expect("cannot decode");
+                            let file_path = &filepath[page_path.len()..];
+                            println!(">>>> file_path: {}", file_path);
+                            let filename = urlencoding::decode(&file_path).expect("cannot decode");
                             let filename = filename.to_string();
                             println!("decoded filename: {:?}", filename);
                             vec_attaches.push((filename, filepath));
