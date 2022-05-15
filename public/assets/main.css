@@ -755,3 +755,8 @@ input[type="submit"]:hover {
 .button:hover {
   background-color: #3f3f46;
 }
+
+.page-wrapper {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
