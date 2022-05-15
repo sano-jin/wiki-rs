@@ -8,5 +8,6 @@ pub mod entities;
 pub mod routes;
 pub mod usecases;
 // pub mod schema;
+pub mod db;
 pub mod gateways;
 pub mod util;
