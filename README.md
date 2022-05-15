@@ -51,7 +51,8 @@ Install Cargo
    つまり，
 
    ```sh
-   echo '{"name":"foo","password":"bar"} > db/users/foo'
+   mkdir db/users
+   echo '{"name":"foo","password":"bar"}' > db/users/foo
    ```
 
    を実行すれば良い．
