@@ -35,6 +35,7 @@ pub async fn post_attach(
 
         // let filepath = format!("./tmp/{}", sanitize_filename::sanitize(&filename));
         let path = format!("{}/{}", item.path, filename);
+        println!(">>>> saving attached file to path {:?}", path);
 
         // body
         let mut bytes_array = Vec::new();
@@ -79,10 +80,10 @@ pub async fn delete_attach(
     authenticate(auth)?;
 
     // delete the page
-    let path = format!("{}/{}", item.path, item.file);
-    println!("delete_attach at {:?}", path);
+    // let path = format!("{}/{}", item.path, item.file);
+    // println!("delete_attach at {:?}", path);
 
-    gateways::attaches::delete(&path)?;
+    gateways::attaches::delete(&item.path, &item.file)?;
 
     // TODO: navigate to the root page
     Ok(HttpResponse::Ok().json("deleted"))

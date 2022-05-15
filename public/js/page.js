@@ -1,4 +1,4 @@
-function copyToClipboard(text) {
+const copyToClipboard = (text) => {
   const textArea = document.createElement("textarea");
   textArea.value = text;
 
@@ -14,7 +14,7 @@ function copyToClipboard(text) {
   document.execCommand("copy");
 
   textArea.parentNode.removeChild(textArea);
-}
+};
 
 window.addEventListener("DOMContentLoaded", () => {
   // ページの削除
@@ -25,7 +25,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       // フォームの入力値を送信
       const response = await fetch(
-        "/edit?" + new URLSearchParams({ path: "{{ PATH }}" }),
+        "/edit?" + new URLSearchParams({ path: __title__ }),
         { method: "DELETE" }
       );
 
@@ -44,7 +44,8 @@ window.addEventListener("DOMContentLoaded", () => {
     const formData = new FormData();
     formData.append("filename", file);
 
-    await fetch("/attach?" + new URLSearchParams({ path: "{{ PATH }}" }), {
+    // await fetch("/attach?" + new URLSearchParams({ path: "{{ PATH }}" }), {
+    await fetch("/attach?" + new URLSearchParams({ path: __title__ }), {
       // Your POST endpoint
       method: "POST",
       body: formData, // This is your file object
@@ -74,13 +75,14 @@ window.addEventListener("DOMContentLoaded", () => {
       // const encodedFilename = encodeURIComponent(filename);
 
       const file = filename.split("\\").pop().split("/").pop();
-      // console.log(`file: {file}, path: {path}`);
+      console.log("file: ", file, "path: ", __path__);
 
+      console.log(__path__);
       // フォームの入力値を送信
       const response = await fetch(
         "/attach?" +
           new URLSearchParams({
-            path: "{{ PATH }}",
+            path: __title__,
             file: file,
           }),
         { method: "DELETE" }
