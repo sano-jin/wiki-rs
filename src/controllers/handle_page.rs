@@ -3,16 +3,17 @@
 /// gateways (DB) に依存しているのもよくない気がする．
 use crate::controllers::authenticate::authenticate;
 use crate::gateways;
+use crate::gateways::db::Database;
 use crate::usecases::pages::Page;
 use actix_web::{web, Error, HttpResponse};
 use actix_web_httpauth::extractors::basic::BasicAuth;
 use serde::{Deserialize, Serialize};
-// use actix_multipart::Multipart;
-// use actix_web::{middleware, web, App, Error, HttpResponse, HttpServer};
-// use futures::{StreamExt, TryStreamExt};
-// use std::fs::File;
-// use std::io::Result;
-// use std::io::Write;
+
+// This struct represents state
+#[derive(Clone)]
+pub struct AppState<T: Clone + Database> {
+    pub db: T,
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewPageObj {
@@ -21,9 +22,15 @@ pub struct NewPageObj {
 }
 
 /// Create and Update the file with POST method
-pub async fn post(auth: BasicAuth, item: web::Json<NewPageObj>) -> Result<HttpResponse, Error> {
+pub async fn post<T: Clone + Database>(
+    data: web::Data<AppState<T>>,
+    auth: BasicAuth,
+    item: web::Json<NewPageObj>,
+) -> Result<HttpResponse, Error> {
     println!("post {:?}", item);
     authenticate(auth)?;
+
+    let path = urlencoding::encode(&item.path);
 
     // トップページか普通のページかで切り分け
     let default_page: String = if item.path == "top" {
@@ -37,8 +44,8 @@ pub async fn post(auth: BasicAuth, item: web::Json<NewPageObj>) -> Result<HttpRe
         gateways::pages::get_default_page()?
     };
 
-    let page = Page::create(&default_page, &item.path, &item.body)?;
-    gateways::pages::save(&page)?;
+    let page = Page::create(&default_page, &path, &item.body)?;
+    gateways::pages::save(&data.db, &page)?;
 
     // TODO: navigate to the new page created
     let url = format!("/pages?path={}", &item.path);
@@ -51,31 +58,40 @@ pub struct QueryPath {
 }
 
 /// Delete the file with DELETE method
-pub async fn delete(auth: BasicAuth, item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
+pub async fn delete<T: Clone + Database>(
+    data: web::Data<AppState<T>>,
+    auth: BasicAuth,
+    item: web::Query<QueryPath>,
+) -> Result<HttpResponse, Error> {
     println!("delete ? {:?}", item);
     authenticate(auth)?;
 
     // delete the page
-    gateways::pages::delete(&item.path)?;
+    gateways::pages::delete(&data.db, &item.path)?;
 
     // TODO: navigate to the root page
     Ok(HttpResponse::Ok().json("deleted"))
 }
 
 /// GET the page
-pub async fn get_page(auth: BasicAuth, item: web::Query<QueryPath>) -> Result<HttpResponse, Error> {
+pub async fn get_page<T: Clone + Database>(
+    data: web::Data<AppState<T>>,
+    auth: BasicAuth,
+    item: web::Query<QueryPath>,
+) -> Result<HttpResponse, Error> {
     println!("get_page ? {:?}", item);
     authenticate(auth)?;
 
     // Load the page
-    let contents = gateways::pages::get_html(&item.path)?;
+    let contents = gateways::pages::get_html(&data.db, &item.path)?;
 
     // Return the response and display the html file on the browser
     Ok(HttpResponse::Ok().content_type("text/html").body(contents))
 }
 
 /// GET the page for editing the page
-pub async fn get_editor(
+pub async fn get_editor<T: Clone + Database>(
+    data: web::Data<AppState<T>>,
     auth: BasicAuth,
     item: web::Query<QueryPath>,
 ) -> Result<HttpResponse, Error> {
@@ -83,7 +99,7 @@ pub async fn get_editor(
     authenticate(auth)?;
 
     // get the editor html with the given file path
-    let editor = gateways::pages::get_editor(&item.path)?;
+    let editor = gateways::pages::get_editor(&data.db, &item.path)?;
 
     Ok(HttpResponse::Ok().content_type("text/html").body(editor))
 }

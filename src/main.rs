@@ -1,7 +1,9 @@
 use actix_cors::Cors;
-use actix_web::{http, middleware, App, HttpServer};
+use actix_web::{http, middleware, web, App, HttpServer};
 use actix_web_httpauth::extractors::basic::Config;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+use wiki_rs::controllers::handle_page::AppState;
+use wiki_rs::gateways::db_memory::DatabaseImplOnMemory;
 use wiki_rs::routes;
 
 #[actix_web::main]
@@ -21,7 +23,10 @@ async fn main() -> std::io::Result<()> {
             App::new()
                 .wrap(middleware::Logger::default()) // enable logger
                 .app_data(Config::default().realm("Restricted area")) // basic authemtication
-                .configure(routes::routes)
+                .app_data(web::Data::new(AppState {
+                    db: DatabaseImplOnMemory {},
+                }))
+                .configure(routes::routes::<DatabaseImplOnMemory>)
         })
         .bind(("0.0.0.0", 8080))?
         .run()
@@ -51,7 +56,10 @@ async fn main() -> std::io::Result<()> {
                 .wrap(cors) // allow access from http://localhost
                 .wrap(middleware::Logger::default()) // enable logger
                 .app_data(Config::default().realm("Restricted area")) // basic authentication
-                .configure(routes::routes)
+                .app_data(web::Data::new(AppState {
+                    db: DatabaseImplOnMemory {},
+                }))
+                .configure(routes::routes::<DatabaseImplOnMemory>)
         })
         .bind_openssl("127.0.0.1:8443", builder)?
         .run()

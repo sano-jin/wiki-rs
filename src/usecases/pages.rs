@@ -28,7 +28,7 @@ impl Page {
     ) -> Result<Page, Error> {
         // heading にリンクが追加されていなかったら uuid を活用して id をふる
         let (markdown, toc) = pages::add_heading_ids(&markdown);
-        println!("heading map: {:?}", toc);
+        // println!("heading map: {:?}", toc);
 
         ////////////////////////////////////////////////////////////////////////////////
         // TOC
@@ -96,7 +96,7 @@ impl Page {
         let attach_names = attach_names.join("\n");
         let attach_names = format!("<ul class=\"attach-names\">{}</ul>", attach_names);
 
-        println!(">>>> attach_names: {:?}", attach_names);
+        // println!(">>>> attach_names: {:?}", attach_names);
         let contents = contents.replace("{{ ATTACH_NAMES }}", &attach_names);
 
         Some(contents)
@@ -111,7 +111,7 @@ impl Page {
         // let pages_list = Page::list_pages().expect("file list");
 
         // recently updated pages list
-        println!("pages list {:?}", pages_list);
+        // println!("pages list {:?}", pages_list);
         let mut vec_pages_list = Vec::new();
         for (decoded, path) in pages_list {
             vec_pages_list.push(format!(
@@ -120,7 +120,7 @@ impl Page {
             ));
         }
         let pages_list = vec_pages_list.join("\n");
-        let pages_list = format!("<ul>{}<ul>", pages_list);
+        let pages_list = format!("<ul>{}</ul>", pages_list);
 
         let menu = pages::html_of_markdown("", &menu_markdown).unwrap();
         let menu = menu.replace("{{ INDEX_UL }}", &pages_list);

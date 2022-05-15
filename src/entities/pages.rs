@@ -79,13 +79,13 @@ fn next_state_of(state: State, line: &str) -> State {
 
 /// 数式の中の backslash を escape する
 fn escape_backslash_in_math(markdown: &str) -> String {
-    println!("> escaping markdown: {}", markdown);
+    // println!("> escaping markdown: {}", markdown);
 
     // escape in inline math mode
     let re = Regex::new(r"(?s)\\\((([^\\]*(\\[^\)])*)*)\\\)").unwrap();
     let markdown = re.replace_all(markdown, |caps: &Captures| {
         let escaped = &caps[1].replace("\\", "\\\\");
-        println!("escaped backslash in inline math mode: {}", escaped);
+        // println!("escaped backslash in inline math mode: {}", escaped);
         format!("\\\\({}\\\\)", escaped)
     });
     let markdown = markdown.to_string();
@@ -99,8 +99,7 @@ fn escape_backslash_in_math(markdown: &str) -> String {
     });
     let markdown = markdown.to_string();
 
-    // println!("{}", markdown);
-    println!("> escaped markdown: {}", markdown);
+    // println!("> escaped markdown: {}", markdown);
     markdown.to_string()
 }
 
@@ -227,7 +226,7 @@ pub fn html_of_markdown(path: &str, markdown: &str) -> Result<String, Error> {
         // 画像などのファイルのパスをいじりたい
         Event::Start(Tag::Image(LinkType::Inline, url, title)) => {
             // | Event::End(Tag::Image(LinkType::Inline, url, title)) => {
-            println!("url is {}", url);
+            // println!("url is {}", url);
             let re = Regex::new(r"(^https?://[^\s]*)|^/").unwrap();
             let mut url = url.to_string();
             // let mut url = url;
@@ -262,7 +261,7 @@ pub fn html_of_markdown(path: &str, markdown: &str) -> Result<String, Error> {
             let re = Regex::new(r"^https?://[^\s]*").unwrap();
             let text_str = text.to_string();
             if re.is_match(&text_str) {
-                println!("{}", text_str);
+                // println!("{}", text_str);
                 return Left(
                     std::iter::once(Event::Start(Tag::Link(
                         LinkType::Autolink,

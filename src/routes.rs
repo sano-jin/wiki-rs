@@ -2,9 +2,10 @@ use crate::controllers::handle_attach;
 use crate::controllers::handle_page;
 use crate::controllers::handle_user;
 use crate::controllers::index;
+use crate::gateways::db::Database;
 use actix_web::{web, HttpResponse};
 
-pub fn routes(cfg: &mut web::ServiceConfig) {
+pub fn routes<T: 'static + Clone + Database>(cfg: &mut web::ServiceConfig) {
     cfg.route("/user", web::delete().to(handle_user::delete)); // POST the new contents to update the file
     cfg.route("/user", web::post().to(handle_user::post)); // POST the new contents to update the file
     cfg.route("/users", web::get().to(handle_user::get_users)); // GET the users
@@ -13,14 +14,14 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
     cfg.route("/attach", web::delete().to(handle_attach::delete_attach)); // GET the attached files
     cfg.route("/attach", web::post().to(handle_attach::post_attach)); // GET the attached files
                                                                       //
-    cfg.route("/pages", web::get().to(handle_page::get_page)); // GET the page
-                                                               //
-    cfg.route("/edit", web::get().to(handle_page::get_editor)); // GET the editor
-    cfg.route("/edit", web::post().to(handle_page::post)); // POST the new contents to update the file
-    cfg.route("/edit", web::delete().to(handle_page::delete)); // Delete the file
-                                                               //
+    cfg.route("/pages", web::get().to(handle_page::get_page::<T>)); // GET the page
+                                                                    //
+    cfg.route("/edit", web::get().to(handle_page::get_editor::<T>)); // GET the editor
+    cfg.route("/edit", web::post().to(handle_page::post::<T>)); // POST the new contents to update the file
+    cfg.route("/edit", web::delete().to(handle_page::delete::<T>)); // Delete the file
+                                                                    //
     cfg.service(actix_files::Files::new("/files", "public").show_files_listing());
-    cfg.route("/index.html", web::get().to(index::index));
+    cfg.route("/index.html", web::get().to(index::index::<T>));
     // with path parameters
     cfg.route(
         "/",
