@@ -6,14 +6,14 @@ use crate::gateways::db::Database;
 use actix_web::{web, HttpResponse};
 
 pub fn routes<T: 'static + Clone + Database>(cfg: &mut web::ServiceConfig) {
-    cfg.route("/user", web::delete().to(handle_user::delete)); // POST the new contents to update the file
-    cfg.route("/user", web::post().to(handle_user::post)); // POST the new contents to update the file
-    cfg.route("/users", web::get().to(handle_user::get_users)); // GET the users
-                                                                //
-    cfg.route("/attach", web::get().to(handle_attach::get_attach)); // GET the attached files
-    cfg.route("/attach", web::delete().to(handle_attach::delete_attach)); // GET the attached files
-    cfg.route("/attach", web::post().to(handle_attach::post_attach)); // GET the attached files
-                                                                      //
+    cfg.route("/user", web::delete().to(handle_user::delete::<T>)); // POST the new contents to update the file
+    cfg.route("/user", web::post().to(handle_user::post::<T>)); // POST the new contents to update the file
+    cfg.route("/users", web::get().to(handle_user::get_users::<T>)); // GET the users
+                                                                     //
+    cfg.route("/attach", web::get().to(handle_attach::get::<T>)); // GET the attached files
+    cfg.route("/attach", web::delete().to(handle_attach::delete::<T>)); // GET the attached files
+    cfg.route("/attach", web::post().to(handle_attach::post::<T>)); // GET the attached files
+                                                                    //
     cfg.route("/pages", web::get().to(handle_page::get_page::<T>)); // GET the page
                                                                     //
     cfg.route("/edit", web::get().to(handle_page::get_editor::<T>)); // GET the editor

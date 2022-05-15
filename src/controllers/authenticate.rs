@@ -1,6 +1,9 @@
 // use crate::users;
+// use crate::controllers::appstate::AppState;
 use crate::gateways;
+use crate::gateways::db::Database;
 /// Basic 認証を行う
+// use actix_web::{error, web, Error};
 use actix_web::{error, Error};
 use actix_web_httpauth::extractors::basic::BasicAuth;
 // use crate::usecases::users::User;
@@ -8,7 +11,7 @@ use actix_web_httpauth::extractors::basic::BasicAuth;
 // use std::env;
 
 /// Basic 認証を行う
-pub fn authenticate(auth: BasicAuth) -> Result<(), Error> {
+pub fn authenticate<T: Clone + Database>(db: &T, auth: BasicAuth) -> Result<(), Error> {
     // println!("auth: {:?}", auth);
 
     let user_id = auth.user_id().to_string();
@@ -16,7 +19,7 @@ pub fn authenticate(auth: BasicAuth) -> Result<(), Error> {
     println!("user_id: {}, password: {}", user_id, password);
 
     // load users from database
-    if let Ok(user) = gateways::users::get_user(&user_id) {
+    if let Ok(user) = gateways::users::get_user(db, &user_id) {
         if user.check(&user_id, &password) {
             println!("authentication succeeded");
             return Ok(());

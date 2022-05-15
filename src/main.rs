@@ -2,7 +2,7 @@ use actix_cors::Cors;
 use actix_web::{http, middleware, web, App, HttpServer};
 use actix_web_httpauth::extractors::basic::Config;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
-use wiki_rs::controllers::handle_page::AppState;
+use wiki_rs::controllers::appstate::AppState;
 use wiki_rs::gateways::db_memory::DatabaseImplOnMemory;
 use wiki_rs::routes;
 

@@ -1,6 +1,7 @@
 /// これは POST API を actix-web で扱うことが前提なコードになっているので，
 /// 本来は，controller ではなく，もうひとつ上のレイヤ（framework）に来る気はしている．
 /// gateways (DB) に依存しているのもよくない気がする．
+use crate::controllers::appstate::AppState;
 use crate::controllers::authenticate::authenticate;
 use crate::gateways;
 use crate::gateways::db::Database;
@@ -8,12 +9,6 @@ use crate::usecases::pages::Page;
 use actix_web::{web, Error, HttpResponse};
 use actix_web_httpauth::extractors::basic::BasicAuth;
 use serde::{Deserialize, Serialize};
-
-// This struct represents state
-#[derive(Clone)]
-pub struct AppState<T: Clone + Database> {
-    pub db: T,
-}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewPageObj {
@@ -28,7 +23,7 @@ pub async fn post<T: Clone + Database>(
     item: web::Json<NewPageObj>,
 ) -> Result<HttpResponse, Error> {
     println!("post {:?}", item);
-    authenticate(auth)?;
+    authenticate(&data.db, auth)?;
 
     let path = urlencoding::encode(&item.path);
 
@@ -64,7 +59,7 @@ pub async fn delete<T: Clone + Database>(
     item: web::Query<QueryPath>,
 ) -> Result<HttpResponse, Error> {
     println!("delete ? {:?}", item);
-    authenticate(auth)?;
+    authenticate(&data.db, auth)?;
 
     // delete the page
     gateways::pages::delete(&data.db, &item.path)?;
@@ -80,7 +75,7 @@ pub async fn get_page<T: Clone + Database>(
     item: web::Query<QueryPath>,
 ) -> Result<HttpResponse, Error> {
     println!("get_page ? {:?}", item);
-    authenticate(auth)?;
+    authenticate(&data.db, auth)?;
 
     // Load the page
     let contents = gateways::pages::get_html(&data.db, &item.path)?;
@@ -96,7 +91,7 @@ pub async fn get_editor<T: Clone + Database>(
     item: web::Query<QueryPath>,
 ) -> Result<HttpResponse, Error> {
     println!("get_edit_page ? {:?}", item);
-    authenticate(auth)?;
+    authenticate(&data.db, auth)?;
 
     // get the editor html with the given file path
     let editor = gateways::pages::get_editor(&data.db, &item.path)?;

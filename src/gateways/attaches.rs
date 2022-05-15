@@ -62,9 +62,11 @@ pub fn get(filepath: &str) -> Result<Vec<u8>, Error> {
 }
 
 /// Get the list of file names and paths
-/// sorted by the modified date
 pub fn get_attach_names_in_page(page_id: &str) -> Option<Vec<(String, String)>> {
     println!("getting attach names in page with id: {:?}", page_id);
+
+    // ページへのパス
+    // `/` は urlencoding すると `%2F` になる
     let page_path = format!("{}%2F", &page_id);
 
     let dir_entries = std::fs::read_dir("db/attach").unwrap();
@@ -76,10 +78,8 @@ pub fn get_attach_names_in_page(page_id: &str) -> Option<Vec<(String, String)>> 
                     if let Ok(filepath) = entry.file_name().into_string() {
                         if filepath.starts_with(&page_path) {
                             let file_path = &filepath[page_path.len()..];
-                            println!(">>>> file_path: {}", file_path);
                             let filename = urlencoding::decode(&file_path).expect("cannot decode");
                             let filename = filename.to_string();
-                            println!("decoded filename: {:?}", filename);
                             vec_attaches.push((filename, filepath));
                         }
                     }
@@ -88,16 +88,12 @@ pub fn get_attach_names_in_page(page_id: &str) -> Option<Vec<(String, String)>> 
         }
     }
 
-    println!(
-        ">>>> get_attach_names_in_page() ---> attach names: {:?}",
-        vec_attaches
-    );
+    println!(">>>> get_attach_names_in_page() ---> {:?}", vec_attaches);
 
     Some(vec_attaches)
 }
 
 /// Get the list of file names and paths
-/// sorted by the modified date
 pub fn get_attach_names() -> Option<Vec<(String, String)>> {
     let dir_entries = std::fs::read_dir("db/attach").unwrap();
     let mut vec_attaches = Vec::new();
@@ -115,10 +111,7 @@ pub fn get_attach_names() -> Option<Vec<(String, String)>> {
         }
     }
 
-    println!(
-        ">>>> get_attach_names() ---> attach names: {:?}",
-        vec_attaches
-    );
+    println!(">>>> get_attach_names() ---> {:?}", vec_attaches);
 
     Some(vec_attaches)
 }
