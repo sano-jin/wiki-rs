@@ -4,22 +4,8 @@
 ///
 use crate::util;
 use actix_web::Error;
-// use chrono::DateTime;
-// use serde::{Deserialize, Serialize};
-// use serde_json;
 use std::fs::File;
 use std::io::prelude::*;
-// use urlencoding;
-
-// /// データベースとやりとりするためのデータ構造
-// #[derive(Debug, Serialize, Deserialize)]
-// pub struct PageData {
-//     pub path: String, // id
-//     pub name: String,
-//     pub markdown: String,
-//     pub html: String,
-//     pub modified_rfc3339: String, // ISO8601 string for datetime
-// }
 
 /// handle attached files
 /// Save the attach file
@@ -35,8 +21,10 @@ pub fn save(path: &str, buf: &Vec<u8>) -> Result<(), Error> {
 }
 
 /// Delete the attached file
-pub fn delete(filepath: &str) -> Result<(), Error> {
+pub fn delete(page_name: &str, file_name: &str) -> Result<(), Error> {
     // delete the file
+    let filepath = format!("{}/{}", page_name, file_name);
+    println!("deleting file at {:?}", filepath);
     let path = util::get_path("db/attach", &filepath);
 
     println!("removing the file {:?}", path);
@@ -49,7 +37,7 @@ pub fn delete(filepath: &str) -> Result<(), Error> {
 pub fn get(filepath: &str) -> Result<Vec<u8>, Error> {
     // Load the file
     let path = util::get_path("db/attach", &filepath);
-    println!("path is {:?}", path);
+    // println!("path is {:?}", path);
     // let data = std::io::Read::read_to_end(&path)?;
 
     let mut file = File::open(path)?;
@@ -74,7 +62,10 @@ pub fn get(filepath: &str) -> Result<Vec<u8>, Error> {
 
 /// Get the list of file names and paths
 /// sorted by the modified date
-pub fn get_attach_names_in_page(page_path: &str) -> Option<Vec<(String, String)>> {
+pub fn get_attach_names_in_page(page_id: &str) -> Option<Vec<(String, String)>> {
+    println!("getting attach names in page with id: {:?}", page_id);
+    let page_path = format!("{}%2F", &page_id);
+
     let dir_entries = std::fs::read_dir("db/attach").unwrap();
     let mut vec_attaches = Vec::new();
     for dir_entry in dir_entries {
@@ -82,9 +73,10 @@ pub fn get_attach_names_in_page(page_path: &str) -> Option<Vec<(String, String)>
             if let Ok(metadata) = entry.metadata() {
                 if metadata.is_file() {
                     if let Ok(filepath) = entry.file_name().into_string() {
-                        let filename = urlencoding::decode(&filepath).expect("cannot decode");
-                        let filename = filename.to_string();
-                        if filename.starts_with(&page_path) {
+                        if filepath.starts_with(&page_path) {
+                            let filename = urlencoding::decode(&filepath).expect("cannot decode");
+                            let filename = filename.to_string();
+                            println!("decoded filename: {:?}", filename);
                             vec_attaches.push((filename, filepath));
                         }
                     }
@@ -93,7 +85,10 @@ pub fn get_attach_names_in_page(page_path: &str) -> Option<Vec<(String, String)>
         }
     }
 
-    println!("- attach names: {:?}", vec_attaches);
+    println!(
+        ">>>> get_attach_names_in_page() ---> attach names: {:?}",
+        vec_attaches
+    );
 
     Some(vec_attaches)
 }
@@ -117,7 +112,10 @@ pub fn get_attach_names() -> Option<Vec<(String, String)>> {
         }
     }
 
-    println!("- attach names: {:?}", vec_attaches);
+    println!(
+        ">>>> get_attach_names() ---> attach names: {:?}",
+        vec_attaches
+    );
 
     Some(vec_attaches)
 }
