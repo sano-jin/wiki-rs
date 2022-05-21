@@ -5,7 +5,8 @@ use crate::controllers::login::{Claims, JWT_COOKIE_KEY, JWT_SECRET};
 use crate::gateways;
 use crate::gateways::db::Database;
 use crate::usecases::users::User;
-use actix_web::{web, Error, HttpResponse};
+use actix_web::{error, web, Error};
+use derive_more::{Display, Error};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -29,12 +30,21 @@ pub struct UserId {
     pub id: Uuid,
 }
 
+#[derive(Debug, Display, Error)]
+#[display(fmt = "my error: {}", name)]
+struct MyError {
+    name: &'static str,
+}
+
+// Use default implementation for `error_response()` method
+impl error::ResponseError for MyError {}
+
 /// Finds user by UID.
 // #[get("/user/{user_id}")]
 pub async fn get_user<T: Clone + Database>(
-    data: web::Data<AppState<T>>,
+    data: &web::Data<AppState<T>>,
     req: actix_web::HttpRequest,
-) -> Result<HttpResponse, Error> {
+) -> Result<User, Error> {
     println!(">>>> validate::get_user");
 
     let db = &data.db;
@@ -46,33 +56,19 @@ pub async fn get_user<T: Clone + Database>(
     match dec_jwt(&JWT_SECRET.to_string(), &jwt) {
         Some(uid) => {
             println!(">>>> user id: {:?}", uid);
-            let user_opt: Option<User> = {
-                println!("username: {}", uid);
-                if let Ok(user) = gateways::users::get_user_by_id(db, &uid) {
-                    Some(user)
-                } else {
-                    None
-                }
-            };
-
-            // .map_err(|e| HttpResponse::InternalServerError().finish())?;
-
-            match user_opt {
-                Some(user) => Ok(HttpResponse::Ok().json(user)),
-                _ => Ok(HttpResponse::NonAuthoritativeInformation()
-                    .content_type("text/plain; charset=utf-8")
-                    .body("user not found.")),
-            }
+            let user_result = gateways::users::get_user_by_id(db, &uid);
+            user_result
         }
-        _ => Ok(HttpResponse::NonAuthoritativeInformation()
-            .content_type("text/plain; charset=utf-8")
-            .body("invalid token.")),
+        _ => Err(Error::from(MyError {
+            name: "invalid token",
+        })),
     }
 }
 
 fn get_cookie_map(req: actix_web::HttpRequest) -> HashMap<String, String> {
     match get_cookie_string(req) {
         Some(cookie_str) => {
+            println!(">>>> cookie: {:?}", cookie_str);
             let cookies: Vec<&str> = cookie_str.split(";").collect();
             cookies
                 .iter()

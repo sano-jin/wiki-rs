@@ -2,12 +2,11 @@
 /// 本来は，controller ではなく，もうひとつ上のレイヤ（framework）に来る気はしている．
 /// gateways (DB) に依存しているのもよくない気がする．
 use crate::controllers::appstate::AppState;
-use crate::controllers::authenticate::authenticate;
+use crate::controllers::validate;
 use crate::gateways;
 use crate::gateways::db::Database;
 use crate::usecases::pages::Page;
-use actix_web::{web, Error, HttpResponse};
-use actix_web_httpauth::extractors::basic::BasicAuth;
+use actix_web::{web, Error, HttpRequest, HttpResponse};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -19,11 +18,19 @@ pub struct NewPageObj {
 /// Create and Update the file with POST method
 pub async fn post<T: Clone + Database>(
     data: web::Data<AppState<T>>,
-    auth: BasicAuth,
+    req: HttpRequest,
     item: web::Json<NewPageObj>,
 ) -> Result<HttpResponse, Error> {
     println!("post {:?}", item);
-    authenticate(&data.db, auth)?;
+    let user = match validate::get_user(&data, req).await {
+        Ok(user) => user,
+        Err(_) => {
+            return Ok(HttpResponse::Found()
+                .append_header(("Location", "/login"))
+                .finish());
+        }
+    };
+    println!("user {:?}", user);
 
     let path = urlencoding::encode(&item.path);
 
@@ -55,11 +62,19 @@ pub struct QueryPath {
 /// Delete the file with DELETE method
 pub async fn delete<T: Clone + Database>(
     data: web::Data<AppState<T>>,
-    auth: BasicAuth,
+    req: HttpRequest,
     item: web::Query<QueryPath>,
 ) -> Result<HttpResponse, Error> {
     println!("delete ? {:?}", item);
-    authenticate(&data.db, auth)?;
+    let user = match validate::get_user(&data, req).await {
+        Ok(user) => user,
+        Err(_) => {
+            return Ok(HttpResponse::Found()
+                .append_header(("Location", "/login"))
+                .finish());
+        }
+    };
+    println!("user {:?}", user);
 
     // delete the page
     gateways::pages::delete(&data.db, &item.path)?;
@@ -71,14 +86,23 @@ pub async fn delete<T: Clone + Database>(
 /// GET the page
 pub async fn get_page<T: Clone + Database>(
     data: web::Data<AppState<T>>,
-    auth: BasicAuth,
+    req: HttpRequest,
     item: web::Query<QueryPath>,
 ) -> Result<HttpResponse, Error> {
     println!("get_page ? {:?}", item);
-    authenticate(&data.db, auth)?;
+    let user = match validate::get_user(&data, req).await {
+        Ok(user) => user,
+        Err(err) => {
+            println!(">>>> authentication failed: {:?}", err);
+            return Ok(HttpResponse::Found()
+                .append_header(("Location", "/login"))
+                .finish());
+        }
+    };
+    println!("user {:?}", user);
 
     // Load the page
-    let contents = gateways::pages::get_html(&data.db, &item.path)?;
+    let contents = gateways::pages::get_html(&data.db, &item.path, &user)?;
 
     // Return the response and display the html file on the browser
     Ok(HttpResponse::Ok().content_type("text/html").body(contents))
@@ -87,11 +111,20 @@ pub async fn get_page<T: Clone + Database>(
 /// GET the page for editing the page
 pub async fn get_editor<T: Clone + Database>(
     data: web::Data<AppState<T>>,
-    auth: BasicAuth,
+    req: HttpRequest,
     item: web::Query<QueryPath>,
 ) -> Result<HttpResponse, Error> {
     println!("get_edit_page ? {:?}", item);
-    authenticate(&data.db, auth)?;
+    let user = match validate::get_user(&data, req).await {
+        Ok(user) => user,
+        Err(err) => {
+            println!(">>>> authentication failed: {:?}", err);
+            return Ok(HttpResponse::Found()
+                .append_header(("Location", "/login"))
+                .finish());
+        }
+    };
+    println!("user {:?}", user);
 
     // get the editor html with the given file path
     let editor = gateways::pages::get_editor(&data.db, &item.path)?;

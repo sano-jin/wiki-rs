@@ -5,6 +5,7 @@
 use crate::gateways::attaches;
 use crate::gateways::db::Database;
 use crate::usecases::pages::Page;
+use crate::usecases::users::User;
 use actix_web::Error;
 use chrono::DateTime;
 use serde::{Deserialize, Serialize};
@@ -97,7 +98,7 @@ pub fn get_page(db: &impl Database, page_id: &str) -> Result<Page, Error> {
 }
 
 /// Get the html contents
-pub fn get_html(db: &impl Database, page_name: &str) -> Result<String, Error> {
+pub fn get_html(db: &impl Database, page_name: &str, user: &User) -> Result<String, Error> {
     // Load the file
     println!("Getting html of page with page_name: {:?}", page_name);
 
@@ -115,6 +116,7 @@ pub fn get_html(db: &impl Database, page_name: &str) -> Result<String, Error> {
             &menu.markdown,
             pages_list.as_slice(),
             attach_names.as_slice(),
+            &user.name,
         )
         .expect("error");
 

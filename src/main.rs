@@ -4,6 +4,7 @@ use actix_web_httpauth::extractors::basic::Config;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 // use std::collections::HashMap;
 // use std::sync::Mutex;
+use dotenv::dotenv;
 use wiki_rs::controllers::appstate::AppState;
 use wiki_rs::db::db_memory::DatabaseImplOnMemory;
 use wiki_rs::routes;
@@ -12,6 +13,8 @@ use wiki_rs::routes;
 async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=debug");
     env_logger::init();
+
+    dotenv().ok();
 
     let args: Vec<String> = std::env::args().collect();
     println!("{:?}", args);

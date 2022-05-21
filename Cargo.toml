@@ -26,4 +26,4 @@ actix-multipart = "0.4"
 futures = "0.3"
 
 jsonwebtoken = "8"
-
+derive_more = "0.99"

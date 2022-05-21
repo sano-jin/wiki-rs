@@ -5,11 +5,10 @@ use crate::usecases::users::User;
 use actix_web::cookie::SameSite;
 use actix_web::{web, Error, HttpResponse};
 use chrono::Duration;
-use chrono::{DateTime, Utc};
+// use chrono::{DateTime, Utc};
 use jsonwebtoken::{encode, EncodingKey};
 use serde::{Deserialize, Serialize};
 use std::env;
-use uuid::Uuid;
 
 /// TODO: secret key は env からとってくるようにする．
 pub const JWT_SECRET: &str = "secret";
@@ -66,15 +65,6 @@ pub async fn login<T: Clone + Database>(
     match user_opt {
         Some(user) => {
             // Get and set uuid
-            let id = Uuid::new_v4();
-            let id_str = id.to_string();
-            let utc: DateTime<Utc> = Utc::now();
-
-            let mut logged_in_users = data.logged_in_users.lock().unwrap(); // <- get counter's MutexGuard
-            println!("logged_in_users: {:?}", logged_in_users);
-            println!("inserting...");
-            logged_in_users.insert(id, utc); // <- access logged_in_users inside MutexGuard
-            println!("logged_in_users: {:?}", logged_in_users);
 
             // Set JWT
             let cookie = actix_web::cookie::Cookie::build(
@@ -86,11 +76,12 @@ pub async fn login<T: Clone + Database>(
             .same_site(SameSite::Strict)
             .finish();
 
+            println!(">> setting cookie {:?}", cookie.to_string());
+
             let ret = Ok(HttpResponse::Ok()
                 .append_header(("Set-Cookie", cookie.to_string()))
                 .content_type("text/plain; charset=utf-8")
-                // .body("login succeeded"));
-                .body(id_str));
+                .body("login succeeded"));
             ret
         }
         _ => Ok(HttpResponse::NonAuthoritativeInformation()

@@ -714,3 +714,17 @@ input[type="submit"]:hover {
 .head-links {
   margin: 30px 0 10px;
 }
+
+.user-name {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  background-color: #556;
+  position: fixed;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  text-align: center;
+  padding: 20px auto;
+  line-height: 60px;
+}

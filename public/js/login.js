@@ -50,8 +50,8 @@ window.addEventListener("DOMContentLoaded", () => {
         if (response.status === 200) {
           console.log("成功！");
 
-          // const location = "/users";
-          // window.location = location;
+          const location = "/";
+          window.location = location;
         } else {
           console.log("認証に失敗しました！");
           window.alert("Authorization failed");

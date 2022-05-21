@@ -2,12 +2,11 @@ use crate::controllers::appstate::AppState;
 /// これは POST API を actix-web で扱うことが前提なコードになっているので，
 /// 本来は，controller ではなく，もうひとつ上のレイヤ（framework）に来る気はしている．
 /// gateways (DB) に依存しているのもよくない気がする．
-use crate::controllers::authenticate::authenticate;
+use crate::controllers::validate;
 use crate::gateways;
 use crate::gateways::db::Database;
 use actix_multipart::Multipart;
-use actix_web::{web, Error, HttpResponse};
-use actix_web_httpauth::extractors::basic::BasicAuth;
+use actix_web::{web, Error, HttpRequest, HttpResponse};
 use futures::{StreamExt, TryStreamExt};
 use serde::{Deserialize, Serialize};
 
@@ -18,13 +17,20 @@ pub struct QueryPath {
 
 pub async fn post<T: Clone + Database>(
     data: web::Data<AppState<T>>,
-    auth: BasicAuth,
+    req: HttpRequest,
     item: web::Query<QueryPath>,
     mut payload: Multipart,
 ) -> Result<HttpResponse, Error> {
-    authenticate(&data.db, auth)?;
-
     println!("post {:?}", item);
+    let user = match validate::get_user(&data, req).await {
+        Ok(user) => user,
+        Err(_) => {
+            return Ok(HttpResponse::Found()
+                .append_header(("Location", "/login"))
+                .finish());
+        }
+    };
+    println!("user {:?}", user);
 
     while let Ok(Some(mut field)) = payload.try_next().await {
         // let content_type = field.content_disposition().unwrap();
@@ -72,11 +78,19 @@ pub struct AttachQueryPath {
 /// Delete the file with DELETE method
 pub async fn delete<T: Clone + Database>(
     data: web::Data<AppState<T>>,
-    auth: BasicAuth,
+    req: HttpRequest,
     item: web::Query<AttachQueryPath>,
 ) -> Result<HttpResponse, Error> {
     println!("delete ? {:?}", item);
-    authenticate(&data.db, auth)?;
+    let user = match validate::get_user(&data, req).await {
+        Ok(user) => user,
+        Err(_) => {
+            return Ok(HttpResponse::Found()
+                .append_header(("Location", "/login"))
+                .finish());
+        }
+    };
+    println!("user {:?}", user);
 
     // delete the page
     // let path = format!("{}/{}", item.path, item.file);
@@ -91,11 +105,19 @@ pub async fn delete<T: Clone + Database>(
 /// GET the page
 pub async fn get<T: Clone + Database>(
     data: web::Data<AppState<T>>,
-    auth: BasicAuth,
+    req: HttpRequest,
     item: web::Query<AttachQueryPath>,
 ) -> Result<HttpResponse, Error> {
     println!("get_attach ? {:?}", item);
-    authenticate(&data.db, auth)?;
+    let user = match validate::get_user(&data, req).await {
+        Ok(user) => user,
+        Err(_) => {
+            return Ok(HttpResponse::Found()
+                .append_header(("Location", "/login"))
+                .finish());
+        }
+    };
+    println!("user {:?}", user);
 
     let path = format!("{}/{}", item.path, item.file);
     println!("get_attach at {:?}", path);

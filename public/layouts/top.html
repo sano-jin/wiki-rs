@@ -45,6 +45,7 @@
       <!-- header menu bar -->
       <div class="wrapper header-menu">
         <a href="/edit?path={{ PATH }}" class="button">Update</a>
+        <a href="/login" class="button">Login</a>
         <form
           action="/attach?path={{ PATH }}"
           method="post"
@@ -64,6 +65,8 @@
         </form>
         <a href="/users" class="button">Users</a>
       </div>
+
+      <div class="user-name">{{ USER_NAME }}</div>
 
       <!-- side menu bar -->
       <div class="main-body">
