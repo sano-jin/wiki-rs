@@ -122,7 +122,7 @@ impl Page {
         let pages_list = vec_pages_list.join("\n");
         let pages_list = format!("<ul>{}</ul>", pages_list);
 
-        let menu = pages::html_of_markdown("", &menu_markdown).unwrap();
+        let menu = pages::html_of_markdown("menu", &menu_markdown).unwrap();
         let menu = menu.replace("{{ INDEX_UL }}", &pages_list);
 
         // Load the file
