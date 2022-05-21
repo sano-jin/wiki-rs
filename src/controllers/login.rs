@@ -3,6 +3,10 @@ use chrono::Duration;
 use jsonwebtoken::{encode, EncodingKey};
 use serde::{Deserialize, Serialize};
 
+use std::env;
+
+use actix_web::cookie::SameSite;
+
 //
 
 use crate::controllers::appstate::AppState;
@@ -87,6 +91,8 @@ pub async fn login<T: Clone + Database>(
                 enc_jwt(&JWT_SECRET.to_string(), &user),
             )
             .http_only(true)
+            .secure(is_https())
+            .same_site(SameSite::Strict)
             .finish();
 
             let ret = Ok(HttpResponse::Ok()
@@ -136,4 +142,30 @@ pub async fn index<T: Clone + Database>(// data: web::Data<AppState<T>>,
 
     // Return the response and display the html file on the browser
     Ok(HttpResponse::Ok().content_type("text/html").body(contents))
+}
+
+/// 特定のキーで環境変数から値を取得するための関数
+///
+/// # Arguments
+/// * `key` - 環境変数から取り出したい値のキー
+///
+/// # Return value
+/// * String - 環境変数の値を文字列として取得する
+///
+fn get_env(key: &str) -> String {
+    match env::var(key) {
+        Ok(value) => return value,
+        Err(e) => println!("ENV: ERR {:?}", e),
+    }
+    return String::new();
+}
+
+/// 環境変数に設定された HTTPS の値が 1 か判定する
+/// Cookie の属性に Secure を付与するか判定するのに使用する
+///
+/// # Return value
+/// * bool - Secure 属性を付与するか判定するための真偽値
+///
+fn is_https() -> bool {
+    return get_env("HTTPS") == "1";
 }
