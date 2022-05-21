@@ -145,7 +145,7 @@ To get a local copy up and running follow these simple example steps.
 
 4. `.env.template` を参考に，`.env` を生成する
 
-   - 追記：これは現時点では不要
+   - TLS/SSL を有効にする場合は `HTTPS=1`, 有効にしない場合は `HTTPS=0` にする．
 
 5. cargo で backend を実行する
 
