@@ -38,6 +38,25 @@ fn enc_jwt(secret: &String, user: &User) -> String {
     encode(&header, &claim, &EncodingKey::from_secret(secret.as_ref())).unwrap()
 }
 
+pub fn set_jwt(user: &User, location: &str) -> HttpResponse {
+    // Set JWT
+    let cookie =
+        actix_web::cookie::Cookie::build(JWT_COOKIE_KEY, enc_jwt(&JWT_SECRET.to_string(), &user))
+            .http_only(true)
+            .secure(is_https())
+            .same_site(SameSite::Strict)
+            .finish();
+
+    println!(">> setting cookie {:?}", cookie.to_string());
+
+    let ret = HttpResponse::Found()
+        .append_header(("Location", "/login"))
+        .append_header(("Set-Cookie", cookie.to_string()))
+        .finish();
+
+    ret
+}
+
 /// Finds user by username and password.
 // #[post("/login")]
 pub async fn login<T: Clone + Database>(
@@ -67,22 +86,7 @@ pub async fn login<T: Clone + Database>(
             // Get and set uuid
 
             // Set JWT
-            let cookie = actix_web::cookie::Cookie::build(
-                JWT_COOKIE_KEY,
-                enc_jwt(&JWT_SECRET.to_string(), &user),
-            )
-            .http_only(true)
-            .secure(is_https())
-            .same_site(SameSite::Strict)
-            .finish();
-
-            println!(">> setting cookie {:?}", cookie.to_string());
-
-            let ret = Ok(HttpResponse::Ok()
-                .append_header(("Set-Cookie", cookie.to_string()))
-                .content_type("text/plain; charset=utf-8")
-                .body("login succeeded"));
-            ret
+            Ok(set_jwt(&user, "/"))
         }
         _ => Ok(HttpResponse::NonAuthoritativeInformation()
             .content_type("text/plain; charset=utf-8")

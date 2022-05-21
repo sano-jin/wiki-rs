@@ -2,6 +2,7 @@
 // 本来は，controller ではなく，もうひとつ上のレイヤ（framework）に来る気はしている．
 /// gateways (DB) に依存しているのもよくない気がする．
 use crate::controllers::appstate::AppState;
+use crate::controllers::login::set_jwt;
 use crate::controllers::validate;
 use crate::gateways;
 use crate::gateways::db::Database;
@@ -35,9 +36,7 @@ pub async fn post<T: Clone + Database>(
     let user = User::create(&item.name, &item.password);
     gateways::users::save(&data.db, &user)?;
 
-    // TODO: navigate to the new user created
-    let url = "/users";
-    Ok(HttpResponse::Ok().json(url))
+    Ok(set_jwt(&user, "/"))
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -85,7 +84,7 @@ pub async fn get_users<T: Clone + Database>(
     };
     println!("user {:?}", user);
 
-    let contents = gateways::users::get_editor(&data.db)?;
+    let contents = gateways::users::get_editor(&data.db, &user)?;
 
     // Return the response and display the html file on the browser
     Ok(HttpResponse::Ok().content_type("text/html").body(contents))

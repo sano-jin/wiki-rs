@@ -42,7 +42,7 @@ window.addEventListener("DOMContentLoaded", () => {
       body: body,
     });
 
-    const location = "/users";
+    const location = "/";
     window.location = location;
   });
   //

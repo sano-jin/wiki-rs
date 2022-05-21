@@ -78,7 +78,7 @@ pub fn get_users(db: &impl Database) -> Result<Vec<User>, Error> {
 }
 
 /// GET the page for editing the page
-pub fn get_editor(db: &impl Database) -> Result<String, Error> {
+pub fn get_editor(db: &impl Database, user: &User) -> Result<String, Error> {
     // let contents = util::read_with_default(&path.to_string_lossy(), "");
 
     // Load the user
@@ -96,7 +96,9 @@ pub fn get_editor(db: &impl Database) -> Result<String, Error> {
     // Open the file for editing
     let editor = std::fs::read_to_string("public/layouts/user.html")?;
     // Replace the contents
-    let editor = editor.replace("{{ USERS }}", &contents);
+    let editor = editor
+        .replace("{{ USERS }}", &contents)
+        .replace("{{ USER_NAME }}", &user.name);
 
     Ok(editor)
 }
