@@ -75,10 +75,11 @@ Install Cargo
 
    を実行する
 
-6. and access <https://127.0.0.1:8443/> on your browser.
-   もし TLS/SSL を有効にしてなかったら，access <http://0.0.0.0:8080/> on your browser.
    - 補足：cargo watch を install して，`cargo watch -x run` とすると，
      ソースコードを変更して保存するごとに，コンパイルして実行し直してくれるので便利です．
+
+6. and access <https://127.0.0.1:8443/> on your browser.
+   もし TLS/SSL を有効にしてなかったら，access <http://0.0.0.0:8080/> on your browser.
 
 # Design
 
