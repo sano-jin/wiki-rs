@@ -22,7 +22,7 @@ pub fn save(db: &impl Database, user: &User) -> Result<(), Error> {
         password: user.password.to_owned(),
     };
 
-    db.insert("users", &user.path, &user_data)?;
+    db.insert("users", &user.id, &user_data)?;
 
     Ok(())
 }
@@ -40,10 +40,20 @@ pub fn delete(db: &impl Database, user_name: &str) -> Result<(), Error> {
 pub fn get_user(db: &impl Database, user_name: &str) -> Result<User, Error> {
     // Load the file
     let user_id = urlencoding::encode(&user_name);
+    get_user_by_id(db, &user_id)
+}
+
+/// Get the user
+pub fn get_user_by_name(db: &impl Database, user_name: &str) -> Result<User, Error> {
+    get_user(db, &user_name)
+}
+
+/// Get the user
+pub fn get_user_by_id(db: &impl Database, user_id: &str) -> Result<User, Error> {
     let user_data: UserData = db.get("users", &user_id)?;
 
     Ok(User {
-        path: user_id.to_string(),
+        id: user_id.to_string(),
         name: user_data.name,
         password: user_data.password,
     })
@@ -58,7 +68,7 @@ pub fn get_users(db: &impl Database) -> Result<Vec<User>, Error> {
         .map(|user_data| {
             let user_id = urlencoding::encode(&user_data.name);
             User {
-                path: user_id.to_string(),
+                id: user_id.to_string(),
                 name: user_data.name.to_string(),
                 password: user_data.password.to_string(),
             }

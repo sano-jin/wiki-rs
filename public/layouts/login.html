@@ -60,12 +60,12 @@
           <div class="wrapper">
             <div class="updated-date">Last modified: {{ UPDATED_DATE }}</div>
             <div class="form-element">
-              Create a new user:
+              login a new user:
               <form action="/user" method="POST">
                 <input
                   type="text"
-                  id="create_user_name"
-                  name="create_user_name"
+                  id="login_user_name"
+                  name="login_user_name"
                   required
                   size="50"
                   value=""
@@ -73,8 +73,8 @@
                 <br />
                 <input
                   type="password"
-                  id="create_user_password"
-                  name="create_user_password"
+                  id="login_user_password"
+                  name="login_user_password"
                   required
                   size="50"
                   value=""
@@ -82,29 +82,9 @@
                 <br />
                 <input
                   type="submit"
-                  id="create_user_submit"
-                  name="create_user_submit"
-                  value="Create"
-                />
-              </form>
-            </div>
-            <div class="form-element">
-              Delete user:
-              <form action="/edit" method="Delete">
-                <input
-                  type="text"
-                  id="delete_user_name"
-                  name="delete_user_name"
-                  required
-                  size="50"
-                  value=""
-                />
-                <br />
-                <input
-                  type="submit"
-                  id="delete_user_submit"
-                  name="delete_user_submit"
-                  value="Delete"
+                  id="login_user_submit"
+                  name="login_user_submit"
+                  value="login"
                 />
               </form>
             </div>
@@ -118,5 +98,5 @@
     </div>
   </body>
 
-  <script src="/files/js/user.js"></script>
+  <script src="/files/js/login.js"></script>
 </html>

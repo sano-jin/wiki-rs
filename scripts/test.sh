@@ -11,6 +11,7 @@ EOM
 }
 
 case "$1" in
+"login") curl -i --cookie-jar cookie -XPOST https://127.0.0.1:8443/login -H "Content-Type: application/json" -d "{\"name\": \"$2\", \"password\": \"$3\"}" ;;
 "get") curl -kX GET https://127.0.0.1:8443/"$2" ;;
 "get_pages") curl -kX GET "https://127.0.0.1:8443/pages?path=$2" ;;
 "get_users") curl -kX GET "https://127.0.0.1:8443/users" ;;

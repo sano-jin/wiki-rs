@@ -20,6 +20,13 @@ pub struct PageData {
     pub modified_rfc3339: String, // ISO8601 string for datetime
 }
 
+/// login ページを取得する
+pub fn get_login_page() -> Result<String, Error> {
+    // Open the default file
+    let default_page = std::fs::read_to_string("public/layouts/login.html")?;
+    Ok(default_page)
+}
+
 /// トップページの template を取得する
 pub fn get_default_top_page() -> Result<String, Error> {
     // Open the default file
