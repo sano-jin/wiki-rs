@@ -75,7 +75,7 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](docs/images/wiki-rs-demo.png)
+[![Product Name Screen Shot](docs/images/wiki-rs-demo.png)](https://github.com/sano-jin/wiki-rs)
 
 - レスポンシブ対応
 - ダークモード対応
