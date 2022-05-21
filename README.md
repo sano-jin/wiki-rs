@@ -34,7 +34,7 @@
   <p align="center">
     A simple wiki created with rust
     <br />
-    <a href="https://github.com/sano-jin/wiki-rs/docs/README.md"><strong>Explore the docs »</strong></a>
+    <a href="docs/README.md"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/sano-jin/wiki-rs">View Demo</a>
