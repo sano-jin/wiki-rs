@@ -2,10 +2,16 @@ use crate::controllers::handle_attach;
 use crate::controllers::handle_page;
 use crate::controllers::handle_user;
 use crate::controllers::index;
+use crate::controllers::login;
+// use crate::controllers::validate;
 use crate::gateways::db::Database;
 use actix_web::{web, HttpResponse};
 
 pub fn routes<T: 'static + Clone + Database>(cfg: &mut web::ServiceConfig) {
+    cfg.route("/login", web::post().to(login::login::<T>)); // POST the new contents to update the file
+    cfg.route("/login", web::get().to(login::index::<T>)); // POST the new contents to update the file
+                                                           // cfg.route("/validate", web::get().to(validate::get_user::<T>)); // POST the new contents to update the file
+
     cfg.route("/user", web::delete().to(handle_user::delete::<T>)); // POST the new contents to update the file
     cfg.route("/user", web::post().to(handle_user::post::<T>)); // POST the new contents to update the file
     cfg.route("/users", web::get().to(handle_user::get_users::<T>)); // GET the users

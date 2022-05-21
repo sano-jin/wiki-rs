@@ -8,3 +8,6 @@
 # DB (currently file system)
 /db/*
 
+
+# cookie
+cookie

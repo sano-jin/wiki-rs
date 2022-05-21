@@ -76,6 +76,7 @@ impl Page {
         menu_markdown: &str,
         pages_list: &[(String, String)],
         attach_names: &[(String, String)],
+        user_name: &str,
     ) -> Option<String> {
         // let pages_list = Page::list_pages().expect("file list");
 
@@ -97,7 +98,9 @@ impl Page {
         let attach_names = format!("<ul class=\"attach-names\">{}</ul>", attach_names);
 
         // println!(">>>> attach_names: {:?}", attach_names);
-        let contents = contents.replace("{{ ATTACH_NAMES }}", &attach_names);
+        let contents = contents
+            .replace("{{ ATTACH_NAMES }}", &attach_names)
+            .replace("{{ USER_NAME }}", &user_name);
 
         Some(contents)
     }
