@@ -1,10 +1,81 @@
-wiki.rs
+<div id="top"></div>
+<!--
+*** Thanks for checking out the Best-README-Template. If you have a suggestion
+*** that would make this better, please fork the repo and create a pull request
+*** or simply open an issue with the tag "enhancement".
+*** Don't forget to give the project a star!
+*** Thanks again! Now go create something AMAZING! :D
+-->
 
-A simple wiki created with Rust from scratch.
+<!-- PROJECT SHIELDS -->
+<!--
+*** I'm using markdown "reference style" links for readability.
+*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+*** See the bottom of this document for the declaration of the reference variables
+*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
+*** https://www.markdownguide.org/basic-syntax/#reference-style-links
+-->
 
-![Demo](./docs/images/wiki-rs-demo.png)
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
 
-# 特徴
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/sano-jin/wiki-rs">
+    <img src="docs/images/logo.png" alt="Logo" width="120" height="120">
+  </a>
+
+<h3 align="center">wiki.rs</h3>
+
+  <p align="center">
+    A simple wiki created with rust
+    <br />
+    <a href="https://github.com/sano-jin/wiki-rs"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/sano-jin/wiki-rs">View Demo</a>
+    ·
+    <a href="https://github.com/sano-jin/wiki-rs/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/sano-jin/wiki-rs/issues">Request Feature</a>
+  </p>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+<!-- ABOUT THE PROJECT -->
+
+## About The Project
+
+[![Product Name Screen Shot][product-screenshot]](docs/images/wiki-rs-demo.png)
 
 - レスポンシブ対応
 - ダークモード対応
@@ -15,19 +86,34 @@ A simple wiki created with Rust from scratch.
   （DB は後から導入するかも知れない．要検討）
 - コメントアウト対応（`//` でコメントアウトする）
 
-これから対応予定のもの
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-- ユーザごとのプライベートなページ
-- github, youtube などの外部サイトとの連携
-  - ソースコードや動画の埋め込み表示
+### Built With
 
-# Development
+- [Next.js](https://nextjs.org/)
+- [React.js](https://reactjs.org/)
+- [Vue.js](https://vuejs.org/)
+- [Angular](https://angular.io/)
+- [Svelte](https://svelte.dev/)
+- [Laravel](https://laravel.com)
+- [Bootstrap](https://getbootstrap.com)
+- [JQuery](https://jquery.com)
 
-## Prerequisties
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-Install Cargo
+<!-- GETTING STARTED -->
 
-## Run
+## Getting Started
+
+This is an example of how you may give instructions on setting up your project locally.
+To get a local copy up and running follow these simple example steps.
+
+### Prerequisites
+
+- Cargo/rust
+  - See <https://www.rust-lang.org/tools/install>
+
+### Installation
 
 1. TLS/SSL の証明書を発行し，`cert.pem`, `key.pem` という名前にして，
    プロジェクトのルートディレクトリに置く．
@@ -81,117 +167,87 @@ Install Cargo
 6. and access <https://127.0.0.1:8443/> on your browser.
    もし TLS/SSL を有効にしてなかったら，access <http://0.0.0.0:8080/> on your browser.
 
-# Design
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-とりあえずの architecture:
+<!-- USAGE EXAMPLES -->
 
-- model
-  - page の型宣言をしておく
-  - markdown から page に変換したりするコードを置いておく
-- interface adapters :: controllers, presenters, gateways
-  - ページの更新や取得などを行うコードを書いておく
-- frameworks and drivers :: web, ui, external interfaces, devices, db
+## Usage
 
-clean architecture:
+Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-- Enterprise business rules :: entities
-  - page の型宣言をしておく
-- application business rules :: use cases, interactor
-  - markdown から page に変換したりするコードを置いておく
-- interface adapters :: controllers, presenters, gateways
-  - ページの更新や取得などを行うコードを書いておく
-- frameworks and drivers :: web, ui, external interfaces, devices, db
+_For more examples, please refer to the [Documentation](https://example.com)_
 
-# API design
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-## Front
+<!-- ROADMAP -->
 
-- 普通にアクセスして見る．
-- 今見ているページの markdown を編集して，それでページを更新する．
-  - edit button
-- 新しいページの markdown を編集して，それでページを更新する．
-  - create button
+## Roadmap
 
-## Backend API
+- [ ] Feature 1
+- [ ] Feature 2
+- [ ] Feature 3
+  - [ ] Nested Feature
 
-- GET `/page?path=<Path to the page>`
-  - `<Path to the page>` にある html ページを返す
-  - サーバ上のファイルから読み込む
-- GET `/edit?path=<Path to the page>`
-  - 編集用の markdown を返す
-  - サーバ上のファイルから読み込む
-- POST `/edit {path:"<Path to the page>", body: "<The updated markdown>"}`
-  - markdown を投げ，それで `<Path to the page>` を更新する
-  - そのページがもともと存在しない場合は新しく作る．
-  - サーバ上のファイルに書き出しておく
-- DELETE `/edit?path=<Path to the page>`
-  - `<Path to the page>` を消去する
-  - サーバ上のファイルは消去する
+See the [open issues](https://github.com/sano-jin/wiki-rs/issues) for a full list of proposed features (and known issues).
 
-## 構成
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-### client-side
+<!-- CONTRIBUTING -->
 
-```sh
-public/
-├── assets/ # some assets files
-│   ├── dracula.css
-│   └── main.css
-├── edit/ # directory to save markdown files
-├── index.html # the root index.html file
-├── layouts/ # some template html files
-│   ├── edit.html
-│   └── page.html
-└── pages/ # directory to save the transformed html files
-```
+## Contributing
 
-現在，
-`public/pages/*`, `public/edit/*` は廃止して，
-`public/db/*` に json ファイルを置くことにしている．
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-- TODO: 後で上記のファイル構成の方にも反映する．
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
 
-### server-side
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-clean architecture を参考にしようともがいている
-（けどそもそも理解できていない）．
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-- （けどそもそも理解できていない．．．
+<!-- LICENSE -->
 
-参考資料：
+## License
 
-- https://qiita.com/nrslib/items/a5f902c4defc83bd46b8#%E7%9F%A2%E5%8D%B0%E3%81%AE%E6%96%B9%E5%90%91
-- https://nrslib.com/clean-architecture-with-java/#outline__6_3
-- https://gist.github.com/mpppk/609d592f25cab9312654b39f1b357c60
-- https://nrslib.com/clean-architecture-with-java/#outline__6_3
+Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-```sh
-src
-├── controllers/ # client と通信する POST API
-│   ├── handle_page.rs
-│   ├── index.rs
-│   └── mod.rs
-├── entities/ # markdown to html converter などの補助関数とか
-│   ├── mod.rs
-│   └── pages.rs
-├── gateways # データベースもどき
-│   ├── mod.rs
-│   └── pages.rs
-├── lib.rs
-├── main.rs
-├── routes.rs
-├── usecases # ページのデータ構造の定義とか
-│   ├── mod.rs
-│   └── pages.rs
-└── util.rs
-```
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-## TODOs
+<!-- CONTACT -->
 
-- [ ] clean architecture などをもとにアーキテクチャを再考する．
-- [ ] issue に挙げたものの解決
+## Contact
 
-# Demo
+Your Name - [@sano65747676](https://twitter.com/sano65747676)
 
-![Demo](./docs/images/code-copy-button-demo.png)
-![Demo](./docs/images/demo-diary.png)
+Project Link: [https://github.com/sano-jin/wiki-rs](https://github.com/sano-jin/wiki-rs)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- ACKNOWLEDGMENTS -->
+
+## Acknowledgments
+
+- []()
+- []()
+- []()
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[contributors-shield]: https://img.shields.io/github/contributors/sano-jin/wiki-rs.svg?style=for-the-badge
+[contributors-url]: https://github.com/sano-jin/wiki-rs/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/sano-jin/wiki-rs.svg?style=for-the-badge
+[forks-url]: https://github.com/sano-jin/wiki-rs/network/members
+[stars-shield]: https://img.shields.io/github/stars/sano-jin/wiki-rs.svg?style=for-the-badge
+[stars-url]: https://github.com/sano-jin/wiki-rs/stargazers
+[issues-shield]: https://img.shields.io/github/issues/sano-jin/wiki-rs.svg?style=for-the-badge
+[issues-url]: https://github.com/sano-jin/wiki-rs/issues
+[license-shield]: https://img.shields.io/github/license/sano-jin/wiki-rs.svg?style=for-the-badge
+[license-url]: https://github.com/sano-jin/wiki-rs/blob/master/LICENSE.txt
+[product-screenshot]: images/screenshot.png
