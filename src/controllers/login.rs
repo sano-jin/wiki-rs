@@ -1,26 +1,17 @@
-use actix_web::{web, Error, HttpResponse};
-use chrono::Duration;
-use jsonwebtoken::{encode, EncodingKey};
-use serde::{Deserialize, Serialize};
-
-use std::env;
-
-use actix_web::cookie::SameSite;
-
-//
-
 use crate::controllers::appstate::AppState;
-// use crate::controllers::authenticate::authenticate;
 use crate::gateways;
 use crate::gateways::db::Database;
 use crate::usecases::users::User;
-// use actix_web_httpauth::extractors::basic::BasicAuth;
-// use serde::{Deserialize, Serialize};
-
+use actix_web::cookie::SameSite;
+use actix_web::{web, Error, HttpResponse};
+use chrono::Duration;
 use chrono::{DateTime, Utc};
+use jsonwebtoken::{encode, EncodingKey};
+use serde::{Deserialize, Serialize};
+use std::env;
 use uuid::Uuid;
-//
 
+/// TODO: secret key は env からとってくるようにする．
 pub const JWT_SECRET: &str = "secret";
 pub const JWT_COOKIE_KEY: &str = "jwt";
 
