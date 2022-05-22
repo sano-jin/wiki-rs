@@ -50,7 +50,7 @@ pub fn set_jwt(user: &User, location: &str) -> HttpResponse {
     println!(">> setting cookie {:?}", cookie.to_string());
 
     let ret = HttpResponse::Found()
-        .append_header(("Location", "/login"))
+        .append_header(("Location", location))
         .append_header(("Set-Cookie", cookie.to_string()))
         .finish();
 

@@ -38,7 +38,7 @@
     <div class="wrapper page-wrapper">
       <div class="wrapper">
         <div class="site-header">
-          <div class="site-title">Users</div>
+          <div class="site-title">Login</div>
         </div>
       </div>
 
@@ -58,14 +58,13 @@
         <!-- body contents -->
         <div class="body-contents">
           <div class="wrapper">
-            <div class="updated-date">Last modified: {{ UPDATED_DATE }}</div>
             <div class="form-element">
-              login a new user:
               <form action="/user" method="POST">
                 <input
                   type="text"
                   id="login_user_name"
                   name="login_user_name"
+                  placeholder="user name"
                   required
                   size="50"
                   value=""
@@ -75,6 +74,7 @@
                   type="password"
                   id="login_user_password"
                   name="login_user_password"
+                  placeholder="password"
                   required
                   size="50"
                   value=""
@@ -84,12 +84,12 @@
                   type="submit"
                   id="login_user_submit"
                   name="login_user_submit"
-                  value="login"
+                  value="Sign in"
                 />
               </form>
             </div>
             <div class="wrapper">
-              Users list
+              Users list for debugging
               <div>{{ USERS }}</div>
             </div>
           </div>
