@@ -207,6 +207,7 @@ pre > code {
 textarea.markdown-editor {
   width: 100%;
   max-width: calc(100% - 40px);
+  resize: none;
 }
 
 @media screen and (max-width: 800px) {
