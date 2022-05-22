@@ -204,6 +204,11 @@ pre > code {
   padding-bottom: 50px;
 }
 
+textarea.markdown-editor {
+  width: 100%;
+  max-width: calc(100% - 40px);
+}
+
 @media screen and (max-width: 800px) {
   .wrapper {
     padding-right: 15px;
@@ -254,6 +259,15 @@ pre > code {
     */
     width: calc(100vw - (30px * 2) - 300px - 40px);
   }
+
+  textarea.markdown-editor {
+    width: 85vw;
+  }
+}
+
+input[type="text"].wide,
+input[type="password"].wide {
+  width: calc(100% - 40px);
 }
 
 /**
