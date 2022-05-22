@@ -1,5 +1,10 @@
 @charset "UTF-8";
 /**
- * Reset some basic elements
+ * Basic layouts
+ */
+@import url("/files/assets/basic.css");
+
+/**
+ * Color scheme
  */
 @import url("/files/assets/dark.css");

@@ -211,6 +211,7 @@ clean architecture を参考にしようとしています（が，全然理解�
 - https://nrslib.com/clean-architecture-with-java/#outline__6_3
 - https://gist.github.com/mpppk/609d592f25cab9312654b39f1b357c60
 - https://nrslib.com/clean-architecture-with-java/#outline__6_3
+- https://zenn.dev/yoshiyoshifujii/articles/ecc1d9806811a8
 
 ### Database
 
