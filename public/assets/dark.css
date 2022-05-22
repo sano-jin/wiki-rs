@@ -1,46 +1,11 @@
 @charset "UTF-8";
-/**
- * Reset some basic elements
- */
-body,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-hr,
-dl,
-dd,
-ol,
-ul,
-figure {
-  margin: 0;
-  padding: 0;
-}
 
 /**
  * Basic styling
  */
 body {
-  font: 400 14px/1.5 "Fira Sans", "Noto Sans JP", -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   color: #eef;
-  line-height: 1.8rem;
   background-color: #30323d;
-  -webkit-text-size-adjust: 100%;
-  -webkit-font-feature-settings: "kern" 1;
-  -moz-font-feature-settings: "kern" 1;
-  -o-font-feature-settings: "kern" 1;
-  font-feature-settings: "kern" 1;
-  font-kerning: normal;
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
 }
 
 strong {
@@ -49,96 +14,16 @@ strong {
 }
 
 /**
- * Set `margin-bottom` to maintain vertical rhythm
- */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-ul,
-ol,
-dl,
-figure {
-  margin-bottom: 15px;
-}
-
-/**
- * `main` element
- */
-main {
-  display: block;
-  /* Default value of `display` of `main` element is 'inline' in IE 11. */
-}
-
-/**
- * Images
- */
-img {
-  max-width: 100%;
-  vertical-align: middle;
-  margin: 10px 0;
-}
-
-/**
- * Figures
- */
-figure > img {
-  display: block;
-}
-
-figcaption {
-  font-size: 14px;
-}
-
-/**
- * Lists
- */
-ul,
-ol {
-  margin-left: 30px;
-}
-
-li > ul,
-li > ol {
-  margin-bottom: 0;
-}
-
-/**
- * Headings
- */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: 400;
-}
-
-/**
  * Links
  */
 a {
   color: #aacaf2;
-  text-decoration: none;
 }
 a:visited {
   color: #68a1e8;
 }
 a:hover {
   color: #eef;
-  text-decoration: underline;
-}
-.social-media-list a:hover {
-  text-decoration: none;
-}
-.social-media-list a:hover .username {
-  text-decoration: underline;
 }
 
 /**
@@ -146,176 +31,26 @@ a:hover {
  */
 blockquote {
   color: #c2c2c2;
-  border-left: 4px solid #556;
-  padding-left: 15px;
-  font-size: 18px;
-  letter-spacing: -1px;
-  font-style: italic;
-}
-blockquote > :last-child {
-  margin-bottom: 0;
 }
 
 /**
- * Code formatting
+ * Source code
  */
-pre,
-code {
-  font-family: "JetBrains Mono", Menlo, Monaco, Consolas, "DejaVu Sans Mono",
-    "Liberation Mono", "Courier New", "Hiragino Kaku Gothic ProN",
-    "ヒラギノ角ゴ ProN W3", Meiryo, メイリオ, Osaka, "MS PGothic", arial,
-    helvetica, sans-serif;
-  font-size: 14px;
-  border-radius: 3px;
-}
-
-code {
-  padding: 3px 5px;
-  background: #3b3b4b;
-}
-
 pre {
-  padding: 13px 16px;
-  overflow-x: auto;
   background: #282a36;
-  border-radius: 15px;
 }
-pre > code {
-  border: 0;
-  padding-right: 0;
-  padding-left: 0;
-}
-
-/**
- * Wrapper
- */
-.wrapper {
-  /*
-  max-width: -webkit-calc(1200px - (30px * 2));
-  max-width: calc(1200px - (30px * 2));
-  */
-  margin-right: auto;
-  margin-left: auto;
-  padding-right: 30px;
-  padding-left: 30px;
-}
-
-.body-contents {
-  padding-bottom: 50px;
-}
-
-textarea.markdown-editor {
-  width: 100%;
-  max-width: calc(100% - 40px);
-  resize: none;
-}
-
-@media screen and (max-width: 800px) {
-  .wrapper {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-
-  .body-contents {
-    width: calc(100vw - 60px);
-  }
-}
-
-/* 大きな画面では目次を横に表示する */
-@media screen and (min-width: 801px) {
-  .page-wrapper {
-    max-width: 1900px;
-  }
-
-  .main-body {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    display: flex;
-    flex-diretion: row;
-  }
-
-  .sidebar {
-    height: calc(100vh - 100px);
-    height: 100%;
-    width: calc(300px - 40px);
-    position: -webkit-sticky; /* for Safari users */
-    position: sticky;
-    top: 0px;
-    margin-top: 50px;
-    margin-top: 5px;
-    padding: 20px;
-    padding-right: 40px;
-    padding-top: 40px;
-  }
-
-  .sidebar div {
-    padding: 8px;
-  }
-
-  .body-contents {
-    margin-top: 20px;
-    /*
-    font-size: 14px;
-    */
-    width: calc(100vw - (30px * 2) - 300px - 40px);
-  }
-
-  textarea.markdown-editor {
-    width: 85vw;
-  }
-}
-
-input[type="text"].wide,
-input[type="password"].wide {
-  width: calc(100% - 40px);
-}
-
-/**
- * Clearfix
- */
-/*
-.wrapper:after,
-.footer-col-wrapper:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-*/
-
-/**
- * Icons
- */
-.svg-icon {
-  width: 16px;
-  height: 16px;
-  display: inline-block;
-  fill: #c2c2c2;
-  padding-right: 5px;
-  vertical-align: text-top;
-}
-
-.social-media-list li + li {
-  padding-top: 5px;
+code {
+  background: #3b3b4b;
 }
 
 /**
  * Tables
  */
 table {
-  margin-bottom: 30px;
-  width: 100%;
-  text-align: left;
-  color: white;
-  border-collapse: collapse;
   background-color: #393f49;
 }
 table tr:nth-child(odd) {
   background-color: #3e3d4d;
-}
-table th,
-table td {
-  padding: 10px 15px;
 }
 table th {
   background-color: #252525;
@@ -326,24 +61,8 @@ table td {
 }
 
 /**
- * Site header
+ * Site title
  */
-.site-header {
-  padding-top: 5px;
-  border-bottom: 1px solid #789;
-  min-height: 55.95px;
-  position: relative;
-  margin-bottom: 10px;
-}
-
-.site-title {
-  font-size: 26px;
-  font-weight: 300;
-  line-height: 54px;
-  letter-spacing: -1px;
-  margin-bottom: 0;
-  float: left;
-}
 .site-title,
 .site-title:visited {
   color: #828282;
@@ -351,117 +70,48 @@ table td {
 }
 
 textarea {
-  padding: 10px;
-  margin: 10px;
-  width: 100%;
-  height: 70vh;
-  font-family: "JetBrains Mono", Menlo, Monaco, Consolas, "DejaVu Sans Mono",
-    "Liberation Mono", "Courier New", "Hiragino Kaku Gothic ProN",
-    "ヒラギノ角ゴ ProN W3", Meiryo, メイリオ, Osaka, "MS PGothic", arial,
-    helvetica, sans-serif;
-  /*
-  font-size: 14px;
-*/
-  border-radius: 3px;
   color: #eef;
   background-color: #404047;
-  border: none;
-  outline: none;
 }
 
 input {
-  max-width: 100%;
-  margin: 10px;
-  padding: 10px;
-  font: 400 14px/1.5 "Fira Sans", "Noto Sans JP", -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  color: #eef;
   color: #ccd;
-  border: none;
-  outline: none;
 }
 
 input[type="text"],
 input[type="password"] {
-  font-family: "JetBrains Mono", Menlo, Monaco, Consolas, "DejaVu Sans Mono",
-    "Liberation Mono", "Courier New", "Hiragino Kaku Gothic ProN",
-    "ヒラギノ角ゴ ProN W3", Meiryo, メイリオ, Osaka, "MS PGothic", arial,
-    helvetica, sans-serif;
-  font-size: 15px;
-  border-radius: 3px;
   background-color: #404047;
 }
 
 hr {
-  border: none;
   border-top: 2px solid #556;
-  margin: 20px 0;
 }
 
+/** 
+ * Button
+ */
 a.button {
-  text-decoration: none;
   color: #eef;
 }
-
 .button {
-  max-width: 100%;
-  margin: 10px;
-  padding: 10px;
   color: #ccd;
-  background-color: #2c2c33;
   background-color: #3c3c43;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  border-radius: 15px;
-  /*
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-*/
 }
 
-.header-menu > form {
-  display: inline-block;
-}
-.header-menu .button {
-  display: inline-block;
-}
-
-pre > .code-copy-button {
-  display: none;
-}
+/** 
+ * Button for copying source code
+ */
 pre:hover > .code-copy-button {
-  display: block;
-  padding: 15px;
-  width: 23px;
-  height: 23px;
   background-color: #303040;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-  position: absolute;
-  top: 5px;
-  right: 5px;
   color: red;
-  cursor: pointer;
-  border-radius: 10px;
 }
-
 pre > .code-copy-button:hover {
   background-color: #445;
 }
 
 pre > .code-copy-button.copied::after {
-  font: 400 14px/1.5 "Fira Sans", "Noto Sans JP", -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   color: #aab;
-  content: "copied";
-  transition: 0.5s;
-  width: 24px;
-  position: absolute;
-  right: 3px;
-  left: 3px;
-  text-align: center;
-  white-space: nowrap;
 }
 pre > .code-copy-button.copied {
   background-color: #445;
@@ -471,174 +121,39 @@ pre {
   position: relative;
 }
 
-/**
- * headings
- */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  position: relative;
-  margin-left: -30px;
-  padding-left: 30px;
-  font-weight: bold;
-
-  /*
-  font-weight: bold;
-  */
-}
-
-/**
- * headings
- */
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin-top: 3rem;
-
-  /*
-  font-weight: bold;
-  */
-}
-
-h1:hover > a::before,
-h2:hover > a::before,
-h3:hover > a::before,
-h4:hover > a::before,
-h5:hover > a::before,
-h6:hover > a::before {
-  /*
-    margin-right: 10px;
-  font-size: calc(50% + 10px);
-  */
-  font-size: calc(30% + 15px);
-  content: "†";
-  left: 0.4rem;
-  position: absolute;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-/* collapsable menu */
-
+/* menu */
 div.menu a {
-  text-decoration: none;
-  color: #889;
   color: #bbc;
 }
-
 div.menu a:hover {
   color: #eef;
 }
-
 div.menu {
-  min-width: 20ch;
-  display: flex;
-  /*
-  flex-flow: column nowrap;
-  */
-  position: relative;
-  margin: 1rem auto;
-  margin: 2rem auto;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
-  padding: 1.1rem 3rem;
-  padding-top: 1.1rem;
-  padding-left: 1rem;
-  border-radius: 10px;
-}
-
-div.menu > ul {
-  padding: 0;
 }
 
 /* line between list elements */
-div.menu ul {
-  width: 100%;
-  margin: 0 auto;
-  list-style-type: none;
-  margin: 0;
-}
-
-div.menu ul li {
-  padding: 0 0 0px 25px;
-  position: relative;
-  margin: 0;
-}
-
 div.menu ul li:after {
-  position: absolute;
-  top: 5px;
-  left: 0px;
-  content: "";
-  border-radius: 50%;
-  display: inline-block;
-  height: 10px;
-  width: 10px;
-  text-align: center;
   border: 2px solid #303238;
   background: #556;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
 }
-
 div.menu ul li:hover:after {
   background: #fff;
 }
-
 div.menu ul li:before {
-  position: absolute;
-  left: 6px;
-  top: 6px;
-  content: "";
-  height: 100%;
-  width: 0;
   border-left: 2px solid #556;
 }
-
-div.menu ul li:last-of-type:before {
-  border: none;
-  height: 0;
-}
-
 div.menu ul li ul li:after {
-  border: 2px solid #1e1e20;
   border: 2px solid #303238;
-  top: 7px;
-  height: 7px;
-  width: 7px;
 }
-
 div.menu ul li ul li:before {
-  position: absolute;
-  left: 5px;
-  top: 4px;
-  content: "";
-  height: 100%;
-  width: 0;
   border-left: 1.5px dashed #556;
 }
 
 /* last modified date */
 .updated-date {
   color: #778;
-}
-
-.input-hided {
-  display: none;
-  /**/
-}
-.form-hided {
-  /**/
-}
-
-/* 長いリンク名は改行する */
-.body-contents a {
-  word-break: break-all;
 }
 
 /** footer */
@@ -648,99 +163,38 @@ div.menu ul li ul li:before {
  */
 .site-footer {
   border-top: 1px solid #828282;
-  padding: 30px 0;
-}
-
-ul.attach-names li {
-  margin: 20px 0px;
 }
 
 /* button to go up */
 #go-up-button {
-  position: fixed;
-  bottom: 50px;
-  right: 50px;
   background-color: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 40px;
   color: #99a;
   text-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
 }
-
 #go-up-button:hover {
   color: #eef;
-  border-radius: 5px;
-  transition: 0.2s;
 }
 
-h1 {
-  font-weight: bold;
-  font-size: 1.6em;
-  margin-top: 70px;
-}
-
+/**
+ * Heading の下線
+ */
 h1::after {
-  content: "";
   border-bottom: 2px solid #667;
-  width: calc(100% - 25px);
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 25px;
-  padding-bottom: 5px;
-}
-
-.sidebar h1,
-.sidebar h2,
-.sidebar h3,
-.sidebar h4,
-.sidebar h5,
-.sidebar h6 {
-  font-weight: normal;
-}
-
-.sidebar h1 {
-  margin-top: 20px;
-  font-weight: normal;
 }
 
 input[type="submit"] {
-  border-radius: 15px;
   background-color: #3c3c43;
 }
-
 input[type="submit"]:hover {
-  cursor: pointer;
   background-color: #3f5fde;
-  border-radius: 5px;
-  transition: 0.2s;
 }
-
 .button:hover {
   background-color: #3f5fde;
-  border-radius: 5px;
-  transition: 0.2s;
 }
 
-.page-wrapper {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-.head-links {
-  margin: 30px 0 10px;
-}
-
+/**
+ * User icon
+ */
 .user-name {
-  height: 60px;
-  width: 60px;
-  border-radius: 50%;
   background-color: #556;
-  position: fixed;
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  text-align: center;
-  padding: 20px auto;
-  line-height: 60px;
 }
