@@ -43,6 +43,8 @@ if enable_ssl:
     if not question(prompt):
         exit_on_fail()
 
+    # サンプルの db が docs 以下にあるので，それを持ってくる．
+
     prompt = """
     初期ユーザを追加する．
     ユーザ名が foo，パスワードが bar のユーザを追加したい場合は，
