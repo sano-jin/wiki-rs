@@ -25,7 +25,7 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#run">Run</a></li>
+        <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
     <li><a href="#design">Design</a></li>
@@ -52,13 +52,11 @@
 
 Install Cargo
 
-## Run
+### Installation
 
 1. TLS/SSL の証明書を発行し，`cert.pem`, `key.pem` という名前にして，
    プロジェクトのルートディレクトリに置く．
    TLS/SSL を有効にしないなら不要．
-
-   - See <https://github.com/sano-jin/rust-hands-on-wiki/tree/master/https-server>
 
 2. サンプルの db が docs 以下にあるので，それを持ってくる．
 
@@ -86,7 +84,7 @@ Install Cargo
 
 4. `.env.template` を参考に，`.env` を生成する
 
-   - 追記：これは現時点では不要
+   - TLS/SSL を有効にする場合は `HTTPS=1`, 有効にしない場合は `HTTPS=0` にする．
 
 5. cargo で backend を実行する
 

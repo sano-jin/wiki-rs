@@ -115,57 +115,7 @@ To get a local copy up and running follow these simple example steps.
 
 ### Installation
 
-1. TLS/SSL の証明書を発行し，`cert.pem`, `key.pem` という名前にして，
-   プロジェクトのルートディレクトリに置く．
-   TLS/SSL を有効にしないなら不要．
-
-2. サンプルの db が docs 以下にあるので，それを持ってくる．
-
-   ```sh
-   cp -r docs/db .
-   ```
-
-3. 初期ユーザを追加する．
-   ユーザ名が `foo`，パスワードが `bar` のユーザを追加したい場合は，
-   `db/users` directory に
-   ファイル名が `foo` で，以下のような JSON が書かれたファイルを配置する．
-
-   ```json
-   { "name": "foo", "password": "bar" }
-   ```
-
-   つまり，
-
-   ```sh
-   mkdir db/users
-   echo '{"name":"foo","password":"bar"}' > db/users/foo
-   ```
-
-   を実行すれば良い．
-
-4. `.env.template` を参考に，`.env` を生成する
-
-   - TLS/SSL を有効にする場合は `HTTPS=1`, 有効にしない場合は `HTTPS=0` にする．
-
-5. cargo で backend を実行する
-
-   ```sh
-   cargo run
-   ```
-
-   TLS/SSL を有効にしないなら，
-
-   ```sh
-   cargo run unsecure
-   ```
-
-   を実行する
-
-   - 補足：cargo watch を install して，`cargo watch -x run` とすると，
-     ソースコードを変更して保存するごとに，コンパイルして実行し直してくれるので便利です．
-
-6. and access <https://127.0.0.1:8443/> on your browser.
-   もし TLS/SSL を有効にしてなかったら，access <http://0.0.0.0:8080/> on your browser.
+See [the document for installation](./docs/README.md#installation)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
