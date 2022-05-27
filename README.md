@@ -77,14 +77,12 @@
 
 [![Product Name Screen Shot](docs/images/wiki-rs-demo.png)](https://github.com/sano-jin/wiki-rs)
 
-- レスポンシブ対応
-- ダークモード対応
-- 数式対応（`\(\)` で inline equation, `\[\]` で block）
-- ソースコードのシンタックスハイライトが可能
-- ソースコードのコピーができるボタンあり
-- データベース不要で，rust 環境さえあればすぐに導入可能
-  （DB は後から導入するかも知れない．要検討）
-- コメントアウト対応（`//` でコメントアウトする）
+- Fully responsive
+- Dark theme available
+- Support for Tex style mathematical equations
+- Source code syntax highlighting
+- No database required
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
